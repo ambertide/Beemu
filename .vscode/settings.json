@@ -1,0 +1,8 @@
+{
+  "editor.insertSpaces": false,
+  "files.associations": {
+    "*.in": "c",
+    "version.h": "c"
+  },
+  "cmake.configureOnOpen": true
+}
