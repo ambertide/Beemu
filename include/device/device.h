@@ -2,6 +2,7 @@
 #define BEEMU_DEVICE_H
 #include <stdint.h>
 #include <stdbool.h>
+#include "registers.h"
 #include "memory.h"
 
 /**
@@ -13,8 +14,9 @@ static const int BEEMU_DEVICE_MEMORY_SIZE = 64000;
  */
 static const int BEEMU_DEVICE_MEMORY_ROM_LOCATION;
 
-typedef struct _BeemuDevice
+typedef struct BeemuDevice
 {
+	BeemuRegisters *registers;
 	BeemuMemory *memory;
 } BeemuDevice;
 

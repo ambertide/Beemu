@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct _BeemuMemory
+typedef struct BeemuMemory
 {
 	int memory_size;
 	uint8_t *memory;
