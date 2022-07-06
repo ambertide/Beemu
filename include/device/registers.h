@@ -40,12 +40,21 @@ typedef enum BeemuRegister_16
  */
 typedef enum BeemuFlag
 {
-	BEEMU_FLAG_S = 7,  // Sign
-	BEEMU_FLAG_Z = 6,  // Zero
-	BEEMU_FLAG_AC = 4, // Auxiliary Carry
-	BEEMU_FLAG_P = 2,  // Parity
-	BEEMU_FLAG_C = 0   // Carry
+	BEEMU_FLAG_Z = 7, // Zero
+	BEEMU_FLAG_N = 6, // Auxiliary Carry
+	BEEMU_FLAG_H = 5, // Parity
+	BEEMU_FLAG_C = 4  // Carry
 } BeemuFlag;
+
+typedef enum BeemuOperation
+{
+	BEEMU_OP_ADD,
+	BEEMU_OP_SUB,
+	BEEMU_OP_AND,
+	BEEMU_OP_OR,
+	BEEMU_OP_CP,
+	BEEMU_OP_XOR
+} BeemuOperation;
 
 /**
  * @brief Struct holding registers and flags.
@@ -168,5 +177,43 @@ bool beemu_registers_flag_is_high(BeemuRegisters *registers, BeemuFlag flag_name
  * @return uint16_t PSW value.
  */
 uint16_t beemu_registers_read_psw(BeemuRegisters *registers);
+
+/**
+ * @brief Increment 8 bit register
+ *
+ * Increment a register.
+ * @param registers BeemuRegisters object
+ * @param register_name Name of the register to increment.
+ */
+void beemu_registers_increment_16(BeemuRegisters *registers, BeemuRegister_16 register_name);
+
+/**
+ * @brief Increment 8 bit register
+ *
+ * Increment a register.
+ * @param registers BeemuRegisters object
+ * @param register_name Name of the register to increment.
+ */
+void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 register_name);
+
+/**
+ * @brief Perform operation on a register and write it to A.
+ *
+ * @param registers BeemuRegisters object pointer.
+ * @param register Register to be added.
+ * @param operation Operation to perform.
+ * @param should_add_carry When set to true add the carry flag.
+ */
+void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuOperation operation, bool should_add_carry);
+
+/**
+ * @brief Perform operation on a constant and write it to A.
+ *
+ * @param registers BeemuRegisters object pointer.
+ * @param value Value to perform operation on it.
+ * @param operation Operation to perform.
+ * @param should_add_carry When set to true add the carry flag.
+ */
+void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry);
 
 #endif

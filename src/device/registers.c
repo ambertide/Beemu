@@ -1,5 +1,5 @@
 #include <device/registers.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 BeemuRegisters *beemu_registers_new(void)
 {
@@ -115,4 +115,96 @@ uint16_t beemu_registers_read_psw(BeemuRegisters *registers)
 	const uint16_t padded_A_register = ((uint16_t)beemu_registers_read_8(registers, BEEMU_REGISTER_A)) << 8;
 	const uint16_t flags = (uint16_t)beemu_registers_flag_read_all(registers);
 	return padded_A_register | flags;
+}
+
+void beemu_registers_increment_16(BeemuRegisters *registers, BeemuRegister_16 register_name)
+{
+	const uint16_t previous_value = beemu_registers_read_16(registers, register_name);
+	beemu_registers_write_16(registers, register_name, previous_value + 1);
+}
+
+void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 register_name)
+{
+	registers->registers[register_name]++;
+}
+
+/**
+ * @brief Set flags based on registers.
+ *
+ * Determine and set the flags based on the previous and present
+ * value of the registers.
+ *
+ * @param registers BeemuRegisters object.
+ * @param previous_value Previous value of the register.
+ * @param next_value Next value of the register.
+ * @param after_add_carry First calculate carry, and then add the result to
+ * next_value, and only after that determine and calculate the other flags.
+ * @param operation Operation that was performed.
+ */
+void set_flags_register_arithmatic_8(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation)
+{
+	if (operation == BEEMU_OP_ADD)
+	{
+		// Carry is actually an overflow flag.
+		beemu_registers_flag_set(registers, BEEMU_FLAG_C, next_value < previous_value);
+	}
+	else if (operation == BEEMU_OP_SUB)
+	{
+		// Probably the underflow.
+		beemu_registers_flag_set(registers, BEEMU_FLAG_C, next_value > previous_value);
+	}
+	// Now we check if carry should be added to the next value.
+	if (after_add_carry)
+	{
+		next_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
+	}
+	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, next_value == 0b0);
+	beemu_registers_flag_set(registers, BEEMU_FLAG_N,
+							 operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP);
+	// TODO: This is almost certainly false.
+	beemu_registers_flag_set(registers, BEEMU_FLAG_H,
+							 previous_value < 0x0F && next_value > 0x0F);
+}
+
+void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry)
+{
+	const uint8_t previous_value = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	uint8_t final_value = 0;
+	const uint8_t cp_value = previous_value - value;
+	switch (operation)
+	{
+	case BEEMU_OP_ADD:
+		final_value = value + previous_value;
+		break;
+	case BEEMU_OP_AND:
+		final_value = value & previous_value;
+		break;
+	case BEEMU_OP_OR:
+		final_value = value | previous_value;
+		break;
+	case BEEMU_OP_SUB:
+		final_value = previous_value - value;
+		break;
+	case BEEMU_OP_CP:
+		final_value = previous_value;
+		break;
+	case BEEMU_OP_XOR:
+		final_value = previous_value ^ value;
+	}
+	set_flags_register_arithmatic_8(registers,
+									previous_value,
+									operation == BEEMU_OP_CP ? cp_value : final_value,
+									should_add_carry,
+									operation);
+	if (should_add_carry)
+	{
+		final_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
+	}
+	beemu_registers_write_8(registers, BEEMU_REGISTER_A, final_value);
+}
+
+void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuOperation operation, bool should_add_carry)
+{
+	const uint8_t register_value = beemu_registers_read_8(registers, register_);
+	beemu_registers_arithmatic_8_constant(registers, register_value, operation, should_add_carry);
 }
