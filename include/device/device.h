@@ -5,6 +5,15 @@
 #include "registers.h"
 #include "memory.h"
 
+static const BeemuRegister_8 ORDERED_REGISTER_NAMES[8] = {BEEMU_REGISTER_B,
+														  BEEMU_REGISTER_C,
+														  BEEMU_REGISTER_D,
+														  BEEMU_REGISTER_E,
+														  BEEMU_REGISTER_H,
+														  BEEMU_REGISTER_L,
+														  BEEMU_REGISTER_A,
+														  BEEMU_REGISTER_A};
+
 /**
  * @brief Size of the chip memory.
  */
@@ -14,10 +23,25 @@ static const int BEEMU_DEVICE_MEMORY_SIZE = 64000;
  */
 static const int BEEMU_DEVICE_MEMORY_ROM_LOCATION;
 
+/**
+ * @brief Describes the device state.
+ *
+ */
+typedef enum BeemuDeviceState
+{
+	BEEMU_DEVICE_NORMAL,
+	BEEMU_DEVICE_HALT,
+	BEEMU_DEVICE_STOP,
+	BEEMU_DEVICE_AWAITING_INTERRUPT_DISABLE,
+	BEEMU_DEVICE_AWAITING_INTERRUPT_ENABLE
+} BeemuDeviceState;
+
 typedef struct BeemuDevice
 {
 	BeemuRegisters *registers;
 	BeemuMemory *memory;
+	BeemuDeviceState device_state;
+	bool interrupts_enabled;
 } BeemuDevice;
 
 /**
@@ -53,4 +77,21 @@ bool beemu_device_load(BeemuDevice *device, uint8_t *rom);
  */
 void beemu_device_run(BeemuDevice *device);
 
+/**
+ * @brief Get the state of the device.
+ *
+ * Get the current state of the device.
+ * @param device BeemuDevice object pointer.
+ * @return BeemuDeviceState
+ */
+BeemuDeviceState beemu_device_get_device_state(BeemuDevice *device);
+
+/**
+ * @brief Set the state of the device.
+ *
+ * Set the state of the device.
+ * @param device BeemuDevice object pointer.
+ * @param state The new state of the device.
+ */
+void beemu_device_set_state(BeemuDevice *device, BeemuDeviceState state);
 #endif // BEEMU_DEVICE_H
