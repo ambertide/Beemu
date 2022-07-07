@@ -125,14 +125,11 @@ static inline const BeemuRegister_8 decode_ld_register_from_instruction(uint8_t 
  * affecting the acumulator.
  *
  * @param device BeemuDevice object.
- * @param instruction Instruction to execute.
  */
-static inline void execute_arithmatic_register_instruction(BeemuDevice *device, uint8_t instruction)
+static inline void execute_arithmatic_register_instruction(BeemuDevice *device)
 {
-	const uint8_t first_nibble = instruction & 0xF0;
-	const uint8_t second_nibble = instruction & 0x0F;
 	BeemuOperation operation = BEEMU_OP_ADD;
-	switch (first_nibble)
+	switch (device->current_instruction.first_nibble)
 	// Determine the operation.
 	{
 	case 0x80:
@@ -143,21 +140,21 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device, 
 		break;
 	case 0xA0:
 		operation = BEEMU_OP_AND;
-		if (second_nibble >= 0x08)
+		if (device->current_instruction.second_nibble >= 0x08)
 		{
 			operation = BEEMU_OP_XOR;
 		}
 		break;
 	case 0xB0:
 		operation = BEEMU_OP_OR;
-		if (second_nibble >= 0x08)
+		if (device->current_instruction.second_nibble >= 0x08)
 		{
 			operation = BEEMU_OP_CP;
 		}
 		break;
 	}
-	const bool should_add_carry = second_nibble > 0x08 && first_nibble >= 0xA0;
-	if (second_nibble == 0x06 || second_nibble == 0x0E)
+	const bool should_add_carry = device->current_instruction.second_nibble > 0x08 && device->current_instruction.first_nibble >= 0xA0;
+	if (device->current_instruction.second_nibble == 0x06 || device->current_instruction.second_nibble == 0x0E)
 	{
 		// This uses the dereferenced HL register.
 		const uint8_t dereferenced_value = dereference_hl(device);
@@ -169,7 +166,7 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device, 
 	else
 	{
 		beemu_registers_arithmatic_8_register(device->registers,
-											  decode_register_from_instruction(instruction),
+											  decode_register_from_instruction(device->current_instruction.instruction),
 											  operation,
 											  should_add_carry);
 	}
@@ -315,7 +312,7 @@ void beemu_device_run(BeemuDevice *device)
 		case 0x90:
 		case 0xA0:
 		case 0xB0:
-			execute_arithmatic_register_instruction(device, next_instruction);
+			execute_arithmatic_register_instruction(device);
 			break;
 		}
 	}
