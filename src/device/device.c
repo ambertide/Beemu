@@ -52,6 +52,9 @@ static inline uint8_t peek_instruction(BeemuDevice *device)
 static inline uint16_t pop_instruction(BeemuDevice *device)
 {
 	const uint8_t next_instruction = peek_instruction(device);
+	device->current_instruction.instruction = next_instruction;
+	device->current_instruction.first_nibble = next_instruction & 0xF0;
+	device->current_instruction.second_nibble = next_instruction & 0x0F;
 	beemu_registers_increment_16(device->registers, BEEMU_REGISTER_PC);
 	return next_instruction;
 }
@@ -176,21 +179,18 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device, 
  * @brief Execute a load instruction.
  *
  * @param device BeemuDevice object.
- * @param instruction Instruction to execute.
  */
-static inline void execute_load_instruction(BeemuDevice *device, uint8_t instruction)
+static inline void execute_load_instruction(BeemuDevice *device)
 {
-	const uint8_t first_nibble = instruction & 0xF0;
-	const uint8_t second_nibble = instruction & 0x0F;
-	const BeemuRegister_8 destination_register = decode_register_from_instruction(instruction);
+	const BeemuRegister_8 destination_register = decode_register_from_instruction(device->current_instruction.instruction);
 	uint8_t value = dereference_hl(device);
-	if (!(first_nibble == 0x70 && second_nibble <= 0x07))
+	if (!(device->current_instruction.first_nibble == 0x70 && device->current_instruction.second_nibble <= 0x07))
 	{
 		// If outside this block, then read from a register.
-		const BeemuRegister_8 source_register = decode_ld_register_from_instruction(instruction);
+		const BeemuRegister_8 source_register = decode_ld_register_from_instruction(device->current_instruction.instruction);
 		value = beemu_registers_read_8(device->registers, source_register);
 	}
-	if (second_nibble != 0x06 && second_nibble != 0x0E)
+	if (device->current_instruction.second_nibble != 0x06 && device->current_instruction.second_nibble != 0x0E)
 	{
 		// Load to the dereferenced (HL) memory location.
 		beemu_memory_write(device->memory, dereference_hl(device), value);
@@ -227,23 +227,20 @@ void execute_unary_on_memory(BeemuDevice *device, BeemuUnaryOperation operation)
  * Execute a register increment or decrement operation, the register to
  * operate on depends on the instruction.
  * @param device BeemuDevice object pointer.
- * @param instruction Instruction being executed.
  * @param increment If set to true, increment, otherwise decrement.
  */
-void execute_unary_operand(BeemuDevice *device, uint8_t instruction, bool increment)
+void execute_unary_operand(BeemuDevice *device, bool increment)
 {
-	const uint8_t first_nibble = instruction & 0xF0;
-	const uint8_t last_nibble = instruction & 0x0F;
-	const bool on_the_left = last_nibble < 0x07;
+	const bool on_the_left = device->current_instruction.second_nibble < 0x07;
 	const int row = on_the_left ? 0 : 1;
 	const BeemuRegister_8 registers[4][2] = {
 		{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
 		{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
 		{BEEMU_REGISTER_H, BEEMU_REGISTER_L},
 		{BEEMU_REGISTER_A, BEEMU_REGISTER_A}};
-	const int column = first_nibble >> 1;
+	const int column = device->current_instruction.first_nibble >> 1;
 	const BeemuUnaryOperation uop = increment ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
-	if (on_the_left && first_nibble == 0x30)
+	if (on_the_left && device->current_instruction.first_nibble == 0x30)
 	{
 		// These act on the dereferenced HL.
 		execute_unary_on_memory(device, uop);
@@ -260,16 +257,13 @@ void execute_unary_operand(BeemuDevice *device, uint8_t instruction, bool increm
  * These blocks of instructions display a periodic table like behaviour
  * depending on the last nibble.
  * @param device BeemuDevice object pointer.
- * @param instruction Instruction under execution.
  */
-void execute_block_03(BeemuDevice *device, uint8_t instruction)
+void execute_block_03(BeemuDevice *device)
 {
-	const uint8_t first_nibble = instruction & 0xF0;
-	const uint8_t last_nibble = instruction & 0x0F;
-	switch (last_nibble)
+	switch (device->current_instruction.second_nibble)
 	{
 	case 0x00:
-		switch (first_nibble)
+		switch (device->current_instruction.first_nibble)
 		{
 		case 0x00:
 			break;
@@ -284,7 +278,7 @@ void execute_block_03(BeemuDevice *device, uint8_t instruction)
 	case 0x0C:
 	case 0x0D:
 		// INC and DEC
-		execute_unary_operand(device, instruction, last_nibble == 0x04 || last_nibble == 0x0C);
+		execute_unary_operand(device, device->current_instruction.second_nibble == 0x04 || device->current_instruction.second_nibble == 0x0C);
 	default:
 		break;
 	}
@@ -296,27 +290,25 @@ void beemu_device_run(BeemuDevice *device)
 	while (true)
 	{
 		uint8_t next_instruction = pop_instruction(device);
-		uint8_t first_nibble = next_instruction & 0xF0;
-		uint8_t last_nibble = next_instruction & 0x0F;
-		switch (first_nibble)
+		switch (device->current_instruction.first_nibble)
 		{
 		case 0x00:
 		case 0x10:
 		case 0x20:
 		case 0x30:
-			execute_block_03(device, next_instruction);
+			execute_block_03(device);
 		case 0x40:
 		case 0x50:
 		case 0x60:
 		case 0x70:
-			if (last_nibble == 0x06)
+			if (device->current_instruction.second_nibble == 0x06)
 			{
 				// HALT
 				beemu_device_set_state(device, BEEMU_DEVICE_HALT);
 			}
 			else
 			{
-				execute_load_instruction(device, next_instruction);
+				execute_load_instruction(device);
 			}
 			break;
 		case 0x80:

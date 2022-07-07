@@ -42,6 +42,16 @@ typedef struct BeemuDevice
 	BeemuMemory *memory;
 	BeemuDeviceState device_state;
 	bool interrupts_enabled;
+	/**
+	 * @brief The currently executed instruction.
+	 */
+	struct
+	{
+		uint8_t instruction;
+		uint8_t first_nibble;
+		uint8_t second_nibble;
+	} current_instruction;
+	uint8_t data[2];
 } BeemuDevice;
 
 /**
