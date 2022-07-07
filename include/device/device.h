@@ -13,6 +13,11 @@ static const BeemuRegister_8 ORDERED_REGISTER_NAMES[8] = {BEEMU_REGISTER_B,
 														  BEEMU_REGISTER_L,
 														  BEEMU_REGISTER_A,
 														  BEEMU_REGISTER_A};
+static const BeemuRegister_16 ORDERED_REGISTER_NAMES_16[4] = {
+	BEEMU_REGISTER_BC,
+	BEEMU_REGISTER_DE,
+	BEEMU_REGISTER_HL,
+	BEEMU_REGISTER_SP};
 
 /**
  * @brief Size of the chip memory.

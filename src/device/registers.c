@@ -128,8 +128,9 @@ void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 regi
 	registers->registers[register_name]++;
 }
 
-void beemu_registers_set_flags(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation)
+void beemu_registers_set_flags(BeemuRegisters *registers, uint16_t previous_value, uint16_t next_value, bool after_add_carry, BeemuOperation operation, bool is_byte_length)
 {
+	// DO NOT CHANGE THIS TO INT BECAUSE THE NEXT_VALUE + 1 CARRY WONT WORK.
 	if (operation == BEEMU_OP_ADD)
 	{
 		// Carry is actually an overflow flag.
@@ -144,6 +145,10 @@ void beemu_registers_set_flags(BeemuRegisters *registers, uint8_t previous_value
 	if (after_add_carry)
 	{
 		next_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
+		if (is_byte_length)
+		{
+			next_value = (uint8_t)next_value;
+		}
 	}
 	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, next_value == 0b0);
 	beemu_registers_flag_set(registers, BEEMU_FLAG_N,
@@ -193,12 +198,62 @@ void register_perform_operation(BeemuRegisters *registers, BeemuRegister_8 targe
 							  previous_value,
 							  operation == BEEMU_OP_CP ? cp_value : final_value,
 							  should_add_carry,
-							  operation);
+							  operation,
+							  true);
 	if (should_add_carry)
 	{
 		final_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
 	}
 	beemu_registers_write_8(registers, target_register, final_value);
+}
+
+/**
+ * @brief Perform an operation on a 16-bit register.
+ *
+ * Perform an operation on a register and store the result on
+ * the same register.
+ * @param registers BeemuRegisters object pointer.
+ * @param target_register Target register to operate on.
+ * @param value Value to use.
+ * @param operation Operation to perform.
+ * @param should_add_carry If set to true, add the carry to the result.
+ */
+void register_perform_operation_16(BeemuRegisters *registers, BeemuRegister_16 target_register, uint16_t value, BeemuOperation operation, bool should_add_carry)
+{
+	const uint16_t previous_value = beemu_registers_read_16(registers, target_register);
+	uint16_t final_value = 0;
+	const uint16_t cp_value = previous_value - value;
+	switch (operation)
+	{
+	case BEEMU_OP_ADD:
+		final_value = value + previous_value;
+		break;
+	case BEEMU_OP_AND:
+		final_value = value & previous_value;
+		break;
+	case BEEMU_OP_OR:
+		final_value = value | previous_value;
+		break;
+	case BEEMU_OP_SUB:
+		final_value = previous_value - value;
+		break;
+	case BEEMU_OP_CP:
+		final_value = previous_value;
+		break;
+	case BEEMU_OP_XOR:
+		final_value = previous_value ^ value;
+	}
+	beemu_registers_set_flags(registers,
+							  previous_value,
+							  operation == BEEMU_OP_CP ? cp_value : final_value,
+							  should_add_carry,
+							  operation,
+							  false);
+	if (should_add_carry)
+	{
+		final_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
+	}
+	beemu_registers_write_16(registers, target_register, final_value);
 }
 
 void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry)
@@ -215,4 +270,9 @@ void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegis
 void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation)
 {
 	register_perform_operation(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
+}
+
+void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation)
+{
+	register_perform_operation_16(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
 }

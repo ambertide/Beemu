@@ -215,7 +215,7 @@ void execute_unary_on_memory(BeemuDevice *device, BeemuUnaryOperation operation)
 	// Binary equivalent of the unary operation, INC => ADD, DEC => SUB.
 	const uint8_t op_equivalent = operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB;
 	write_to_dereferenced_hl(device, new_value);
-	beemu_registers_set_flags(device->registers, previous_value, new_value, false, op_equivalent);
+	beemu_registers_set_flags(device->registers, previous_value, new_value, false, op_equivalent, true);
 }
 
 /**
@@ -246,6 +246,21 @@ void execute_unary_operand(BeemuDevice *device, bool increment)
 	{
 		beemu_registers_airthmatic_8_unary(device->registers, registers[column][row], uop);
 	}
+}
+
+/**
+ * @brief Execute a register increment or decrement operation on 16.
+ *
+ * Execute a register increment or decrement operation, the register to
+ * operate on depends on the instruction.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_unary_operand_16(BeemuDevice *device)
+{
+	const bool on_the_left = device->current_instruction.second_nibble < 0x07;
+	const int index = device->current_instruction.first_nibble >> 1;
+	const BeemuUnaryOperation uop = on_the_left ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
+	beemu_registers_airthmatic_16_unary(device->registers, ORDERED_REGISTER_NAMES_16[index], uop);
 }
 
 /**

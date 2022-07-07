@@ -243,6 +243,18 @@ void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t va
 void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation);
 
 /**
+ * @brief Perform a unary operation on a 16-bit.
+ *
+ * Perform either a increment or a decrement operation
+ * based on the operation value on a register and store
+ * the result on the same register.
+ * @param registers BeemuRegisters object pointer.
+ * @param register_ Register to operate on.
+ * @param operation Operation to perform.
+ */
+void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation);
+
+/**
  * @brief Set flags based on registers.
  *
  * Determine and set the flags based on the previous and present
@@ -254,7 +266,8 @@ void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister
  * @param after_add_carry First calculate carry, and then add the result to
  * next_value, and only after that determine and calculate the other flags.
  * @param operation Operation that was performed.
+ * @param is_byte_length If set to true, perform on 8-bit operations.
  */
-void beemu_registers_set_flags(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation);
+void beemu_registers_set_flags(BeemuRegisters *registers, uint16_t previous_value, uint16_t next_value, bool after_add_carry, BeemuOperation operation, bool is_byte_length);
 
 #endif
