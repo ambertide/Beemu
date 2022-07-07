@@ -72,6 +72,19 @@ uint8_t dereference_hl(BeemuDevice *device)
 }
 
 /**
+ * @brief Write to the memory location at the (HL)
+ *
+ * Dereference HL and write to the memory location it points to.
+ * @param device BeemuDevice object pointer.
+ * @param value Value to write.
+ */
+void write_to_dereferenced_hl(BeemuDevice *device, uint8_t value)
+{
+	const uint16_t memory_address = beemu_registers_read_16(device->registers, BEEMU_REGISTER_HL);
+	beemu_memory_write(device->memory, memory_address, value);
+}
+
+/**
  * @brief Decode register from instruction.
  *
  * Get the register for the LD and ADD instructions from the second nibble
@@ -189,6 +202,94 @@ static inline void execute_load_instruction(BeemuDevice *device, uint8_t instruc
 	}
 }
 
+/**
+ * @brief Execute unary inc or dec on memory.
+ *
+ * Execute an increment or a decrement operation on the
+ * value of a memory address dereferenced by HL and
+ * write it to the same memory, set the flags.
+ * @param device BeemuDevice object pointer.
+ * @param operation Operation to perform.
+ */
+void execute_unary_on_memory(BeemuDevice *device, BeemuUnaryOperation operation)
+{
+	uint8_t previous_value = dereference_hl(device);
+	const uint8_t new_value = operation == BEEMU_UOP_INC ? previous_value + 1 : previous_value - 1;
+	// Binary equivalent of the unary operation, INC => ADD, DEC => SUB.
+	const uint8_t op_equivalent = operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB;
+	write_to_dereferenced_hl(device, new_value);
+	beemu_registers_set_flags(device->registers, previous_value, new_value, false, op_equivalent);
+}
+
+/**
+ * @brief Execute a register increment or decrement operation.
+ *
+ * Execute a register increment or decrement operation, the register to
+ * operate on depends on the instruction.
+ * @param device BeemuDevice object pointer.
+ * @param instruction Instruction being executed.
+ * @param increment If set to true, increment, otherwise decrement.
+ */
+void execute_unary_operand(BeemuDevice *device, uint8_t instruction, bool increment)
+{
+	const uint8_t first_nibble = instruction & 0xF0;
+	const uint8_t last_nibble = instruction & 0x0F;
+	const bool on_the_left = last_nibble < 0x07;
+	const int row = on_the_left ? 0 : 1;
+	const BeemuRegister_8 registers[4][2] = {
+		{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
+		{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
+		{BEEMU_REGISTER_H, BEEMU_REGISTER_L},
+		{BEEMU_REGISTER_A, BEEMU_REGISTER_A}};
+	const int column = first_nibble >> 1;
+	const BeemuUnaryOperation uop = increment ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
+	if (on_the_left && first_nibble == 0x30)
+	{
+		// These act on the dereferenced HL.
+		execute_unary_on_memory(device, uop);
+	}
+	else
+	{
+		beemu_registers_airthmatic_8_unary(device->registers, registers[column][row], uop);
+	}
+}
+
+/**
+ * @brief Execute the block of instructions between row 0x00 and 0x30.
+ *
+ * These blocks of instructions display a periodic table like behaviour
+ * depending on the last nibble.
+ * @param device BeemuDevice object pointer.
+ * @param instruction Instruction under execution.
+ */
+void execute_block_03(BeemuDevice *device, uint8_t instruction)
+{
+	const uint8_t first_nibble = instruction & 0xF0;
+	const uint8_t last_nibble = instruction & 0x0F;
+	switch (last_nibble)
+	{
+	case 0x00:
+		switch (first_nibble)
+		{
+		case 0x00:
+			break;
+		case 0x01:
+			beemu_device_set_state(device, BEEMU_DEVICE_STOP);
+			break;
+		default:
+			break;
+		}
+	case 0x04:
+	case 0x05:
+	case 0x0C:
+	case 0x0D:
+		// INC and DEC
+		execute_unary_operand(device, instruction, last_nibble == 0x04 || last_nibble == 0x0C);
+	default:
+		break;
+	}
+}
+
 void beemu_device_run(BeemuDevice *device)
 {
 	beemu_registers_write_16(device->registers, BEEMU_REGISTER_PC, BEEMU_DEVICE_MEMORY_ROM_LOCATION);
@@ -199,6 +300,11 @@ void beemu_device_run(BeemuDevice *device)
 		uint8_t last_nibble = next_instruction & 0x0F;
 		switch (first_nibble)
 		{
+		case 0x00:
+		case 0x10:
+		case 0x20:
+		case 0x30:
+			execute_block_03(device, next_instruction);
 		case 0x40:
 		case 0x50:
 		case 0x60:

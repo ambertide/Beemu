@@ -46,6 +46,10 @@ typedef enum BeemuFlag
 	BEEMU_FLAG_C = 4  // Carry
 } BeemuFlag;
 
+/**
+ * @brief Enums representing binary operations.
+ *
+ */
 typedef enum BeemuOperation
 {
 	BEEMU_OP_ADD,
@@ -55,6 +59,16 @@ typedef enum BeemuOperation
 	BEEMU_OP_CP,
 	BEEMU_OP_XOR
 } BeemuOperation;
+
+/**
+ * @brief Enums representing unary operations.
+ *
+ */
+typedef enum BeemuUnaryOperation
+{
+	BEEMU_UOP_INC,
+	BEEMU_UOP_DEC
+} BeemuUnaryOperation;
 
 /**
  * @brief Struct holding registers and flags.
@@ -215,5 +229,32 @@ void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegis
  * @param should_add_carry When set to true add the carry flag.
  */
 void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry);
+
+/**
+ * @brief Perform a unary operation.
+ *
+ * Perform either a increment or a decrement operation
+ * based on the operation value on a register and store
+ * the result on the same register.
+ * @param registers BeemuRegisters object pointer.
+ * @param register_ Register to operate on.
+ * @param operation Operation to perform.
+ */
+void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation);
+
+/**
+ * @brief Set flags based on registers.
+ *
+ * Determine and set the flags based on the previous and present
+ * value of the registers.
+ *
+ * @param registers BeemuRegisters object.
+ * @param previous_value Previous value of the register.
+ * @param next_value Next value of the register.
+ * @param after_add_carry First calculate carry, and then add the result to
+ * next_value, and only after that determine and calculate the other flags.
+ * @param operation Operation that was performed.
+ */
+void beemu_registers_set_flags(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation);
 
 #endif

@@ -128,20 +128,7 @@ void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 regi
 	registers->registers[register_name]++;
 }
 
-/**
- * @brief Set flags based on registers.
- *
- * Determine and set the flags based on the previous and present
- * value of the registers.
- *
- * @param registers BeemuRegisters object.
- * @param previous_value Previous value of the register.
- * @param next_value Next value of the register.
- * @param after_add_carry First calculate carry, and then add the result to
- * next_value, and only after that determine and calculate the other flags.
- * @param operation Operation that was performed.
- */
-void set_flags_register_arithmatic_8(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation)
+void beemu_registers_set_flags(BeemuRegisters *registers, uint8_t previous_value, uint8_t next_value, bool after_add_carry, BeemuOperation operation)
 {
 	if (operation == BEEMU_OP_ADD)
 	{
@@ -166,9 +153,20 @@ void set_flags_register_arithmatic_8(BeemuRegisters *registers, uint8_t previous
 							 previous_value < 0x0F && next_value > 0x0F);
 }
 
-void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry)
+/**
+ * @brief Perform an operation on a register.
+ *
+ * Perform an operation on a register and store the result on
+ * the same register.
+ * @param registers BeemuRegisters object pointer.
+ * @param target_register Target register to operate on.
+ * @param value Value to use.
+ * @param operation Operation to perform.
+ * @param should_add_carry If set to true, add the carry to the result.
+ */
+void register_perform_operation(BeemuRegisters *registers, BeemuRegister_8 target_register, uint8_t value, BeemuOperation operation, bool should_add_carry)
 {
-	const uint8_t previous_value = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	const uint8_t previous_value = beemu_registers_read_8(registers, target_register);
 	uint8_t final_value = 0;
 	const uint8_t cp_value = previous_value - value;
 	switch (operation)
@@ -191,20 +189,30 @@ void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t va
 	case BEEMU_OP_XOR:
 		final_value = previous_value ^ value;
 	}
-	set_flags_register_arithmatic_8(registers,
-									previous_value,
-									operation == BEEMU_OP_CP ? cp_value : final_value,
-									should_add_carry,
-									operation);
+	beemu_registers_set_flags(registers,
+							  previous_value,
+							  operation == BEEMU_OP_CP ? cp_value : final_value,
+							  should_add_carry,
+							  operation);
 	if (should_add_carry)
 	{
 		final_value += beemu_registers_flag_read(registers, BEEMU_FLAG_C);
 	}
-	beemu_registers_write_8(registers, BEEMU_REGISTER_A, final_value);
+	beemu_registers_write_8(registers, target_register, final_value);
+}
+
+void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry)
+{
+	register_perform_operation(registers, BEEMU_REGISTER_A, value, operation, should_add_carry);
 }
 
 void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuOperation operation, bool should_add_carry)
 {
 	const uint8_t register_value = beemu_registers_read_8(registers, register_);
 	beemu_registers_arithmatic_8_constant(registers, register_value, operation, should_add_carry);
+}
+
+void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation)
+{
+	register_perform_operation(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
 }
