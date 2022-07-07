@@ -221,6 +221,15 @@ void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 regi
 void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuOperation operation, bool should_add_carry);
 
 /**
+ * @brief Perform operation on a register and write it to HL.
+ *
+ * @param registers BeemuRegisters object pointer.
+ * @param register Register to be added.
+ * @param operation Operation to perform.
+ */
+void beemu_registers_arithmatic_16_register(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuOperation operation);
+
+/**
  * @brief Perform operation on a constant and write it to A.
  *
  * @param registers BeemuRegisters object pointer.
@@ -229,6 +238,15 @@ void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegis
  * @param should_add_carry When set to true add the carry flag.
  */
 void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t value, BeemuOperation operation, bool should_add_carry);
+
+/**
+ * @brief Perform operation on a constant and write it to HL.
+ *
+ * @param registers BeemuRegisters object pointer.
+ * @param value Value to perform operation on it.
+ * @param operation Operation to perform.
+ */
+void beemu_registers_arithmatic_16_constant(BeemuRegisters *registers, uint16_t value, BeemuOperation operation);
 
 /**
  * @brief Perform a unary operation.

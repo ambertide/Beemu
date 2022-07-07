@@ -264,6 +264,24 @@ void execute_unary_operand_16(BeemuDevice *device)
 }
 
 /**
+ * @brief Execute an arithmatic register instruction
+ *
+ * Execute ADD with 16 bitregisters
+ * affecting the HL.
+ *
+ * @param device BeemuDevice object.
+ */
+static inline void execute_arithmatic_register_instruction_16(BeemuDevice *device)
+{
+	// Only supported 16 bit OP is ADD (for some reason.).
+	BeemuOperation operation = BEEMU_OP_ADD;
+	const int index = device->current_instruction.first_nibble >> 1;
+	beemu_registers_arithmatic_16_register(device->registers,
+										   ORDERED_REGISTER_NAMES_16[index],
+										   operation);
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -291,6 +309,9 @@ void execute_block_03(BeemuDevice *device)
 	case 0x0D:
 		// INC and DEC
 		execute_unary_operand(device, device->current_instruction.second_nibble == 0x04 || device->current_instruction.second_nibble == 0x0C);
+		break;
+	case 0x09:
+		execute_arithmatic_register_instruction_16(device);
 	default:
 		break;
 	}

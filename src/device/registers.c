@@ -261,10 +261,21 @@ void beemu_registers_arithmatic_8_constant(BeemuRegisters *registers, uint8_t va
 	register_perform_operation(registers, BEEMU_REGISTER_A, value, operation, should_add_carry);
 }
 
+void beemu_registers_arithmatic_16_constant(BeemuRegisters *registers, uint16_t value, BeemuOperation operation)
+{
+	register_perform_operation_16(registers, BEEMU_REGISTER_HL, value, operation, false);
+}
+
 void beemu_registers_arithmatic_8_register(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuOperation operation, bool should_add_carry)
 {
 	const uint8_t register_value = beemu_registers_read_8(registers, register_);
 	beemu_registers_arithmatic_8_constant(registers, register_value, operation, should_add_carry);
+}
+
+void beemu_registers_arithmatic_16_register(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuOperation operation)
+{
+	const uint16_t register_value = beemu_registers_read_16(registers, register_);
+	beemu_registers_arithmatic_16_constant(registers, register_value, operation);
 }
 
 void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation)
