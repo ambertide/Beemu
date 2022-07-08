@@ -344,6 +344,52 @@ void execute_load_direct(BeemuDevice *device, bool is_byte_length)
 }
 
 /**
+ * @brief Execute LD to/from dereferenced memory addresses to/from accumulator.
+ *
+ * @param device BeemuDevice object pointer.
+ * @param from_accum if set to true, load from accumulator to the
+ * dereferenced memory location, otherwise, load from the dereferenced
+ * memory location to the accumulator register.
+ */
+static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
+{
+	// Finally, you may have to decrement or increment.
+	static const BeemuRegister_16 registers[4] = {
+		BEEMU_REGISTER_BC,
+		BEEMU_REGISTER_DE,
+		BEEMU_REGISTER_HL,
+		BEEMU_REGISTER_HL};
+	const BeemuRegister_16 register_ = registers[register_];
+	// Dereference the register
+	const uint16_t memory_address = beemu_registers_read_16(device->registers, register_);
+	if (from_accum)
+	{
+		// Write to memory from Accumulator.
+		beemu_memory_write(device->memory,
+						   memory_address,
+						   beemu_registers_read_8(device->registers,
+												  BEEMU_REGISTER_A));
+	}
+	else
+	{
+		// Write to the ACCUMULATOR from memory.
+		beemu_registers_write_8(device->registers,
+								BEEMU_REGISTER_A,
+								beemu_memory_read(device->memory,
+												  memory_address));
+	}
+	// Then, decrement or increment HL if need be.
+	if (device->current_instruction.first_nibble == 0x20)
+	{
+		beemu_registers_increment_16(device->registers, BEEMU_REGISTER_HL);
+	}
+	else if (device->current_instruction.first_nibble == 0x0A)
+	{
+		beemu_registers_airthmatic_16_unary(device->registers, BEEMU_REGISTER_HL, BEEMU_UOP_DEC);
+	}
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -367,6 +413,12 @@ void execute_block_03(BeemuDevice *device)
 		}
 	case 0x01:
 		execute_load_direct(device, false);
+		break;
+	case 0x02:
+		execute_load_accumulator_16(device, true);
+		break;
+	case 0x0A:
+		execute_load_accumulator_16(device, false);
 		break;
 	case 0x04:
 	case 0x05:
