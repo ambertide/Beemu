@@ -1,6 +1,7 @@
+#include <stdlib.h>
 #include <device/device.h>
 #include <device/memory.h>
-#include <stdlib.h>
+#include <internals/utility.h>
 
 BeemuDevice *beemu_device_new(void)
 {
@@ -390,6 +391,59 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
 }
 
 /**
+ * @brief Execute a JP or JR instruction.
+ *
+ * Execute a JP or JR instruction, decide the correct parameters
+ * based on the instruction.
+ * @param device
+ */
+void execute_jump(BeemuDevice *device)
+{
+	const bool is_jr = device->current_instruction.first_nibble < 0x70;
+	const bool is_no_condition = beemu_util_is_one_of_two(device->current_instruction.second_nibble,
+														  0x03, 0x09) ||
+								 device->current_instruction.first_nibble == 0x10;
+	BeemuJumpCondition condition = BEEMU_JUMP_IF_NO_CONDITION;
+	if (!is_no_condition)
+	{
+		switch (device->current_instruction.instruction)
+		{
+		case 0x20:
+		case 0xC2:
+			condition = BEEMU_JUMP_IF_NOT_ZERO;
+			break;
+		case 0x30:
+		case 0xD2:
+			condition = BEEMU_JUMP_IF_NOT_CARRY;
+			break;
+		case 0x28:
+		case 0xCA:
+			condition = BEEMU_JUMP_IF_ZERO;
+			break;
+		case 0x38:
+		case 0xDA:
+			condition = BEEMU_JUMP_IF_CARRY;
+			break;
+		}
+	}
+	uint16_t value = 0;
+	if (is_jr)
+	{
+		// In JR we have a 1 byte data.
+		pop_data(device, true);
+		value = device->data.data_8;
+	}
+	else
+	{
+		// In JP we have a 2 byte data.
+		pop_data(device, false);
+		value = device->data.data_16;
+	}
+	beemu_registers_jump(device->registers, condition,
+						 value, !is_jr, device->current_instruction.instruction == 0xE9);
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -405,8 +459,12 @@ void execute_block_03(BeemuDevice *device)
 		{
 		case 0x00:
 			break;
-		case 0x01:
+		case 0x10:
 			beemu_device_set_state(device, BEEMU_DEVICE_STOP);
+			break;
+		case 0x20:
+		case 0x30:
+			execute_jump(device);
 			break;
 		default:
 			break;
@@ -431,6 +489,18 @@ void execute_block_03(BeemuDevice *device)
 	case 0x0E:
 		execute_load_direct(device, true);
 		break;
+	case 0x08:
+		switch (device->current_instruction.first_nibble)
+		{
+		case 0x00:
+			// TODO: Later
+			break;
+		case 0x10:
+		case 0x20:
+		case 0x30:
+			execute_jump(device);
+			break;
+		}
 	case 0x09:
 		execute_arithmatic_register_instruction_16(device);
 		break;

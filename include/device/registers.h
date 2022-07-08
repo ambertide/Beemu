@@ -4,6 +4,18 @@
 #include <stdbool.h>
 
 /**
+ * @brief Conditions that dictate when to jump.
+ */
+typedef enum BeemuJumpCondition
+{
+	BEEMU_JUMP_IF_NO_CONDITION,
+	BEEMU_JUMP_IF_CARRY,
+	BEEMU_JUMP_IF_NOT_CARRY,
+	BEEMU_JUMP_IF_ZERO,
+	BEEMU_JUMP_IF_NOT_ZERO
+} BeemuJumpCondition;
+
+/**
  * @brief Represents 8 Bit registers.
  */
 typedef enum BeemuRegister_8
@@ -287,5 +299,17 @@ void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegiste
  * @param is_byte_length If set to true, perform on 8-bit operations.
  */
 void beemu_registers_set_flags(BeemuRegisters *registers, uint16_t previous_value, uint16_t next_value, bool after_add_carry, BeemuOperation operation, bool is_byte_length);
+
+/**
+ * @brief Set the register to jump conditions.
+ *
+ * @param registers BeemuRegisters object.
+ * @param condition Condition to jump on.
+ * @param value Value to add to PC or to jump directly.
+ * @param jump_directly If set to true, jump directly to the value
+ * or the value of HL depending on the value of the next parameter.
+ * @param jump_to_hl If set to true jump to the value of HL, ignoring the value.
+ */
+void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition condition, uint16_t value, bool jump_directly, bool jump_to_hl);
 
 #endif

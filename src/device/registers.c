@@ -287,3 +287,38 @@ void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegiste
 {
 	register_perform_operation_16(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
 }
+
+void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition condition, uint16_t value, bool jump_directly, bool jump_to_hl)
+{
+	bool should_jump = false;
+	// Set the should jump.
+	switch (condition)
+	{
+	case BEEMU_JUMP_IF_NO_CONDITION:
+		should_jump = true;
+		break;
+	case BEEMU_JUMP_IF_CARRY:
+		should_jump = beemu_registers_flag_is_high(registers, BEEMU_FLAG_C);
+		break;
+	case BEEMU_JUMP_IF_NOT_CARRY:
+		should_jump = !beemu_registers_flag_is_high(registers, BEEMU_FLAG_C);
+		break;
+	case BEEMU_JUMP_IF_ZERO:
+		should_jump = beemu_registers_flag_is_high(registers, BEEMU_FLAG_Z);
+		break;
+	case BEEMU_JUMP_IF_NOT_ZERO:
+		should_jump = !beemu_registers_flag_is_high(registers, BEEMU_FLAG_Z);
+		break;
+	default:
+		break;
+	}
+	uint16_t memory_address = jump_directly ? value : beemu_registers_read_16(registers, BEEMU_REGISTER_PC) + value;
+	if (jump_directly)
+	{
+		memory_address = beemu_registers_read_16(registers, BEEMU_REGISTER_HL);
+	}
+	if (should_jump)
+	{
+		beemu_registers_write_16(registers, BEEMU_REGISTER_PC, memory_address - 1);
+	}
+}

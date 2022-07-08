@@ -22,7 +22,9 @@
     "algorithm": "c",
     "functional": "c",
     "iterator": "c",
-    "memory": "c"
+    "memory": "c",
+    "utility.h": "c",
+    "stdarg.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true
