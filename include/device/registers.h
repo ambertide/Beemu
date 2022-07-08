@@ -331,4 +331,19 @@ void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition conditio
  * the most recent 0.
  */
 void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c);
+
+/**
+ * @brief Complement the A register.
+ *
+ * @param registers BeemuRegisters object pointer.
+ */
+void beemu_registers_complement_A(BeemuRegisters *registers);
+
+/**
+ * @brief Convert the A register to BCD.
+ *
+ * Convert the A register to BCD.
+ * @param registers BeemuRegisters object pointer.
+ */
+void beemu_registers_BCD(BeemuRegisters *registers);
 #endif

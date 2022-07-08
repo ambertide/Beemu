@@ -352,3 +352,45 @@ void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool
 	// Set the carry flag.
 	beemu_registers_flag_set(registers, BEEMU_FLAG_C, new_value_of_C != 0x00);
 }
+
+void beemu_registers_complement_A(BeemuRegisters *registers)
+{
+	beemu_registers_flag_set(registers, BEEMU_FLAG_N, true);
+	beemu_registers_flag_set(registers, BEEMU_FLAG_H, true);
+	uint8_t previous_value = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	beemu_registers_write_8(registers, BEEMU_REGISTER_A, ~previous_value);
+}
+
+void beemu_registers_BCD(BeemuRegisters *registers)
+{
+	// Ported from this answer https://forums.nesdev.org/viewtopic.php?p=196282&sid=f56e78a62f1251b73e054cc7c8465f25#p196282
+	// from the nesdev forums by the user AW3.
+	uint8_t previous_value = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	// note: assumes a is a uint8_t and wraps from 0xff to 0
+	if (!beemu_registers_flag_is_high(registers, BEEMU_FLAG_N))
+	{ // after an addition, adjust if (half-)carry occurred or if result is out of bounds
+		if (beemu_registers_flag_is_high(registers, BEEMU_FLAG_C) || previous_value > 0x99)
+		{
+			previous_value += 0x60;
+			beemu_registers_flag_set(registers, BEEMU_FLAG_C, true);
+		}
+		if (beemu_registers_flag_is_high(registers, BEEMU_FLAG_H) || (previous_value & 0x0f) > 0x09)
+		{
+			previous_value += 0x6;
+		}
+	}
+	else
+	{ // after a subtraction, only adjust if (half-)carry occurred
+		if (beemu_registers_flag_is_high(registers, BEEMU_FLAG_C))
+		{
+			previous_value -= 0x60;
+		}
+		if (beemu_registers_flag_is_high(registers, BEEMU_FLAG_H))
+		{
+			previous_value -= 0x6;
+		}
+	}
+	// these flags are always updated
+	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, previous_value == 0); // the usual z flag
+	beemu_registers_flag_set(registers, BEEMU_FLAG_H, false);				// h flag is always cleared
+}

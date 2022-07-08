@@ -551,6 +551,15 @@ void execute_block_03(BeemuDevice *device)
 		case 0x10:
 			execute_rotate_a(device);
 			break;
+		case 0x20:
+			if (device->current_instruction.second_nibble == 0x0F)
+			{
+				beemu_registers_complement_A(device->registers);
+			}
+			else
+			{
+				beemu_registers_BCD(device->registers);
+			}
 		case 0x30:
 			execute_set_complement_flag(device);
 			break;
