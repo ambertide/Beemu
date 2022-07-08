@@ -474,6 +474,30 @@ void execute_load_sp_to_mem(BeemuDevice *device)
 }
 
 /**
+ * @brief Execute an instruction that will either set
+ * or complement the carry flag.
+ *
+ * @param device BeemuDevice object pointer.
+ */
+void execute_set_complement_flag(BeemuDevice *device)
+{
+	// Use symmetry to determine which one to execute.
+	const bool is_set = device->current_instruction.second_nibble == 0x07;
+	// Set H and N flags.
+	beemu_registers_flag_set(device->registers, BEEMU_FLAG_H, false);
+	beemu_registers_flag_set(device->registers, BEEMU_FLAG_N, false);
+	if (is_set)
+	{
+		beemu_registers_flag_set(device->registers, BEEMU_FLAG_C, true);
+	}
+	else
+	{
+		const bool previous_value = beemu_registers_flag_is_high(device->registers, BEEMU_FLAG_C);
+		beemu_registers_flag_set(device->registers, BEEMU_FLAG_C, !previous_value);
+	}
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -527,7 +551,8 @@ void execute_block_03(BeemuDevice *device)
 		case 0x10:
 			execute_rotate_a(device);
 			break;
-		default:
+		case 0x30:
+			execute_set_complement_flag(device);
 			break;
 		}
 	case 0x08:
