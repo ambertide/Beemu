@@ -177,6 +177,13 @@ uint8_t beemu_registers_flag_read_all(BeemuRegisters *registers);
 uint8_t beemu_registers_flag_read(BeemuRegisters *registers, BeemuFlag flag_name);
 
 /**
+ * @brief Clear all the flags to 0.
+ *
+ * @param registers BeemuRegisters object pointer.
+ */
+void beemu_registers_flags_clear(BeemuRegisters *registers);
+
+/**
  * @brief Set the value of a flag.
  *
  * @param registers BeemuRegisters object.
@@ -312,4 +319,16 @@ void beemu_registers_set_flags(BeemuRegisters *registers, uint16_t previous_valu
  */
 void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition condition, uint16_t value, bool jump_directly, bool jump_to_hl);
 
+/**
+ * @brief Rotate register A specifically.
+ *
+ * Set all three flags except C to 0, and then set C to the old
+ * 7th bit.
+ * @param registers BeemuRegisters object pointer.
+ * @param rotate_right If set to true, rotate to right, if set
+ * to false, rotate left.
+ * @param through_c If set to true, put the previous value of C to
+ * the most recent 0.
+ */
+void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c);
 #endif

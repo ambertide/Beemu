@@ -444,6 +444,19 @@ void execute_jump(BeemuDevice *device)
 }
 
 /**
+ * @brief Execute one of the rotate.
+ *
+ * Execute RLCA, RLA, RRCA or RRA instructions.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_rotate_a(BeemuDevice *device)
+{
+	const bool rotate_right = device->current_instruction.second_nibble = 0x0F;
+	const bool through_c = device->current_instruction.first_nibble = 0x00;
+	beemu_registers_rotate_A(device->registers, rotate_right, through_c);
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -489,6 +502,18 @@ void execute_block_03(BeemuDevice *device)
 	case 0x0E:
 		execute_load_direct(device, true);
 		break;
+	case 0x07:
+	case 0x0F:
+		switch (device->current_instruction.first_nibble)
+		{
+		case 0x00:
+		case 0x10:
+			execute_rotate_a(device);
+			break;
+
+		default:
+			break;
+		}
 	case 0x08:
 		switch (device->current_instruction.first_nibble)
 		{

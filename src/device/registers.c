@@ -30,6 +30,11 @@ void beemu_registers_write_8(BeemuRegisters *registers, BeemuRegister_8 register
 	registers->registers[register_name] = value;
 }
 
+void beemu_registers_flags_clear(BeemuRegisters *registers)
+{
+	registers->flags = 0x00;
+}
+
 uint16_t beemu_registers_read_16(BeemuRegisters *registers, BeemuRegister_16 register_name)
 {
 	switch (register_name)
@@ -321,4 +326,29 @@ void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition conditio
 	{
 		beemu_registers_write_16(registers, BEEMU_REGISTER_PC, memory_address - 1);
 	}
+}
+
+void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c)
+{
+	const uint8_t old_value_of_A = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	const uint8_t old_value_of_c = beemu_registers_flag_read(registers, BEEMU_FLAG_C);
+	uint8_t new_value_of_A = (old_value_of_A << 1);
+	uint8_t new_value_of_C = old_value_of_A & 0x01;
+	if (through_c)
+	{
+		new_value_of_A |= old_value_of_c;
+	}
+	if (rotate_right)
+	{
+		new_value_of_A >>= 1;
+		new_value_of_C = (0x80 & old_value_of_A) >> 7;
+		if (through_c)
+		{
+			new_value_of_A |= (old_value_of_c << 7);
+		}
+	}
+	// RLC and RLA, different from the others, also clear the flags.
+	beemu_registers_flags_clear(registers);
+	// Set the carry flag.
+	beemu_registers_flag_set(registers, BEEMU_FLAG_C, new_value_of_C != 0x00);
 }
