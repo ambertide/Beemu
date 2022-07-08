@@ -60,6 +60,31 @@ static inline uint16_t pop_instruction(BeemuDevice *device)
 }
 
 /**
+ * @brief Pop and load data to device from memory.
+ *
+ * @param device BeemuDevice object pointer.
+ */
+static inline void pop_data(BeemuDevice *device, bool is_byte_length)
+{
+	if (is_byte_length)
+	{
+		const uint8_t data = peek_instruction(device);
+		// Increment the PC register.
+		beemu_registers_increment_16(device->registers, BEEMU_REGISTER_PC);
+		device->data.data_8 = data;
+	}
+	else
+	{
+		// For 16 bit data.
+		const uint8_t high = peek_instruction(device);
+		beemu_registers_increment_16(device->registers, BEEMU_REGISTER_PC);
+		const uint8_t lower = peek_instruction(device);
+		beemu_registers_increment_16(device->registers, BEEMU_REGISTER_PC);
+		device->data.data_16 = (((uint16_t)high) << 8) | ((uint16_t)lower);
+	}
+}
+
+/**
  * @brief Dereference the HL register.
  *
  * Get the value of the HL register and then return the value
@@ -219,6 +244,23 @@ void execute_unary_on_memory(BeemuDevice *device, BeemuUnaryOperation operation)
 }
 
 /**
+ * @brief Decode 03 Block's symmetric register encodings.
+ *
+ * Some instructions like the LD direct, INC and DEC instructions of
+ * the 03 block has symmetrical encoding of registers depending on whether
+ * or not the second nibble is lower than 0x07.
+ * @param device BeemuDevice object pointer.
+ * @return BeemuRegister_8 the decoded register.
+ */
+BeemuRegister_8 decode_03_block_sym_register(BeemuDevice *device)
+{
+	const bool on_the_left = device->current_instruction.second_nibble < 0x07;
+	const int row = on_the_left ? 0 : 1;
+	const int column = device->current_instruction.first_nibble >> 1;
+	return SYMMETRIC_REGISTERS[column][row];
+}
+
+/**
  * @brief Execute a register increment or decrement operation.
  *
  * Execute a register increment or decrement operation, the register to
@@ -229,13 +271,6 @@ void execute_unary_on_memory(BeemuDevice *device, BeemuUnaryOperation operation)
 void execute_unary_operand(BeemuDevice *device, bool increment)
 {
 	const bool on_the_left = device->current_instruction.second_nibble < 0x07;
-	const int row = on_the_left ? 0 : 1;
-	const BeemuRegister_8 registers[4][2] = {
-		{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
-		{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
-		{BEEMU_REGISTER_H, BEEMU_REGISTER_L},
-		{BEEMU_REGISTER_A, BEEMU_REGISTER_A}};
-	const int column = device->current_instruction.first_nibble >> 1;
 	const BeemuUnaryOperation uop = increment ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
 	if (on_the_left && device->current_instruction.first_nibble == 0x30)
 	{
@@ -244,7 +279,9 @@ void execute_unary_operand(BeemuDevice *device, bool increment)
 	}
 	else
 	{
-		beemu_registers_airthmatic_8_unary(device->registers, registers[column][row], uop);
+		beemu_registers_airthmatic_8_unary(device->registers,
+										   decode_03_block_sym_register(device),
+										   uop);
 	}
 }
 
@@ -282,6 +319,31 @@ static inline void execute_arithmatic_register_instruction_16(BeemuDevice *devic
 }
 
 /**
+ * @brief Load directly to a register
+ *
+ * @param device BeemuDevice object pointer.
+ * @param is_byte_length If set to true, interpret as a load to
+ * a 16-byte register.
+ */
+void execute_load_direct(BeemuDevice *device, bool is_byte_length)
+{
+	if (is_byte_length)
+	{
+		// Load 8 bit data.
+		pop_data(device, true);
+		const BeemuRegister_8 destination_register = decode_03_block_sym_register(device);
+		beemu_registers_write_8(device->registers, destination_register, device->data.data_8);
+	}
+	else
+	{
+		// Load 16 bit data
+		pop_data(device, false);
+		const BeemuRegister_16 destination_register = ORDERED_REGISTER_NAMES_16[device->current_instruction.first_nibble >> 1];
+		beemu_registers_write_16(device->registers, destination_register, device->data.data_16);
+	}
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -303,6 +365,8 @@ void execute_block_03(BeemuDevice *device)
 		default:
 			break;
 		}
+	case 0x01:
+		execute_load_direct(device, false);
 	case 0x04:
 	case 0x05:
 	case 0x0C:
@@ -310,8 +374,13 @@ void execute_block_03(BeemuDevice *device)
 		// INC and DEC
 		execute_unary_operand(device, device->current_instruction.second_nibble == 0x04 || device->current_instruction.second_nibble == 0x0C);
 		break;
+	case 0x06:
+	case 0x0E:
+		execute_load_direct(device, true);
+		break;
 	case 0x09:
 		execute_arithmatic_register_instruction_16(device);
+		break;
 	default:
 		break;
 	}

@@ -20,6 +20,16 @@ static const BeemuRegister_16 ORDERED_REGISTER_NAMES_16[4] = {
 	BEEMU_REGISTER_SP};
 
 /**
+ * @brief Used to distinguish symmetrical registers such as used by
+ * 03 Block's LD, INC and DEC.
+ */
+static const BeemuRegister_8 SYMMETRIC_REGISTERS[4][2] = {
+	{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
+	{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
+	{BEEMU_REGISTER_H, BEEMU_REGISTER_L},
+	{BEEMU_REGISTER_A, BEEMU_REGISTER_A}};
+
+/**
  * @brief Size of the chip memory.
  */
 static const int BEEMU_DEVICE_MEMORY_SIZE = 64000;
@@ -56,7 +66,11 @@ typedef struct BeemuDevice
 		uint8_t first_nibble;
 		uint8_t second_nibble;
 	} current_instruction;
-	uint8_t data[2];
+	union data
+	{
+		uint8_t data_8;
+		uint16_t data_16;
+	} data;
 } BeemuDevice;
 
 /**
