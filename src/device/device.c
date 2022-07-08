@@ -367,6 +367,7 @@ void execute_block_03(BeemuDevice *device)
 		}
 	case 0x01:
 		execute_load_direct(device, false);
+		break;
 	case 0x04:
 	case 0x05:
 	case 0x0C:

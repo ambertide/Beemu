@@ -24,5 +24,6 @@
     "iterator": "c",
     "memory": "c"
   },
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": true,
+  "editor.formatOnType": true
 }
