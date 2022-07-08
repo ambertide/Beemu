@@ -457,6 +457,23 @@ void execute_rotate_a(BeemuDevice *device)
 }
 
 /**
+ * @brief Load SP to memory.
+ *
+ * Load SP to the memory address provided in
+ * the data.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_load_sp_to_mem(BeemuDevice *device)
+{
+	pop_data(device, false);
+	const uint16_t address = device->data.data_16;
+	// Get PC value.
+	uint16_t value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF >> 8)), ((uint8_t)(value & 0xFF00))};
+	beemu_memory_write_buffer(device->memory, address, deconstructed, 2);
+}
+
+/**
  * @brief Execute the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
@@ -510,7 +527,6 @@ void execute_block_03(BeemuDevice *device)
 		case 0x10:
 			execute_rotate_a(device);
 			break;
-
 		default:
 			break;
 		}
@@ -518,7 +534,7 @@ void execute_block_03(BeemuDevice *device)
 		switch (device->current_instruction.first_nibble)
 		{
 		case 0x00:
-			// TODO: Later
+			execute_load_sp_to_mem(device);
 			break;
 		case 0x10:
 		case 0x20:
