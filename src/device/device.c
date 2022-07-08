@@ -560,6 +560,7 @@ void execute_block_03(BeemuDevice *device)
 			{
 				beemu_registers_BCD(device->registers);
 			}
+			break;
 		case 0x30:
 			execute_set_complement_flag(device);
 			break;
