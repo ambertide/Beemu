@@ -648,6 +648,29 @@ void execute_call_instruction(BeemuDevice *device)
 }
 
 /**
+ * @brief Load from/to A to/from a dereferenced memory.
+ *
+ * @param device BeemuDevice object pointer.
+ * @param from_accumulator If true, get value from A.
+ */
+void execute_load_A_dereference(BeemuDevice *device, bool from_accumulator)
+{
+	pop_data(device, false);
+	if (from_accumulator)
+	{
+		const uint8_t accumulator_value = beemu_registers_read_8(device->registers,
+																 BEEMU_REGISTER_A);
+		const uint16_t memory_address = beemu_memory_read_16(device->memory, device->data.data_16);
+		beemu_memory_write(device->registers, memory_address, accumulator_value);
+	}
+	else
+	{
+		const uint8_t value_at_memory = beemu_memory_read(device->memory, device->data.data_16);
+		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, value_at_memory);
+	}
+}
+
+/**
  * @brief Process the device state.
  *
  * Process the device state, such as awaits for
@@ -668,29 +691,6 @@ void process_device_state(BeemuDevice *device)
 		break;
 	default:
 		break;
-	}
-}
-
-/**
- * @brief Load from/to A to/from a dereferenced memory.
- *
- * @param device BeemuDevice object pointer.
- * @param from_accumulator If true, get value from A.
- */
-void execute_load_A_dereference(BeemuDevice *device, bool from_accumulator)
-{
-	pop_data(device, false);
-	if (from_accumulator)
-	{
-		const uint8_t accumulator_value = beemu_registers_read_8(device->registers,
-																 BEEMU_REGISTER_A);
-		const uint16_t memory_address = beemu_memory_read_16(device->memory, device->data.data_16);
-		beemu_memory_write(device->registers, memory_address, accumulator_value);
-	}
-	else
-	{
-		const uint8_t value_at_memory = beemu_memory_read(device->memory, device->data.data_16);
-		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, value_at_memory);
 	}
 }
 
