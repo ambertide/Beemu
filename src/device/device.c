@@ -661,12 +661,34 @@ void execute_load_A_dereference(BeemuDevice *device, bool from_accumulator)
 		const uint8_t accumulator_value = beemu_registers_read_8(device->registers,
 																 BEEMU_REGISTER_A);
 		const uint16_t memory_address = beemu_memory_read_16(device->memory, device->data.data_16);
-		beemu_memory_write(device->registers, memory_address, accumulator_value);
+		beemu_memory_write(device->memory, memory_address, accumulator_value);
 	}
 	else
 	{
 		const uint8_t value_at_memory = beemu_memory_read(device->memory, device->data.data_16);
 		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, value_at_memory);
+	}
+}
+
+/**
+ * @brief Load from/to A to/from a dereferenced memory with offset.
+ *
+ * @param device BeemuDevice object pointer.
+ * @param from_accumulator If true, get value from A.
+ */
+void execute_ldh(BeemuDevice *device, bool from_accumulator)
+{
+	pop_data(device, true);
+	const uint16_t address = 0xFF00 + ((uint16_t)device->data.data_8);
+	if (from_accumulator)
+	{
+		const uint8_t current_value = beemu_registers_read_8(device->registers, BEEMU_REGISTER_A);
+		beemu_memory_write(device->memory, address, current_value);
+	}
+	else
+	{
+		const uint8_t memory_value = beemu_memory_read(device->memory, address);
+		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, memory_value);
 	}
 }
 
@@ -705,6 +727,11 @@ void execute_cf_block(BeemuDevice *device)
 {
 	switch (device->current_instruction.second_nibble)
 	{
+	case 0x00:
+		if (device->current_instruction.second_nibble >= 0xE0)
+		{
+			execute_ldh(device, device->current_instruction.instruction == 0xE0);
+		}
 	case 0x01:
 	case 0x05:
 		execute_stack_op(device, device->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
