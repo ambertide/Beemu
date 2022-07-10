@@ -44,6 +44,7 @@ typedef enum BeemuRegister_16
 	BEEMU_REGISTER_M,
 	BEEMU_REGISTER_SP,
 	BEEMU_REGISTER_PC,
+	BEEMU_REGISTER_AF
 } BeemuRegister_16;
 
 /**
@@ -71,6 +72,15 @@ typedef enum BeemuOperation
 	BEEMU_OP_CP,
 	BEEMU_OP_XOR
 } BeemuOperation;
+
+/**
+ * @brief Enums representing stack operation.
+ */
+typedef enum BeemuStackOperation
+{
+	BEEMU_SOP_POP,
+	BEEMU_SOP_PUSH
+} BeemuStackOperation;
 
 /**
  * @brief Enums representing unary operations.
@@ -212,13 +222,22 @@ bool beemu_registers_flag_is_high(BeemuRegisters *registers, BeemuFlag flag_name
 uint16_t beemu_registers_read_psw(BeemuRegisters *registers);
 
 /**
- * @brief Increment 8 bit register
+ * @brief Increment 16 bit register
  *
  * Increment a register.
  * @param registers BeemuRegisters object
  * @param register_name Name of the register to increment.
  */
 void beemu_registers_increment_16(BeemuRegisters *registers, BeemuRegister_16 register_name);
+
+/**
+ * @brief Decrement a 16 bit register
+ *
+ * Decrement a register.
+ * @param registers BeemuRegisters object pointer.
+ * @param register_name Name of the register to decrement.
+ */
+void beemu_registers_decrement_16(BeemuRegisters *registers, BeemuRegister_16 register_name);
 
 /**
  * @brief Increment 8 bit register
@@ -346,4 +365,23 @@ void beemu_registers_complement_A(BeemuRegisters *registers);
  * @param registers BeemuRegisters object pointer.
  */
 void beemu_registers_BCD(BeemuRegisters *registers);
+
+/**
+ * @brief Modify the stack such that the stack pointer is modified correctly for POP.
+ *
+ * Increment the SP twice and write the value to
+ * @param registers BeemuRegister object pointer.
+ * @param register_ Register to pop to the stack.
+ * @param value
+ */
+void beemu_registers_stack_pop(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value);
+
+/**
+ * @brief Push to t
+ *
+ * SP is decremented twice and the value of the register_ is returned.
+ * @param registers
+ * @param register_
+ */
+uint16_t beemu_registers_stack_push(BeemuRegisters *registers, BeemuRegister_16 register_);
 #endif

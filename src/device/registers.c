@@ -1,4 +1,5 @@
 #include <device/registers.h>
+#include <internals/utility.h>
 #include <stdlib.h>
 
 BeemuRegisters *beemu_registers_new(void)
@@ -57,6 +58,10 @@ uint16_t beemu_registers_read_16(BeemuRegisters *registers, BeemuRegister_16 reg
 		return registers->program_counter;
 	case BEEMU_REGISTER_M:
 		return registers->m_register;
+	case BEEMU_REGISTER_AF:
+		return beemu_util_combine_8_to_16(
+			beemu_registers_read_8(registers, BEEMU_REGISTER_A),
+			beemu_registers_flag_read_all(registers));
 	default:
 		break;
 	}
@@ -78,15 +83,24 @@ void beemu_registers_write_16(BeemuRegisters *registers, BeemuRegister_16 regist
 		// Combine the two.
 		registers->registers[start_register_index] = start_register_value;
 		registers->registers[stop_register_index] = stop_register_value;
+		break;
 	}
 	case BEEMU_REGISTER_SP:
 		registers->stack_pointer = value;
+		break;
 	case BEEMU_REGISTER_PC:
 		registers->program_counter = value;
+		break;
 	case BEEMU_REGISTER_M:
 		registers->m_register = value;
-	default:
 		break;
+	case BEEMU_REGISTER_AF:
+	{
+		BeemuByteTuple decomposition = beemu_util_split_16_to_8(value);
+		beemu_registers_write_8(registers, BEEMU_REGISTER_A, decomposition.first);
+		registers->flags = decomposition.second;
+		break;
+	}
 	}
 }
 
@@ -126,6 +140,12 @@ void beemu_registers_increment_16(BeemuRegisters *registers, BeemuRegister_16 re
 {
 	const uint16_t previous_value = beemu_registers_read_16(registers, register_name);
 	beemu_registers_write_16(registers, register_name, previous_value + 1);
+}
+
+void beemu_registers_decrement_16(BeemuRegisters *registers, BeemuRegister_16 register_name)
+{
+	const uint16_t previous_value = beemu_registers_read_16(registers, register_name);
+	beemu_registers_write_16(registers, register_name, previous_value - 1);
 }
 
 void beemu_registers_increment_8(BeemuRegisters *registers, BeemuRegister_8 register_name)
@@ -393,4 +413,19 @@ void beemu_registers_BCD(BeemuRegisters *registers)
 	// these flags are always updated
 	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, previous_value == 0); // the usual z flag
 	beemu_registers_flag_set(registers, BEEMU_FLAG_H, false);				// h flag is always cleared
+}
+
+void beemu_registers_stack_pop(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value)
+{
+	beemu_registers_write_16(registers, register_, value);
+	beemu_registers_increment_16(registers, BEEMU_REGISTER_SP);
+	beemu_registers_increment_16(registers, BEEMU_REGISTER_SP);
+}
+
+uint16_t beemu_registers_stack_push(BeemuRegisters *registers, BeemuRegister_16 register_)
+{
+	const uint16_t value = beemu_registers_read_16(registers, register_);
+	beemu_registers_decrement_16(registers, BEEMU_REGISTER_SP);
+	beemu_registers_decrement_16(registers, BEEMU_REGISTER_SP);
+	return value;
 }

@@ -65,3 +65,16 @@ bool beemu_memory_copy(BeemuMemory *memory, BeemuMemory *destination, int start,
 		return true;
 	}
 }
+
+uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address)
+{
+	const uint8_t lower = beemu_memory_read(memory, address);
+	const uint8_t higher = beemu_memory_read(memory, address);
+	return (((uint16_t)lower) << 8) & ((uint16_t)higher);
+}
+
+void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value)
+{
+	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF >> 8)), ((uint8_t)(value & 0xFF00))};
+	beemu_memory_write_buffer(memory, address, deconstructed, 2);
+}

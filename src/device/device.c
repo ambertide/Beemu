@@ -469,8 +469,7 @@ void execute_load_sp_to_mem(BeemuDevice *device)
 	const uint16_t address = device->data.data_16;
 	// Get PC value.
 	uint16_t value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
-	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF >> 8)), ((uint8_t)(value & 0xFF00))};
-	beemu_memory_write_buffer(device->memory, address, deconstructed, 2);
+	beemu_memory_write_16(device->memory, address, value);
 }
 
 /**
@@ -494,6 +493,53 @@ void execute_set_complement_flag(BeemuDevice *device)
 	{
 		const bool previous_value = beemu_registers_flag_is_high(device->registers, BEEMU_FLAG_C);
 		beemu_registers_flag_set(device->registers, BEEMU_FLAG_C, !previous_value);
+	}
+}
+
+/**
+ * @brief Execute a stack operation.
+ *
+ * Operating on the stack portion of the memory execute
+ * a POP or PUSH operation based on the SP register.
+ * @param device
+ */
+void execute_stack_op(BeemuDevice *device, BeemuStackOperation operation)
+{
+	const uint16_t stack_pointer = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+	const int index = (device->current_instruction.first_nibble - 0xC0) >> 1;
+	const BeemuRegister_16 target_register = ORDERED_REGISTER_STACK_NAMES_16[index];
+	switch (operation)
+	{
+	case BEEMU_SOP_POP:
+	{
+		uint16_t value = beemu_memory_read_16(device->memory, stack_pointer);
+		beemu_registers_stack_pop(device->registers, target_register, value);
+		break;
+	}
+	case BEEMU_SOP_PUSH:
+	{
+		uint16_t current_value = beemu_registers_stack_push(device->registers, target_register);
+		beemu_memory_write_16(device->memory, stack_pointer, current_value);
+		break;
+	}
+	}
+}
+
+/**
+ * @brief Execute an instruction from the CF block.
+ *
+ * CF block comprimises those instructions from 0xC0 to
+ * 0xFF.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_cf_block(BeemuDevice *device)
+{
+	switch (device->current_instruction.second_nibble)
+	{
+	case 0x01:
+	case 0x05:
+		execute_stack_op(device, device->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
+		break;
 	}
 }
 
@@ -618,6 +664,11 @@ void beemu_device_run(BeemuDevice *device)
 		case 0xB0:
 			execute_arithmatic_register_instruction(device);
 			break;
+		case 0xC0:
+		case 0xD0:
+		case 0xE0:
+		case 0xF0:
+			execute_cf_block(device);
 		}
 	}
 loop_stop:

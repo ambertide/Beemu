@@ -86,4 +86,22 @@ bool beemu_memory_read_buffer(BeemuMemory *memory, int address, uint8_t *buffer,
  */
 bool beemu_memory_copy(BeemuMemory *memory, BeemuMemory *destination, int start, int dst_start, int size);
 
+/**
+ * @brief Read memory from a location.
+ *
+ * @param memory BeemuMemory object pointer.
+ * @param address Address to read from.
+ * @return uint16_t value from memory.
+ */
+uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address);
+
+/**
+ * @brief Read memory from a location.
+ *
+ * @param memory BeemuMemory object pointer.
+ * @param address Address to read from.
+ * @param value value to write to the memory.
+ */
+void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value);
+
 #endif // BEEMU_MEMORY_H
