@@ -303,12 +303,12 @@ void beemu_registers_arithmatic_16_register(BeemuRegisters *registers, BeemuRegi
 	beemu_registers_arithmatic_16_constant(registers, register_value, operation);
 }
 
-void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation)
+void beemu_registers_arithmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation)
 {
 	register_perform_operation(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
 }
 
-void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation)
+void beemu_registers_arithmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation)
 {
 	register_perform_operation_16(registers, register_, 1, operation == BEEMU_UOP_INC ? BEEMU_OP_ADD : BEEMU_OP_SUB, false);
 }

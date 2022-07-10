@@ -159,12 +159,15 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device)
 	// Determine the operation.
 	{
 	case 0x80:
+	case 0xC0:
 		operation = BEEMU_OP_ADD;
 		break;
 	case 0x90:
+	case 0xD0:
 		operation = BEEMU_OP_SUB;
 		break;
 	case 0xA0:
+	case 0xE0:
 		operation = BEEMU_OP_AND;
 		if (device->current_instruction.second_nibble >= 0x08)
 		{
@@ -172,6 +175,7 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device)
 		}
 		break;
 	case 0xB0:
+	case 0xF0:
 		operation = BEEMU_OP_OR;
 		if (device->current_instruction.second_nibble >= 0x08)
 		{
@@ -180,7 +184,15 @@ static inline void execute_arithmatic_register_instruction(BeemuDevice *device)
 		break;
 	}
 	const bool should_add_carry = device->current_instruction.second_nibble > 0x08 && device->current_instruction.first_nibble >= 0xA0;
-	if (device->current_instruction.second_nibble == 0x06 || device->current_instruction.second_nibble == 0x0E)
+	if (device->current_instruction.first_nibble >= 0xC0)
+	{
+		pop_data(device, true);
+		beemu_registers_arithmatic_8_constant(device->registers,
+											  device->data.data_8,
+											  operation,
+											  device->current_instruction.instruction == 0xCE && device->current_instruction.instruction == 0xDE);
+	}
+	else if (device->current_instruction.second_nibble == 0x06 || device->current_instruction.second_nibble == 0x0E)
 	{
 		// This uses the dereferenced HL register.
 		const uint8_t dereferenced_value = dereference_hl(device);
@@ -280,7 +292,7 @@ void execute_unary_operand(BeemuDevice *device, bool increment)
 	}
 	else
 	{
-		beemu_registers_airthmatic_8_unary(device->registers,
+		beemu_registers_arithmatic_8_unary(device->registers,
 										   decode_03_block_sym_register(device),
 										   uop);
 	}
@@ -298,7 +310,7 @@ void execute_unary_operand_16(BeemuDevice *device)
 	const bool on_the_left = device->current_instruction.second_nibble < 0x07;
 	const int index = device->current_instruction.first_nibble >> 1;
 	const BeemuUnaryOperation uop = on_the_left ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
-	beemu_registers_airthmatic_16_unary(device->registers, ORDERED_REGISTER_NAMES_16[index], uop);
+	beemu_registers_arithmatic_16_unary(device->registers, ORDERED_REGISTER_NAMES_16[index], uop);
 }
 
 /**
@@ -324,7 +336,7 @@ static inline void execute_arithmatic_register_instruction_16(BeemuDevice *devic
  *
  * @param device BeemuDevice object pointer.
  * @param is_byte_length If set to true, interpret as a load to
- * a 16-byte register.
+ * a 8 register.
  */
 void execute_load_direct(BeemuDevice *device, bool is_byte_length)
 {
@@ -386,7 +398,7 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
 	}
 	else if (device->current_instruction.first_nibble == 0x0A)
 	{
-		beemu_registers_airthmatic_16_unary(device->registers, BEEMU_REGISTER_HL, BEEMU_UOP_DEC);
+		beemu_registers_arithmatic_16_unary(device->registers, BEEMU_REGISTER_HL, BEEMU_UOP_DEC);
 	}
 }
 
@@ -526,6 +538,54 @@ void execute_stack_op(BeemuDevice *device, BeemuStackOperation operation)
 }
 
 /**
+ * @brief Execute a "partial" load.
+ *
+ * Execute a load from/to $FF00 + Register
+ * @param device
+ */
+void execute_load_partial(BeemuDevice *device)
+{
+	const uint8_t address_lower = beemu_registers_read_8(device->registers, BEEMU_REGISTER_C);
+	const uint8_t address = beemu_util_combine_8_to_16(0xFF, address_lower);
+	if (device->current_instruction.first_nibble == 0xE0)
+	{
+		// Load from A
+		const uint8_t register_value = beemu_registers_read_8(device->registers, BEEMU_REGISTER_A);
+		beemu_memory_write(device->memory, address, register_value);
+	}
+	else
+	{
+		// Load to A
+		const uint8_t memory_value = beemu_memory_read(device->memory, address);
+		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, memory_value);
+	}
+}
+
+/**
+ * @brief Process the device state.
+ *
+ * Process the device state, such as awaits for
+ * interrupt disable and enable.
+ * @param device
+ */
+void process_device_state(BeemuDevice *device)
+{
+	switch (device->device_state)
+	{
+	case BEEMU_DEVICE_AWAITING_INTERRUPT_DISABLE:
+		device->interrupts_enabled = false;
+		beemu_device_set_state(device, BEEMU_DEVICE_NORMAL);
+		break;
+	case BEEMU_DEVICE_AWAITING_INTERRUPT_ENABLE:
+		device->interrupts_enabled = true;
+		beemu_device_set_state(device, BEEMU_DEVICE_NORMAL);
+		break;
+	default:
+		break;
+	}
+}
+
+/**
  * @brief Execute an instruction from the CF block.
  *
  * CF block comprimises those instructions from 0xC0 to
@@ -539,6 +599,30 @@ void execute_cf_block(BeemuDevice *device)
 	case 0x01:
 	case 0x05:
 		execute_stack_op(device, device->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
+		break;
+	case 0x02:
+		if (device->current_instruction.first_nibble <= 0xD0)
+		{
+			// Jump
+			execute_jump(device);
+		}
+		else
+		{
+			execute_load_partial(device);
+		}
+	case 0x03:
+		if (device->current_instruction.first_nibble == 0xC0)
+		{
+			execute_jump(device);
+		}
+		else if (device->current_instruction.first_nibble == 0xF0)
+		{
+			beemu_device_set_state(device, BEEMU_DEVICE_AWAITING_INTERRUPT_DISABLE);
+		}
+		break;
+	case 0x06:
+	case 0x0E:
+		execute_arithmatic_register_instruction(device);
 		break;
 	}
 }
@@ -633,6 +717,7 @@ void execute_block_03(BeemuDevice *device)
 
 void beemu_device_run(BeemuDevice *device)
 {
+	process_device_state(device);
 	beemu_registers_write_16(device->registers, BEEMU_REGISTER_PC, BEEMU_DEVICE_MEMORY_ROM_LOCATION);
 	while (true)
 	{

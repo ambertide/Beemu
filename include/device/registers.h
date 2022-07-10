@@ -296,7 +296,7 @@ void beemu_registers_arithmatic_16_constant(BeemuRegisters *registers, uint16_t 
  * @param register_ Register to operate on.
  * @param operation Operation to perform.
  */
-void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation);
+void beemu_registers_arithmatic_8_unary(BeemuRegisters *registers, BeemuRegister_8 register_, BeemuUnaryOperation operation);
 
 /**
  * @brief Perform a unary operation on a 16-bit.
@@ -308,7 +308,7 @@ void beemu_registers_airthmatic_8_unary(BeemuRegisters *registers, BeemuRegister
  * @param register_ Register to operate on.
  * @param operation Operation to perform.
  */
-void beemu_registers_airthmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation);
+void beemu_registers_arithmatic_16_unary(BeemuRegisters *registers, BeemuRegister_16 register_, BeemuUnaryOperation operation);
 
 /**
  * @brief Set flags based on registers.
