@@ -366,22 +366,4 @@ void beemu_registers_complement_A(BeemuRegisters *registers);
  */
 void beemu_registers_BCD(BeemuRegisters *registers);
 
-/**
- * @brief Modify the stack such that the stack pointer is modified correctly for POP.
- *
- * Increment the SP twice and write the value to
- * @param registers BeemuRegister object pointer.
- * @param register_ Register to pop to the stack.
- * @param value
- */
-void beemu_registers_stack_pop(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value);
-
-/**
- * @brief Push to t
- *
- * SP is decremented twice and the value of the register_ is returned.
- * @param registers
- * @param register_
- */
-uint16_t beemu_registers_stack_push(BeemuRegisters *registers, BeemuRegister_16 register_);
 #endif

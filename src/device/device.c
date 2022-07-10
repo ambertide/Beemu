@@ -403,6 +403,51 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
 }
 
 /**
+ * @brief Decode condition for JP, JR, CALL or RET
+ *
+ * Some instruction have condition to decide whether or not
+ * to execute.
+ * @param device
+ * @return BeemuJumpCondition
+ */
+BeemuJumpCondition decide_condition(BeemuDevice *device)
+{
+	const bool is_no_condition = beemu_util_is_one_of(device->current_instruction.instruction, 4, 0x18, 0xC3, 0xF9, 0xCD);
+	BeemuJumpCondition condition = BEEMU_JUMP_IF_NO_CONDITION;
+	if (!is_no_condition)
+	{
+		switch (device->current_instruction.instruction)
+		{
+		case 0x20:
+		case 0xC0:
+		case 0xC2:
+		case 0xC4:
+			condition = BEEMU_JUMP_IF_NOT_ZERO;
+			break;
+		case 0x30:
+		case 0xD0:
+		case 0xD2:
+		case 0xD4:
+			condition = BEEMU_JUMP_IF_NOT_CARRY;
+			break;
+		case 0x28:
+		case 0xC8:
+		case 0xCA:
+		case 0xCC:
+			condition = BEEMU_JUMP_IF_ZERO;
+			break;
+		case 0x38:
+		case 0xD8:
+		case 0xDA:
+		case 0xDC:
+			condition = BEEMU_JUMP_IF_CARRY;
+			break;
+		}
+	}
+	return condition;
+}
+
+/**
  * @brief Execute a JP or JR instruction.
  *
  * Execute a JP or JR instruction, decide the correct parameters
@@ -412,32 +457,7 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
 void execute_jump(BeemuDevice *device)
 {
 	const bool is_jr = device->current_instruction.first_nibble < 0x70;
-	const bool is_no_condition = beemu_util_is_one_of_two(device->current_instruction.second_nibble,
-														  0x03, 0x09) ||
-								 device->current_instruction.first_nibble == 0x10;
-	BeemuJumpCondition condition = BEEMU_JUMP_IF_NO_CONDITION;
-	if (!is_no_condition)
-	{
-		switch (device->current_instruction.instruction)
-		{
-		case 0x20:
-		case 0xC2:
-			condition = BEEMU_JUMP_IF_NOT_ZERO;
-			break;
-		case 0x30:
-		case 0xD2:
-			condition = BEEMU_JUMP_IF_NOT_CARRY;
-			break;
-		case 0x28:
-		case 0xCA:
-			condition = BEEMU_JUMP_IF_ZERO;
-			break;
-		case 0x38:
-		case 0xDA:
-			condition = BEEMU_JUMP_IF_CARRY;
-			break;
-		}
-	}
+	BeemuJumpCondition condition = decide_condition(device);
 	uint16_t value = 0;
 	if (is_jr)
 	{
@@ -509,6 +529,37 @@ void execute_set_complement_flag(BeemuDevice *device)
 }
 
 /**
+ * @brief Push a value into the stack.
+ *
+ * Push a value into a stack, decrementing the SP twice.
+ * @param device BeemuDevice object pointer.
+ * @param value Value to push into the stack.
+ */
+void push_stack(BeemuDevice *device, uint16_t value)
+{
+	const uint16_t stack_pointer = beemu_registers_read_16(device->registers, BEEMU_REGISTER_SP);
+	beemu_memory_write_16(device->memory, stack_pointer, value);
+	beemu_registers_decrement_16(device->registers, BEEMU_REGISTER_SP);
+	beemu_registers_decrement_16(device->registers, BEEMU_REGISTER_SP);
+}
+
+/**
+ * @brief Pop a value from the stack.
+ *
+ * Pop a value from the stack and increment the SP twice.
+ * @param device BeemuDevice object pointer.
+ * @return uint16_t Value in the stack.
+ */
+uint16_t pop_stack(BeemuDevice *device)
+{
+	const uint16_t stack_pointer = beemu_registers_read_16(device->registers, BEEMU_REGISTER_SP);
+	const uint16_t value = beemu_memory_read_16(device->memory, stack_pointer);
+	beemu_registers_increment_16(device->registers, BEEMU_REGISTER_SP);
+	beemu_registers_increment_16(device->registers, BEEMU_REGISTER_SP);
+	return value;
+}
+
+/**
  * @brief Execute a stack operation.
  *
  * Operating on the stack portion of the memory execute
@@ -524,14 +575,14 @@ void execute_stack_op(BeemuDevice *device, BeemuStackOperation operation)
 	{
 	case BEEMU_SOP_POP:
 	{
-		uint16_t value = beemu_memory_read_16(device->memory, stack_pointer);
-		beemu_registers_stack_pop(device->registers, target_register, value);
+		uint16_t value = pop_stack(device);
+		beemu_registers_write_16(device->registers, target_register, value);
 		break;
 	}
 	case BEEMU_SOP_PUSH:
 	{
-		uint16_t current_value = beemu_registers_stack_push(device->registers, target_register);
-		beemu_memory_write_16(device->memory, stack_pointer, current_value);
+		uint16_t value = beemu_registers_read_16(device->registers, target_register);
+		push_stack(device, value);
 		break;
 	}
 	}
@@ -562,6 +613,41 @@ void execute_load_partial(BeemuDevice *device)
 }
 
 /**
+ * @brief Execute a RST instruction.
+ *
+ * Push the current address to the stack and jump to
+ * an address close to 0x0000.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_reset_instruction(BeemuDevice *device)
+{
+	const uint16_t offset = device->current_instruction.first_nibble - 0xC0;
+	const uint16_t base = device->current_instruction.second_nibble == 0x7E ? 0x00 : 0x08;
+	const uint16_t new_addres = base + offset;
+	const uint16_t current_address = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+	// Push the current address to the stack.
+	push_stack(device, current_address);
+	beemu_registers_jump(device->registers, BEEMU_JUMP_IF_NO_CONDITION,
+						 new_addres, true, false);
+}
+
+/**
+ * @brief Execute a call instruction
+ *
+ * Execute a CALL instruction.
+ * @param device BeemuDevice object pointer.
+ */
+void execute_call_instruction(BeemuDevice *device)
+{
+	BeemuJumpCondition condition = decide_condition(device);
+	const uint16_t current_address = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+	push_stack(device, current_address + 2);
+	// Get the jump address.
+	pop_data(device, false);
+	beemu_registers_jump(device->registers, condition, device->data.data_16, true, false);
+}
+
+/**
  * @brief Process the device state.
  *
  * Process the device state, such as awaits for
@@ -582,6 +668,29 @@ void process_device_state(BeemuDevice *device)
 		break;
 	default:
 		break;
+	}
+}
+
+/**
+ * @brief Load from/to A to/from a dereferenced memory.
+ *
+ * @param device BeemuDevice object pointer.
+ * @param from_accumulator If true, get value from A.
+ */
+void execute_load_A_dereference(BeemuDevice *device, bool from_accumulator)
+{
+	pop_data(device, false);
+	if (from_accumulator)
+	{
+		const uint8_t accumulator_value = beemu_registers_read_8(device->registers,
+																 BEEMU_REGISTER_A);
+		const uint16_t memory_address = beemu_memory_read_16(device->memory, device->data.data_16);
+		beemu_memory_write(device->registers, memory_address, accumulator_value);
+	}
+	else
+	{
+		const uint8_t value_at_memory = beemu_memory_read(device->memory, device->data.data_16);
+		beemu_registers_write_8(device->registers, BEEMU_REGISTER_A, value_at_memory);
 	}
 }
 
@@ -620,7 +729,30 @@ void execute_cf_block(BeemuDevice *device)
 			beemu_device_set_state(device, BEEMU_DEVICE_AWAITING_INTERRUPT_DISABLE);
 		}
 		break;
+	case 0x04:
+	case 0x0C:
+	case 0x0D:
+		if (device->current_instruction.first_nibble >= 0xE0 || device->current_instruction.instruction == 0xDD)
+		{
+			break;
+		}
+		execute_call_instruction(device);
+		break;
 	case 0x06:
+	case 0x07:
+	case 0x0F:
+		execute_reset_instruction(device);
+		break;
+	case 0x0A:
+		if (device->current_instruction.second_nibble <= 0xD0)
+		{
+			execute_jump(device);
+		}
+		else
+		{
+			execute_load_A_dereference(device, device->current_instruction.first_nibble == 0xE0);
+		}
+		break;
 	case 0x0E:
 		execute_arithmatic_register_instruction(device);
 		break;

@@ -414,18 +414,3 @@ void beemu_registers_BCD(BeemuRegisters *registers)
 	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, previous_value == 0); // the usual z flag
 	beemu_registers_flag_set(registers, BEEMU_FLAG_H, false);				// h flag is always cleared
 }
-
-void beemu_registers_stack_pop(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value)
-{
-	beemu_registers_write_16(registers, register_, value);
-	beemu_registers_increment_16(registers, BEEMU_REGISTER_SP);
-	beemu_registers_increment_16(registers, BEEMU_REGISTER_SP);
-}
-
-uint16_t beemu_registers_stack_push(BeemuRegisters *registers, BeemuRegister_16 register_)
-{
-	const uint16_t value = beemu_registers_read_16(registers, register_);
-	beemu_registers_decrement_16(registers, BEEMU_REGISTER_SP);
-	beemu_registers_decrement_16(registers, BEEMU_REGISTER_SP);
-	return value;
-}
