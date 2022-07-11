@@ -784,8 +784,66 @@ void process_processor_state(BeemuProcessor *processor)
 	}
 }
 
+/**
+ * @brief Get the offset.
+ *
+ * @param instruction Instruction to decode the offset from.
+ * @return uint8_t Offset to subtract from the byte.
+ */
+uint8_t get_offset(uint8_t instruction)
+{
+	if (instruction >= 0xC0)
+	{
+		return 0xC0;
+	}
+	else if (instruction >= 0x80)
+	{
+		return 0x80;
+	}
+	else
+	{
+		return 0x40;
+	}
+}
+
+/**
+ * @brief Execute BIT, RES or SET.
+ *
+ * Execute the bit operations in the CB prefix.
+ * @param processor
+ */
+void execute_bit_operations(BeemuProcessor *processor)
+{
+	static const BeemuBitOperation operations[3] = {
+		BEEMU_BIT_OP_BIT,
+		BEEMU_BIT_OP_RES,
+		BEEMU_BIT_OP_SET};
+	pop_instruction(processor);
+	const uint8_t offset = get_offset(processor->current_instruction.instruction);
+	const uint8_t offsetted_value = processor->current_instruction.instruction - 0x40;
+	// Operation value decodes the bitwise operation.
+	const uint8_t operation_index = (processor->current_instruction.instruction - 0x40) / 0x40;
+	const uint8_t operation = operations[operation_index];
+	// Index is the integer division, and gives us the register.
+	const uint8_t index = offsetted_value / 0x08;
+	const BeemuRegister_8 affected_register = ORDERED_REGISTER_NAMES[index];
+	// The modulo is the mask value.
+	const uint8_t mask_value = offsetted_value - index;
+	beemu_registers_execute_bit_operation(processor->registers, operation,
+										  affected_register, mask_value);
+}
+
+/**
+ * @brief Instructions in the form of CBXX
+ *
+ * @param processor
+ */
 void execute_cb_prefix(BeemuProcessor *processor)
 {
+	if (processor->current_instruction.first_nibble >= 0x40)
+	{
+		execute_bit_operations(processor);
+	}
 }
 
 /**

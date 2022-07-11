@@ -414,3 +414,32 @@ void beemu_registers_BCD(BeemuRegisters *registers)
 	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, previous_value == 0); // the usual z flag
 	beemu_registers_flag_set(registers, BEEMU_FLAG_H, false);				// h flag is always cleared
 }
+
+void beemu_registers_execute_bit_operation(BeemuRegisters *registers, BeemuBitOperation operation, BeemuRegister_8 register_, uint8_t operand)
+{
+	const uint8_t mask = 0x01 << operand;
+	const uint8_t current_value = beemu_registers_read_8(registers, register_);
+	switch (operation)
+	{
+	case BEEMU_BIT_OP_BIT:
+	{
+		const uint8_t masked_value = current_value & mask;
+		beemu_registers_flag_set(registers, BEEMU_FLAG_Z, masked_value == 0);
+		beemu_registers_flag_set(registers, BEEMU_FLAG_N, false);
+		beemu_registers_flag_set(registers, BEEMU_FLAG_H, true);
+		break;
+	}
+	case BEEMU_BIT_OP_RES:
+	{
+		const uint8_t value = (~mask) & current_value;
+		beemu_registers_write_8(registers, register_, value);
+		break;
+	}
+	case BEEMU_BIT_OP_SET:
+	{
+		const uint8_t value = mask | current_value;
+		beemu_registers_write_8(registers, register_, value);
+		break;
+	}
+	}
+}
