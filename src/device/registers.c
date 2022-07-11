@@ -348,29 +348,48 @@ void beemu_registers_jump(BeemuRegisters *registers, BeemuJumpCondition conditio
 	}
 }
 
-void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c)
+void rotate_or_shift_register(BeemuRegisters *registers, BeemuRegister_8 target_register, bool rotate_right, bool through_c, bool rotate, bool keep_msb)
 {
-	const uint8_t old_value_of_A = beemu_registers_read_8(registers, BEEMU_REGISTER_A);
+	const uint8_t old_value_of_register = beemu_registers_read_8(registers, target_register);
 	const uint8_t old_value_of_c = beemu_registers_flag_read(registers, BEEMU_FLAG_C);
-	uint8_t new_value_of_A = (old_value_of_A << 1);
-	uint8_t new_value_of_C = old_value_of_A & 0x01;
-	if (through_c)
+	uint8_t new_value_of_register = (old_value_of_register << 1);
+	uint8_t new_value_of_C = old_value_of_register & 0x01;
+	if (through_c && rotate)
 	{
-		new_value_of_A |= old_value_of_c;
+		new_value_of_register |= old_value_of_c;
+	}
+	else if (rotate)
+	{
+		// On rotate left
+		new_value_of_register |= (old_value_of_register >> 7);
 	}
 	if (rotate_right)
 	{
-		new_value_of_A >>= 1;
-		new_value_of_C = (0x80 & old_value_of_A) >> 7;
-		if (through_c)
+		new_value_of_register >>= 2;
+		new_value_of_C = (0x80 & old_value_of_register) >> 7;
+		if (through_c && rotate)
 		{
-			new_value_of_A |= (old_value_of_c << 7);
+			new_value_of_register |= (old_value_of_c << 7);
 		}
+		else if (rotate)
+		{
+			new_value_of_register |= (old_value_of_register << 7);
+		}
+	}
+	if (keep_msb)
+	{
+		new_value_of_register = new_value_of_register | (old_value_of_register & 0x80);
 	}
 	// RLC and RLA, different from the others, also clear the flags.
 	beemu_registers_flags_clear(registers);
 	// Set the carry flag.
 	beemu_registers_flag_set(registers, BEEMU_FLAG_C, new_value_of_C != 0x00);
+	beemu_registers_write_8(registers, target_register, new_value_of_register);
+}
+
+void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c)
+{
+	rotate_register(registers, BEEMU_REGISTER_A, rotate_right, through_c, true, false);
 }
 
 void beemu_registers_complement_A(BeemuRegisters *registers)
@@ -442,4 +461,34 @@ void beemu_registers_execute_bit_operation(BeemuRegisters *registers, BeemuBitOp
 		break;
 	}
 	}
+}
+
+/**
+ * @brief Swap the nibbles in the register.
+ *
+ * @param registers
+ * @param register_
+ */
+void swap_nibbles(BeemuRegisters *registers, BeemuRegister_8 register_)
+{
+	const uint8_t value = beemu_registers_read_8(registers, register_);
+	const uint8_t new_value = beemu_util_swap_nibbles(value);
+	beemu_registers_write_8(registers, register_, new_value);
+}
+
+void beemu_registers_execute_unary_bit_operation(BeemuRegisters *registers, BeemuUnaryBitOperation operation, BeemuRegister_8 register_)
+{
+	if (operation == BEEMU_BIT_UOP_SWAP)
+	{
+		swap_nibbles(registers, register_);
+	}
+	else
+	{
+		const bool rotate_right = beemu_util_is_one_of(operation, 4, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RRC, BEEMU_BIT_UOP_SRL, BEEMU_BIT_UOP_SRA);
+		const bool through_c = beemu_util_is_one_of_three(operation, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RL, BEEMU_BIT_UOP_SRA);
+		const bool rotate = beemu_util_is_one_of(operation, 4, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RRC, BEEMU_BIT_UOP_RL, BEEMU_BIT_UOP_RLC);
+		rotate_or_shift_register(registers, register_, rotate_right, through_c, rotate, operation == BEEMU_BIT_UOP_SRA);
+	}
+	const uint8_t current_value = beemu_registers_read_8(registers, register_);
+	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, current_value == 0);
 }

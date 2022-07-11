@@ -818,7 +818,6 @@ void execute_bit_operations(BeemuProcessor *processor)
 		BEEMU_BIT_OP_BIT,
 		BEEMU_BIT_OP_RES,
 		BEEMU_BIT_OP_SET};
-	pop_instruction(processor);
 	const uint8_t offset = get_offset(processor->current_instruction.instruction);
 	const uint8_t offsetted_value = processor->current_instruction.instruction - 0x40;
 	// Operation value decodes the bitwise operation.
@@ -834,15 +833,47 @@ void execute_bit_operations(BeemuProcessor *processor)
 }
 
 /**
+ * @brief Execute an unary bit operation.
+ *
+ * @param processor
+ */
+void execute_unary_bit_operations(BeemuProcessor *processor)
+{
+	static const BeemuBitOperation operations[8] = {
+		BEEMU_BIT_UOP_RLC,
+		BEEMU_BIT_UOP_RRC,
+		BEEMU_BIT_UOP_RL,
+		BEEMU_BIT_UOP_RR,
+		BEEMU_BIT_UOP_SLA,
+		BEEMU_BIT_UOP_SRA,
+		BEEMU_BIT_UOP_SWAP,
+		BEEMU_BIT_UOP_SRL};
+	// Operation value decodes the bitwise operation.
+	const uint8_t operation_index = processor->current_instruction.instruction / 0x08;
+	const uint8_t operation = operations[operation_index];
+	// Index is the integer division, and gives us the register.
+	const uint8_t index = processor->current_instruction.instruction - (operation_index * 0x08);
+	const BeemuRegister_8 affected_register = ORDERED_REGISTER_NAMES[index];
+	// The modulo is the mask value.
+	beemu_registers_execute_unary_bit_operation(processor->registers, operation,
+												affected_register);
+}
+
+/**
  * @brief Instructions in the form of CBXX
  *
  * @param processor
  */
 void execute_cb_prefix(BeemuProcessor *processor)
 {
+	pop_instruction(processor);
 	if (processor->current_instruction.first_nibble >= 0x40)
 	{
 		execute_bit_operations(processor);
+	}
+	else
+	{
+		execute_unary_bit_operations(processor);
 	}
 }
 

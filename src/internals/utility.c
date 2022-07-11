@@ -40,3 +40,22 @@ inline BeemuByteTuple beemu_util_split_16_to_8(uint16_t number)
 		((uint8_t)((number & 0x00FF)))};
 	return decomposition;
 }
+
+inline uint8_t beemu_util_combine_4_to_8(uint8_t higher, uint8_t lower)
+{
+	return (higher << 4) | lower;
+}
+
+inline BeemuByteTuple beemu_util_split_8_to_4(uint8_t number)
+{
+	const BeemuByteTuple ret = {
+		(number & 0xF0) >> 4,
+		number & 0x0F};
+	return ret;
+}
+
+inline uint8_t beemu_util_swap_nibbles(uint8_t number)
+{
+	const BeemuByteTuple tuple = beemu_util_split_8_to_4(number);
+	return beemu_util_combine_4_to_8(tuple.second, tuple.first);
+}

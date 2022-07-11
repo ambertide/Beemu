@@ -103,6 +103,21 @@ typedef enum BeemuBitOperation
 } BeemuBitOperation;
 
 /**
+ * @brief Represents unary bit operations on a register.
+ */
+typedef enum BeemuUnaryBitOperation
+{
+	BEEMU_BIT_UOP_RLC,
+	BEEMU_BIT_UOP_RRC,
+	BEEMU_BIT_UOP_RL,
+	BEEMU_BIT_UOP_RR,
+	BEEMU_BIT_UOP_SLA,
+	BEEMU_BIT_UOP_SRA,
+	BEEMU_BIT_UOP_SWAP,
+	BEEMU_BIT_UOP_SRL
+} BeemuUnaryBitOperation;
+
+/**
  * @brief Struct holding registers and flags.
  *
  */
@@ -386,5 +401,14 @@ void beemu_registers_BCD(BeemuRegisters *registers);
  * @param operand Operand for the operation
  */
 void beemu_registers_execute_bit_operation(BeemuRegisters *registers, BeemuBitOperation operation, BeemuRegister_8 register_, uint8_t operand);
+
+/**
+ * @brief Execute a unary bit operation on a register.
+ *
+ * @param registers BeemuRegisters object pointer.
+ * @param operation Bit operation to execute.
+ * @param register_ Register to execute the operation in.
+ */
+void beemu_registers_execute_unary_bit_operation(BeemuRegisters *registers, BeemuUnaryBitOperation operation, BeemuRegister_8 register_);
 
 #endif

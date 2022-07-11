@@ -60,4 +60,29 @@ uint16_t beemu_util_combine_8_to_16(uint8_t higher, uint8_t lower);
  * @return BeemuByteTuple Return tuple.
  */
 BeemuByteTuple beemu_util_split_16_to_8(uint16_t number);
+
+/**
+ * @brief Combine two 4 bit integers to a 8 bit one.
+ *
+ * @param higher higher nibble for the 8 bit integer.
+ * @param lower lower nibble for the 8 bit integer.
+ * @return uint16_t The combined 8 bit integer.
+ */
+uint8_t beemu_util_combine_4_to_8(uint8_t higher, uint8_t lower);
+
+/**
+ * @brief Split a 8 bit integer to two 4 bit integers.
+ *
+ * @param number Number to split into two.
+ * @return BeemuByteTuple Return tuple.
+ */
+BeemuByteTuple beemu_util_split_8_to_4(uint8_t number);
+
+/**
+ * @brief Swap the nibbles of a byte.
+ *
+ * @param number Number to swap the bytes of.
+ * @return uint8_t The byte with swapped nibbles.
+ */
+uint8_t beemu_util_swap_nibbles(uint8_t number);
 #endif // BEEMU_INTERNALS_UTILITY_H
