@@ -705,6 +705,27 @@ void execute_ret(BeemuDevice *device)
 }
 
 /**
+ * @brief Add a signed integer to the SP.
+ *
+ * @param device
+ */
+void add_sp_r8(BeemuDevice *device)
+{
+	const uint16_t value = beemu_registers_read_16(device, BEEMU_REGISTER_SP);
+	pop_data(device, true);
+	uint8_t new_value = device->data.data_8 + value;
+	if (device->data.data_8 & 0x80 == 1)
+	{
+		// Since this is a signed integer first get the pure integer.
+		const uint8_t effective_value = 0x7F & device->data.data_8;
+		new_value = value - ((uint16_t)effective_value);
+	}
+	beemu_registers_set_flags(device->registers, value, new_value, false, BEEMU_OP_ADD,
+							  false);
+	beemu_registers_write_16(device->registers, BEEMU_REGISTER_SP, new_value);
+}
+
+/**
  * @brief Process the device state.
  *
  * Process the device state, such as awaits for
@@ -797,6 +818,10 @@ void execute_cf_block(BeemuDevice *device)
 		else if (device->current_instruction.instruction == 0xE9)
 		{
 			execute_jump(device);
+		}
+		else if (device->current_instruction.instruction == 0xE8)
+		{
+			execute_add_sp_r8(device);
 		}
 		break;
 	case 0x0A:
