@@ -709,12 +709,12 @@ void execute_ret(BeemuDevice *device)
  *
  * @param device
  */
-void add_sp_r8(BeemuDevice *device)
+void execute_add_sp_r8(BeemuDevice *device)
 {
-	const uint16_t value = beemu_registers_read_16(device, BEEMU_REGISTER_SP);
+	const uint16_t value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_SP);
 	pop_data(device, true);
 	uint8_t new_value = device->data.data_8 + value;
-	if (device->data.data_8 & 0x80 == 1)
+	if ((device->data.data_8 & 0x80) == 1)
 	{
 		// Since this is a signed integer first get the pure integer.
 		const uint8_t effective_value = 0x7F & device->data.data_8;
