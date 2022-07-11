@@ -41,23 +41,23 @@ static const int BEEMU_DEVICE_MEMORY_SIZE = 64000;
 static const int BEEMU_DEVICE_MEMORY_ROM_LOCATION;
 
 /**
- * @brief Describes the device state.
+ * @brief Describes the processor state.
  *
  */
-typedef enum BeemuDeviceState
+typedef enum BeemuProcessorState
 {
 	BEEMU_DEVICE_NORMAL,
 	BEEMU_DEVICE_HALT,
 	BEEMU_DEVICE_STOP,
 	BEEMU_DEVICE_AWAITING_INTERRUPT_DISABLE,
 	BEEMU_DEVICE_AWAITING_INTERRUPT_ENABLE
-} BeemuDeviceState;
+} BeemuProcessorState;
 
-typedef struct BeemuDevice
+typedef struct BeemuProcessor
 {
 	BeemuRegisters *registers;
 	BeemuMemory *memory;
-	BeemuDeviceState device_state;
+	BeemuProcessorState processor_state;
 	bool interrupts_enabled;
 	/**
 	 * @brief The currently executed instruction.
@@ -73,56 +73,56 @@ typedef struct BeemuDevice
 		uint8_t data_8;
 		uint16_t data_16;
 	} data;
-} BeemuDevice;
+} BeemuProcessor;
 
 /**
- * @brief Create a new BeemuDevice instance.
+ * @brief Create a new BeemuProcessor instance.
  *
- * Create a new BeemuDevice and return its pointer.
- * @return BeemuDevice* pointer to the newly created device object.
+ * Create a new BeemuProcessor and return its pointer.
+ * @return BeemuProcessor* pointer to the newly created processor object.
  */
-BeemuDevice *beemu_device_new(void);
+BeemuProcessor *beemu_processor_new(void);
 
 /**
- * @brief Free the previously created device.
+ * @brief Free the previously created processor.
  *
- * @param device Device to free.
+ * @param processor Device to free.
  */
-void beemu_device_free(BeemuDevice *device);
+void beemu_processor_free(BeemuProcessor *processor);
 
 /**
- * @brief Load ROM data to device.
+ * @brief Load ROM data to processor.
  *
- * Load a GameBoy ROM to the device memory.
- * @param device BeemuDevice instance to load the ROM.
+ * Load a GameBoy ROM to the processor memory.
+ * @param processor BeemuProcessor instance to load the ROM.
  * @param rom ROM data to be loaded.
  * @return bool Whether or not the load succeeded.
  */
-bool beemu_device_load(BeemuDevice *device, uint8_t *rom);
+bool beemu_processor_load(BeemuProcessor *processor, uint8_t *rom);
 
 /**
  * @brief Run the loaded ROM.
  *
  * Run the data loaded at the ROM section of the memory.
- * @param device BeemuDevice object pointer.
+ * @param processor BeemuProcessor object pointer.
  */
-void beemu_device_run(BeemuDevice *device);
+void beemu_processor_run(BeemuProcessor *processor);
 
 /**
- * @brief Get the state of the device.
+ * @brief Get the state of the processor.
  *
- * Get the current state of the device.
- * @param device BeemuDevice object pointer.
- * @return BeemuDeviceState
+ * Get the current state of the processor.
+ * @param processor BeemuProcessor object pointer.
+ * @return BeemuProcessorState
  */
-BeemuDeviceState beemu_device_get_device_state(BeemuDevice *device);
+BeemuProcessorState beemu_processor_get_processor_state(BeemuProcessor *processor);
 
 /**
- * @brief Set the state of the device.
+ * @brief Set the state of the processor.
  *
- * Set the state of the device.
- * @param device BeemuDevice object pointer.
- * @param state The new state of the device.
+ * Set the state of the processor.
+ * @param processor BeemuProcessor object pointer.
+ * @param state The new state of the processor.
  */
-void beemu_device_set_state(BeemuDevice *device, BeemuDeviceState state);
+void beemu_processor_set_state(BeemuProcessor *processor, BeemuProcessorState state);
 #endif // BEEMU_DEVICE_H
