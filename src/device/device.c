@@ -412,7 +412,7 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
  */
 BeemuJumpCondition decide_condition(BeemuDevice *device)
 {
-	const bool is_no_condition = beemu_util_is_one_of(device->current_instruction.instruction, 4, 0x18, 0xC3, 0xF9, 0xCD);
+	const bool is_no_condition = beemu_util_is_one_of(device->current_instruction.instruction, 5, 0x18, 0xC3, 0xF9, 0xCD, 0xD9);
 	BeemuJumpCondition condition = BEEMU_JUMP_IF_NO_CONDITION;
 	if (!is_no_condition)
 	{
@@ -692,6 +692,18 @@ void execute_ldh(BeemuDevice *device, bool from_accumulator)
 	}
 }
 
+void execute_ret(BeemuDevice *device)
+{
+	const BeemuJumpCondition condition = decide_condition(device);
+	const uint16_t memory_address = pop_stack(device);
+	beemu_registers_jump(device->registers, condition, memory_address,
+						 true, false);
+	if (device->current_instruction.instruction == 0xDA)
+	{
+		device->interrupts_enabled = true;
+	}
+}
+
 /**
  * @brief Process the device state.
  *
@@ -716,6 +728,10 @@ void process_device_state(BeemuDevice *device)
 	}
 }
 
+void execute_cb_prefix(BeemuDevice *device)
+{
+}
+
 /**
  * @brief Execute an instruction from the CF block.
  *
@@ -732,6 +748,8 @@ void execute_cf_block(BeemuDevice *device)
 		{
 			execute_ldh(device, device->current_instruction.instruction == 0xE0);
 		}
+		execute_ret(device);
+		break;
 	case 0x01:
 	case 0x05:
 		execute_stack_op(device, device->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
@@ -770,6 +788,13 @@ void execute_cf_block(BeemuDevice *device)
 	case 0x0F:
 		execute_reset_instruction(device);
 		break;
+	case 0x08:
+	case 0x09:
+		if (device->current_instruction.first_nibble <= 0xD0)
+		{
+			execute_ret(device);
+		}
+		break;
 	case 0x0A:
 		if (device->current_instruction.second_nibble <= 0xD0)
 		{
@@ -778,6 +803,19 @@ void execute_cf_block(BeemuDevice *device)
 		else
 		{
 			execute_load_A_dereference(device, device->current_instruction.first_nibble == 0xE0);
+		}
+		break;
+	case 0x0B:
+		switch (device->current_instruction.first_nibble)
+		{
+		case 0xC0:
+			execute_cb_prefix(device);
+			break;
+		case 0xF0:
+			beemu_device_set_state(device, BEEMU_DEVICE_AWAITING_INTERRUPT_ENABLE);
+			break;
+		default:
+			break;
 		}
 		break;
 	case 0x0E:
