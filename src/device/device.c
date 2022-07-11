@@ -725,6 +725,10 @@ void execute_add_sp_r8(BeemuDevice *device)
 	beemu_registers_write_16(device->registers, BEEMU_REGISTER_SP, new_value);
 }
 
+void execute_ldhl_sp(BeemuDevice *device)
+{
+}
+
 /**
  * @brief Process the device state.
  *
@@ -811,17 +815,24 @@ void execute_cf_block(BeemuDevice *device)
 		break;
 	case 0x08:
 	case 0x09:
-		if (device->current_instruction.first_nibble <= 0xD0)
+		switch (device->current_instruction.instruction)
 		{
+		case 0xC8:
+		case 0xD8:
+		case 0xC9:
+		case 0xD9:
 			execute_ret(device);
-		}
-		else if (device->current_instruction.instruction == 0xE9)
-		{
+			break;
+		case 0xE9:
 			execute_jump(device);
-		}
-		else if (device->current_instruction.instruction == 0xE8)
-		{
+			break;
+		case 0xE8:
 			execute_add_sp_r8(device);
+			break;
+		case 0xF8:
+		case 0xF9:
+			execute_ldhl_sp(device);
+			break;
 		}
 		break;
 	case 0x0A:
