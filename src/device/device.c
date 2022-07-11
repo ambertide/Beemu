@@ -412,7 +412,7 @@ static void execute_load_accumulator_16(BeemuDevice *device, bool from_accum)
  */
 BeemuJumpCondition decide_condition(BeemuDevice *device)
 {
-	const bool is_no_condition = beemu_util_is_one_of(device->current_instruction.instruction, 5, 0x18, 0xC3, 0xF9, 0xCD, 0xD9);
+	const bool is_no_condition = beemu_util_is_one_of(device->current_instruction.instruction, 6, 0x18, 0xC3, 0xF9, 0xCD, 0xD9, 0xE9);
 	BeemuJumpCondition condition = BEEMU_JUMP_IF_NO_CONDITION;
 	if (!is_no_condition)
 	{
@@ -793,6 +793,10 @@ void execute_cf_block(BeemuDevice *device)
 		if (device->current_instruction.first_nibble <= 0xD0)
 		{
 			execute_ret(device);
+		}
+		else if (device->current_instruction.instruction == 0xE9)
+		{
+			execute_jump(device);
 		}
 		break;
 	case 0x0A:
