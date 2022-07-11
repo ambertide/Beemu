@@ -10,6 +10,7 @@ BeemuDevice *beemu_device_new(void)
 	device->registers = beemu_registers_new();
 	device->interrupts_enabled = true;
 	device->device_state = BEEMU_DEVICE_NORMAL;
+	beemu_registers_write_16(device->registers, BEEMU_REGISTER_PC, BEEMU_DEVICE_MEMORY_ROM_LOCATION);
 	return device;
 }
 
@@ -714,7 +715,7 @@ void execute_add_sp_r8(BeemuDevice *device)
 	const uint16_t value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_SP);
 	pop_data(device, true);
 	uint8_t new_value = device->data.data_8 + value;
-	if ((device->data.data_8 & 0x80) == 1)
+	if ((device->data.data_8 & 0x80) > 0)
 	{
 		// Since this is a signed integer first get the pure integer.
 		const uint8_t effective_value = 0x7F & device->data.data_8;
@@ -725,8 +726,38 @@ void execute_add_sp_r8(BeemuDevice *device)
 	beemu_registers_write_16(device->registers, BEEMU_REGISTER_SP, new_value);
 }
 
+/**
+ * @brief Execute LD HL, SP related instructions.
+ *
+ * These instructions load SP to HL or vice versa,
+ * sometimes with an addition to SP value first.
+ * @param device
+ */
 void execute_ldhl_sp(BeemuDevice *device)
 {
+	if (device->current_instruction.instruction == 0xF8)
+	{
+		// Signed addition.
+		pop_data(device, true);
+		const uint16_t old_value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+		uint16_t new_value = old_value + (uint8_t)device->data.data_8;
+		if ((device->data.data_8 & 0x80) > 0)
+		{
+			// Negative number.
+			const uint8_t effective_value = device->data.data_8 & 0x7F;
+			new_value = old_value - ((uint16_t)effective_value);
+		}
+		const uint16_t old_value_hl = beemu_registers_read_16(device->registers, BEEMU_REGISTER_HL);
+		beemu_registers_set_flags(device->registers, old_value_hl, new_value,
+								  false, BEEMU_OP_ADD, false);
+		beemu_registers_write_16(device->registers, BEEMU_REGISTER_HL, new_value);
+	}
+	else
+	{
+		// F9
+		const uint16_t sp_value = beemu_registers_read_16(device->registers, BEEMU_REGISTER_PC);
+		beemu_registers_write_16(device->registers, BEEMU_REGISTER_HL, sp_value);
+	}
 }
 
 /**
@@ -954,10 +985,9 @@ void execute_block_03(BeemuDevice *device)
 
 void beemu_device_run(BeemuDevice *device)
 {
-	process_device_state(device);
-	beemu_registers_write_16(device->registers, BEEMU_REGISTER_PC, BEEMU_DEVICE_MEMORY_ROM_LOCATION);
 	while (true)
 	{
+		process_device_state(device);
 		uint8_t next_instruction = pop_instruction(device);
 		switch (device->current_instruction.first_nibble)
 		{
