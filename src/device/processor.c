@@ -877,6 +877,38 @@ void execute_bit_operations(BeemuProcessor *processor)
 }
 
 /**
+ * @brief Execute an in memory unary bit operation.
+ *
+ * @param processor BeemuProcessor object pointer.
+ * @param operation Operation to execute.
+ */
+void execute_in_memory_unary_bit_operation(BeemuProcessor *processor, BeemuUnaryBitOperation operation)
+{
+	const uint8_t value = dereference_hl(processor);
+	uint8_t new_value = 0;
+	if (operation == BEEMU_BIT_UOP_SWAP)
+	{
+		new_value = beemu_util_swap_nibbles(value);
+	}
+	else
+	{
+		const bool rotate_right = beemu_util_is_one_of(operation, 4, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RRC, BEEMU_BIT_UOP_SRL, BEEMU_BIT_UOP_SRA);
+		const bool through_c = beemu_util_is_one_of_three(operation, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RL, BEEMU_BIT_UOP_SRA);
+		const bool rotate = beemu_util_is_one_of(operation, 4, BEEMU_BIT_UOP_RR, BEEMU_BIT_UOP_RRC, BEEMU_BIT_UOP_RL, BEEMU_BIT_UOP_RLC);
+		const uint8_t c_value = beemu_registers_flag_read(processor->registers, BEEMU_FLAG_C);
+		const BeemuRotationDirection direction = rotate_right ? BEEMU_ROTATION_DIRECTION_RIGHT : BEEMU_ROTATION_DIRECTION_LEFT;
+		BeemuByteTuple new_values = beemu_util_rotate_or_shift(value, c_value, rotate, through_c, direction, operation == BEEMU_BIT_UOP_SRA);
+		// RLC and RLA, different from the others, also clear the flags.
+		beemu_registers_flags_clear(processor->registers);
+		// Set the carry flag.
+		beemu_registers_flag_set(processor->registers, BEEMU_FLAG_C, new_values.second != 0x00);
+		new_value = new_values.first;
+	}
+	write_to_dereferenced_hl(processor, new_value);
+	beemu_registers_flag_set(processor->registers, BEEMU_FLAG_Z, new_value == 0);
+}
+
+/**
  * @brief Execute an unary bit operation.
  *
  * @param processor
@@ -892,15 +924,22 @@ void execute_unary_bit_operations(BeemuProcessor *processor)
 		BEEMU_BIT_UOP_SRA,
 		BEEMU_BIT_UOP_SWAP,
 		BEEMU_BIT_UOP_SRL};
+	const bool in_memory = beemu_util_is_one_of_two(processor->current_instruction.second_nibble, 0x06, 0x0E);
 	// Operation value decodes the bitwise operation.
 	const uint8_t operation_index = processor->current_instruction.instruction / 0x08;
 	const uint8_t operation = operations[operation_index];
 	// Index is the integer division, and gives us the register.
 	const uint8_t index = processor->current_instruction.instruction - (operation_index * 0x08);
 	const BeemuRegister_8 affected_register = ORDERED_REGISTER_NAMES[index];
-	// The modulo is the mask value.
-	beemu_registers_execute_unary_bit_operation(processor->registers, operation,
-												affected_register);
+	if (in_memory)
+	{
+		execute_in_memory_unary_bit_operation(processor, operation);
+	}
+	else
+	{
+		beemu_registers_execute_unary_bit_operation(processor->registers, operation,
+													affected_register);
+	}
 }
 
 /**
