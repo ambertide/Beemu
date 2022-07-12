@@ -352,39 +352,14 @@ void rotate_or_shift_register(BeemuRegisters *registers, BeemuRegister_8 target_
 {
 	const uint8_t old_value_of_register = beemu_registers_read_8(registers, target_register);
 	const uint8_t old_value_of_c = beemu_registers_flag_read(registers, BEEMU_FLAG_C);
-	uint8_t new_value_of_register = (old_value_of_register << 1);
-	uint8_t new_value_of_C = old_value_of_register & 0x01;
-	if (through_c && rotate)
-	{
-		new_value_of_register |= old_value_of_c;
-	}
-	else if (rotate)
-	{
-		// On rotate left
-		new_value_of_register |= (old_value_of_register >> 7);
-	}
-	if (rotate_right)
-	{
-		new_value_of_register >>= 2;
-		new_value_of_C = (0x80 & old_value_of_register) >> 7;
-		if (through_c && rotate)
-		{
-			new_value_of_register |= (old_value_of_c << 7);
-		}
-		else if (rotate)
-		{
-			new_value_of_register |= (old_value_of_register << 7);
-		}
-	}
-	if (keep_msb)
-	{
-		new_value_of_register = new_value_of_register | (old_value_of_register & 0x80);
-	}
+	BeemuByteTuple tuple = beemu_util_rotate_or_shift(old_value_of_register, old_value_of_c, rotate, through_c,
+													  rotate_right ? BEEMU_ROTATION_DIRECTION_RIGHT : BEEMU_ROTATION_DIRECTION_LEFT,
+													  keep_msb);
 	// RLC and RLA, different from the others, also clear the flags.
 	beemu_registers_flags_clear(registers);
 	// Set the carry flag.
-	beemu_registers_flag_set(registers, BEEMU_FLAG_C, new_value_of_C != 0x00);
-	beemu_registers_write_8(registers, target_register, new_value_of_register);
+	beemu_registers_flag_set(registers, BEEMU_FLAG_C, tuple.second != 0x00);
+	beemu_registers_write_8(registers, target_register, tuple.first);
 }
 
 void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c)
