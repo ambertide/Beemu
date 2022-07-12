@@ -21,6 +21,27 @@ void beemu_processor_free(BeemuProcessor *processor)
 	free(processor);
 }
 
+/**
+ * @brief Set the elapsed clock cycle count for the processor.
+ *
+ * @param processor BeemuProcessor object pointer.
+ * @param value Value to be set.
+ */
+static inline void beemu_processor_set_elapsed_clock_cycle(BeemuProcessor *processor, uint8_t value)
+{
+	processor->elapsed_clock_cycle = value;
+}
+
+/**
+ * @brief Reset the processor's elapsed clock cycle to 0.
+ *
+ * @param processor BeemuProcessor object pointer.
+ */
+static inline void beemu_processor_reset_elapsed_clock_cycle(BeemuProcessor *processor)
+{
+	beemu_processor_set_elapsed_clock_cycle(processor, 0);
+}
+
 BeemuProcessorState beemu_processor_get_processor_state(BeemuProcessor *processor)
 {
 	return processor->processor_state;
@@ -1155,47 +1176,43 @@ void execute_block_03(BeemuProcessor *processor)
 	}
 }
 
-void beemu_processor_run(BeemuProcessor *processor)
+uint8_t beemu_processor_run(BeemuProcessor *processor)
 {
-	while (true)
+	beemu_processor_reset_elapsed_clock_cycle(processor);
+	process_processor_state(processor);
+	uint8_t next_instruction = pop_instruction(processor);
+	switch (processor->current_instruction.first_nibble)
 	{
-		process_processor_state(processor);
-		uint8_t next_instruction = pop_instruction(processor);
-		switch (processor->current_instruction.first_nibble)
+	case 0x00:
+	case 0x10:
+	case 0x20:
+	case 0x30:
+		execute_block_03(processor);
+	case 0x40:
+	case 0x50:
+	case 0x60:
+	case 0x70:
+		if (processor->current_instruction.second_nibble == 0x06)
 		{
-		case 0x00:
-		case 0x10:
-		case 0x20:
-		case 0x30:
-			execute_block_03(processor);
-		case 0x40:
-		case 0x50:
-		case 0x60:
-		case 0x70:
-			if (processor->current_instruction.second_nibble == 0x06)
-			{
-				// HALT
-				beemu_processor_set_state(processor, BEEMU_DEVICE_HALT);
-			}
-			else
-			{
-				execute_load_instruction(processor);
-			}
-			break;
-		case 0x80:
-		case 0x90:
-		case 0xA0:
-		case 0xB0:
-			execute_arithmatic_register_instruction(processor);
-			break;
-		case 0xC0:
-		case 0xD0:
-		case 0xE0:
-		case 0xF0:
-			execute_cf_block(processor);
+			// HALT
+			beemu_processor_set_state(processor, BEEMU_DEVICE_HALT);
 		}
+		else
+		{
+			execute_load_instruction(processor);
+		}
+		break;
+	case 0x80:
+	case 0x90:
+	case 0xA0:
+	case 0xB0:
+		execute_arithmatic_register_instruction(processor);
+		break;
+	case 0xC0:
+	case 0xD0:
+	case 0xE0:
+	case 0xF0:
+		execute_cf_block(processor);
 	}
-loop_stop:
-	// Use a label here to avoid checking the conditions all the time.
-	return;
+	return processor->elapsed_clock_cycle;
 }

@@ -73,6 +73,7 @@ typedef struct BeemuProcessor
 		uint8_t data_8;
 		uint16_t data_16;
 	} data;
+	uint8_t elapsed_clock_cycle;
 } BeemuProcessor;
 
 /**
@@ -101,12 +102,15 @@ void beemu_processor_free(BeemuProcessor *processor);
 bool beemu_processor_load(BeemuProcessor *processor, uint8_t *rom);
 
 /**
- * @brief Run the loaded ROM.
+ * @brief Run the processor for a single instruction.
  *
- * Run the data loaded at the ROM section of the memory.
+ * Run the data loaded at the ROM section of the memory for a single
+ * instruction and return the elapsed clock cycle count.
+ *
  * @param processor BeemuProcessor object pointer.
+ * @return the elapsed clock cycle count.
  */
-void beemu_processor_run(BeemuProcessor *processor);
+uint8_t beemu_processor_run(BeemuProcessor *processor);
 
 /**
  * @brief Get the state of the processor.
