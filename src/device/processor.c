@@ -807,6 +807,42 @@ uint8_t get_offset(uint8_t instruction)
 }
 
 /**
+ * @brief Execute a bit operation in the memory.
+ *
+ * @param processor BeemuProcessor object pointer.
+ * @param operation Operation to execute.
+ * @param value Value operand.
+ */
+void execute_in_memory_bit_operation(BeemuProcessor *processor, BeemuBitOperation operation, uint8_t masked_value)
+{
+	const uint8_t current_value = dereference_hl(processor);
+	const uint8_t mask = 0x01 << masked_value;
+	switch (operation)
+	{
+	case BEEMU_BIT_OP_BIT:
+	{
+		const uint8_t masked_value = current_value & mask;
+		beemu_registers_flag_set(processor->registers, BEEMU_FLAG_Z, masked_value == 0);
+		beemu_registers_flag_set(processor->registers, BEEMU_FLAG_N, false);
+		beemu_registers_flag_set(processor->registers, BEEMU_FLAG_H, true);
+		break;
+	}
+	case BEEMU_BIT_OP_RES:
+	{
+		const uint8_t value = (~mask) & current_value;
+		write_to_dereferenced_hl(processor, value);
+		break;
+	}
+	case BEEMU_BIT_OP_SET:
+	{
+		const uint8_t value = mask | current_value;
+		write_to_dereferenced_hl(processor, value);
+		break;
+	}
+	}
+}
+
+/**
  * @brief Execute BIT, RES or SET.
  *
  * Execute the bit operations in the CB prefix.
@@ -818,18 +854,26 @@ void execute_bit_operations(BeemuProcessor *processor)
 		BEEMU_BIT_OP_BIT,
 		BEEMU_BIT_OP_RES,
 		BEEMU_BIT_OP_SET};
+	const bool in_memory = beemu_util_is_one_of_two(processor->current_instruction.second_nibble, 0x06, 0x0E);
 	const uint8_t offset = get_offset(processor->current_instruction.instruction);
 	const uint8_t offsetted_value = processor->current_instruction.instruction - 0x40;
 	// Operation value decodes the bitwise operation.
 	const uint8_t operation_index = (processor->current_instruction.instruction - 0x40) / 0x40;
 	const uint8_t operation = operations[operation_index];
-	// Index is the integer division, and gives us the register.
 	const uint8_t index = offsetted_value / 0x08;
 	const BeemuRegister_8 affected_register = ORDERED_REGISTER_NAMES[index];
 	// The modulo is the mask value.
 	const uint8_t mask_value = offsetted_value - index;
-	beemu_registers_execute_bit_operation(processor->registers, operation,
-										  affected_register, mask_value);
+	if (in_memory)
+	{
+		execute_in_memory_bit_operation(processor, operation, mask_value);
+	}
+	else
+	{
+		// Index is the integer division, and gives us the register.
+		beemu_registers_execute_bit_operation(processor->registers, operation,
+											  affected_register, mask_value);
+	}
 }
 
 /**
@@ -839,7 +883,7 @@ void execute_bit_operations(BeemuProcessor *processor)
  */
 void execute_unary_bit_operations(BeemuProcessor *processor)
 {
-	static const BeemuBitOperation operations[8] = {
+	static const BeemuUnaryBitOperation operations[8] = {
 		BEEMU_BIT_UOP_RLC,
 		BEEMU_BIT_UOP_RRC,
 		BEEMU_BIT_UOP_RL,

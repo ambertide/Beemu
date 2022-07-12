@@ -389,7 +389,7 @@ void rotate_or_shift_register(BeemuRegisters *registers, BeemuRegister_8 target_
 
 void beemu_registers_rotate_A(BeemuRegisters *registers, bool rotate_right, bool through_c)
 {
-	rotate_register(registers, BEEMU_REGISTER_A, rotate_right, through_c, true, false);
+	rotate_or_shift_register(registers, BEEMU_REGISTER_A, rotate_right, through_c, true, false);
 }
 
 void beemu_registers_complement_A(BeemuRegisters *registers)
