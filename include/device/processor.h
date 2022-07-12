@@ -1,5 +1,5 @@
-#ifndef BEEMU_DEVICE_H
-#define BEEMU_DEVICE_H
+#ifndef BEEMU_DEVICE_PROCESSOR_H
+#define BEEMU_DEVICE_PROCESSOR_H
 #include <stdint.h>
 #include <stdbool.h>
 #include "registers.h"
@@ -129,4 +129,4 @@ BeemuProcessorState beemu_processor_get_processor_state(BeemuProcessor *processo
  * @param state The new state of the processor.
  */
 void beemu_processor_set_state(BeemuProcessor *processor, BeemuProcessorState state);
-#endif // BEEMU_DEVICE_H
+#endif // BEEMU_DEVICE_PROCESSOR_H

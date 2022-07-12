@@ -1,5 +1,5 @@
-#ifndef BEEMU_REGISTERS_H
-#define BEEMU_REGISTERS_H
+#ifndef BEEMU_DEVICE_REGISTERS_H
+#define BEEMU_DEVICE_REGISTERS_H
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -411,4 +411,4 @@ void beemu_registers_execute_bit_operation(BeemuRegisters *registers, BeemuBitOp
  */
 void beemu_registers_execute_unary_bit_operation(BeemuRegisters *registers, BeemuUnaryBitOperation operation, BeemuRegister_8 register_);
 
-#endif
+#endif // BEEMU_DEVICE_REGISTERS_H

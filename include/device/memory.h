@@ -1,5 +1,5 @@
-#ifndef BEEMU_MEMORY_H
-#define BEEMU_MEMORY_H
+#ifndef BEEMU_DEVICE_MEMORY_H
+#define BEEMU_DEVICE_MEMORY_H
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -104,4 +104,4 @@ uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address);
  */
 void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value);
 
-#endif // BEEMU_MEMORY_H
+#endif // BEEMU_DEVICE_MEMORY_H
