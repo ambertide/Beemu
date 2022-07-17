@@ -3,6 +3,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/**
+ * @brief Represents a block in the memory.
+ *
+ */
+typedef struct BeemuMemoryBlock
+{
+	uint16_t start;
+	uint16_t stop;
+} BeemuMemoryBlock;
+
+static const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block);
+
 typedef struct BeemuMemory
 {
 	int memory_size;

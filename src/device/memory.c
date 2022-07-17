@@ -78,3 +78,8 @@ void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value
 	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF >> 8)), ((uint8_t)(value & 0xFF00))};
 	beemu_memory_write_buffer(memory, address, deconstructed, 2);
 }
+
+static const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block)
+{
+	return block.stop - block.start;
+}
