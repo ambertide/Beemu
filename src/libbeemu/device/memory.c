@@ -1,4 +1,4 @@
-#include <device/memory.h>
+#include <libbeemu/device/memory.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>

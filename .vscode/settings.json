@@ -27,7 +27,8 @@
     "stdarg.h": "c",
     "memory.h": "c",
     "utility": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "stdlib.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true

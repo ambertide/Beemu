@@ -1,7 +1,7 @@
 #include <stdlib.h>
-#include <device/processor.h>
-#include <device/memory.h>
-#include <internals/utility.h>
+#include <libbeemu/device/processor.h>
+#include <libbeemu/device/memory.h>
+#include <libbeemu/internals/utility.h>
 
 BeemuProcessor *beemu_processor_new(void)
 {

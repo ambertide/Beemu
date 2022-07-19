@@ -1,5 +1,5 @@
-#include <device/registers.h>
-#include <internals/utility.h>
+#include <libbeemu/device/registers.h>
+#include <libbeemu/internals/utility.h>
 #include <stdlib.h>
 
 BeemuRegisters *beemu_registers_new(void)

@@ -1,5 +1,5 @@
-#include <device/device.h>
-#include <device/processor.h>
+#include <libbeemu/device/device.h>
+#include <libbeemu/device/processor.h>
 #include <stdlib.h>
 
 BeemuDevice *beemu_device_new()

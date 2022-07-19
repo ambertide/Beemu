@@ -1,4 +1,4 @@
-#include <internals/utility.h>
+#include <libbeemu/internals/utility.h>
 #include <stdarg.h>
 
 bool beemu_util_is_one_of(int element, int n, ...)
