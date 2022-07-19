@@ -30,6 +30,14 @@ typedef enum BeemuRegister_8
 } BeemuRegister_8;
 
 /**
+ * @brief Get one of the 8 bit registers from its letters.
+ *
+ * @param letter Letter that refeers to the register.
+ * @return BeemuRegister_8 Register refeered or A if not valid.
+ */
+BeemuRegister_8 beemu_get_register_from_letter_8(const char letter);
+
+/**
  * @brief Represents the 16 bit registers
  *
  * These include the 16 bit combination registers

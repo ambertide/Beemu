@@ -467,3 +467,32 @@ void beemu_registers_execute_unary_bit_operation(BeemuRegisters *registers, Beem
 	const uint8_t current_value = beemu_registers_read_8(registers, register_);
 	beemu_registers_flag_set(registers, BEEMU_FLAG_Z, current_value == 0);
 }
+
+BeemuRegister_8 beemu_get_register_from_letter_8(const char letter)
+{
+	switch (letter)
+	{
+	case 'a':
+	case 'A':
+	default:
+		return BEEMU_REGISTER_A;
+	case 'b':
+	case 'B':
+		return BEEMU_REGISTER_B;
+	case 'c':
+	case 'C':
+		return BEEMU_REGISTER_C;
+	case 'd':
+	case 'D':
+		return BEEMU_REGISTER_D;
+	case 'e':
+	case 'E':
+		return BEEMU_REGISTER_E;
+	case 'h':
+	case 'H':
+		return BEEMU_REGISTER_H;
+	case 'l':
+	case 'L':
+		return BEEMU_REGISTER_L;
+	}
+}
