@@ -3,9 +3,11 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <libbeemu/device/processor.h>
+#include <libbeemu/device/memory.h>
+#include <libbeemu/device/registers.h>
 
 const int path_name_length = 48;
-
 typedef struct TestFiles
 {
 	char **test_file_paths;
@@ -39,7 +41,7 @@ TestFiles get_cpu_tests()
 			{
 				break;
 			}
-			else if (dir->d_name == "." || dir->d_name == "..")
+			else if (dir->d_name[0] == '.')
 			{
 				continue;
 			}
@@ -74,8 +76,76 @@ void tearDown(void)
 void exec_test_case(json_object *test)
 {
 	const char *test_name = json_object_get_string(json_object_object_get(test, "name"));
-	const json_object *inital_values = json_object_object_get(test, "inital");
+	const json_object *inital_values = json_object_object_get(test, "initial");
+	const json_object *initial_cpu_values = json_object_object_get(inital_values, "cpu");
+	const json_object *initial_ram_values = json_object_object_get(inital_values, "ram");
 	const json_object *final_values = json_object_object_get(test, "final");
+	const json_object *final_cpu_values = json_object_object_get(final_values, "cpu");
+	const json_object *final_ram_values = json_object_object_get(final_values, "ram");
+	BeemuProcessor *processor = beemu_processor_new();
+	// First load the device state.
+	json_object_object_foreach(initial_cpu_values, key, val)
+	{
+		const char *register_name = key;
+		if (strncmp(register_name, "sp", 2) == 0 || strncmp(register_name, "pc", 2) == 0)
+		{
+			const BeemuRegister_16 register_ = strncmp(register_name, "sp", 2) == 0 ? BEEMU_REGISTER_SP : BEEMU_REGISTER_PC;
+			beemu_registers_write_16(processor->registers, register_, (uint16_t)strtol(val, NULL, 0));
+		}
+		else
+		{
+			// 8 bit registers
+			const BeemuRegister_8 register_ = beemu_get_register_from_letter_8(register_name[0]);
+			beemu_registers_write_8(processor->registers, register_, (uint8_t)strtol(val, NULL, 0));
+		}
+	}
+	const int number_of_ram_addresses = json_object_array_length(initial_ram_values);
+	int last_written_addr = 0;
+	for (int addr_index = 0; addr_index < number_of_ram_addresses; addr_index++)
+	{
+		const json_object *ram_addr_val = json_object_array_get_idx(initial_ram_values, addr_index);
+		const int addr = (uint16_t)strtol(json_object_get_string(json_object_array_get_idx(ram_addr_val, 0)), NULL, 0);
+		const int val = (uint8_t)strtol(json_object_get_string(json_object_array_get_idx(ram_addr_val, 1)), NULL, 0);
+		beemu_memory_write(processor->memory, addr, val);
+		last_written_addr = addr;
+	}
+	// Add a stop right after the last execution.
+	beemu_memory_write(processor->memory, last_written_addr + 1, 0x10);
+
+	// Let the processor run.
+	while (processor->processor_state != BEEMU_DEVICE_STOP)
+	{
+		beemu_processor_run(processor);
+	}
+
+	// Test the final states.
+	json_object_object_foreach(final_cpu_values, key2, val2)
+	{
+		const char *register_name = key2;
+		if (strncmp(register_name, "sp", 2) == 0 || strncmp(register_name, "pc", 2) == 0)
+		{
+			const BeemuRegister_16 register_ = strncmp(register_name, "sp", 2) == 0 ? BEEMU_REGISTER_SP : BEEMU_REGISTER_PC;
+			const uint16_t value = beemu_registers_read_16(processor->registers, register_);
+			TEST_ASSERT_EQUAL((uint16_t)strtol(val2, NULL, 0), value);
+		}
+		else
+		{
+			// 8 bit registers
+			const BeemuRegister_8 register_ = beemu_get_register_from_letter_8(register_name[0]);
+			const uint8_t value = beemu_registers_read_8(processor->registers, register_);
+			TEST_ASSERT_EQUAL((uint8_t)strtol(val2, NULL, 0), value);
+		}
+	}
+	const int number_of_ram_addresses_in_final = json_object_array_length(initial_ram_values);
+	for (int addr_index = 0; addr_index < number_of_ram_addresses_in_final; addr_index++)
+	{
+		const json_object *ram_addr_val = json_object_array_get_idx(initial_ram_values, addr_index);
+		const int addr = (uint16_t)strtol(json_object_get_string(json_object_array_get_idx(ram_addr_val, 0)), NULL, 0);
+		const int val = (uint8_t)strtol(json_object_get_string(json_object_array_get_idx(ram_addr_val, 1)), NULL, 0);
+		const uint8_t actual_value = beemu_memory_read(processor->memory, addr);
+		TEST_ASSERT_EQUAL(val, actual_value);
+	}
+	beemu_processor_free(processor);
 }
 
 /**
@@ -100,6 +170,9 @@ void exec_single_instruction(char *data_file)
 		json_object *test = json_object_array_get_idx(root, test_id);
 		exec_test_case(test);
 	}
+	char msg[100];
+	snprintf(msg, 100, "Test %s Passed.");
+	TEST_MESSAGE(msg);
 	json_object_put(root);
 }
 

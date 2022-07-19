@@ -34,7 +34,7 @@ static const BeemuRegister_8 SYMMETRIC_REGISTERS[4][2] = {{BEEMU_REGISTER_B, BEE
 /**
  * @brief Size of the chip memory.
  */
-static const int BEEMU_DEVICE_MEMORY_SIZE = 64000;
+static const int BEEMU_DEVICE_MEMORY_SIZE = 65536;
 /**
  * @brief Location of the ROM in the main memory.
  */

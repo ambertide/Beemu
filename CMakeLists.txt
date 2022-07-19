@@ -17,6 +17,7 @@ configure_file(include/version.h.in version.h)
 add_executable(BeemuTest tests/check_cpu.c)
 target_link_libraries(BeemuTest PRIVATE unity)
 target_link_libraries(BeemuTest PRIVATE libbeemu)
+target_include_directories(BeemuTest PRIVATE include)
 target_link_libraries(BeemuTest PRIVATE json-c)
 
 enable_testing()
