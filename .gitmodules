@@ -7,3 +7,9 @@
 [submodule "libs/Unity"]
 	path = libs/Unity
 	url = https://github.com/ThrowTheSwitch/Unity
+[submodule "libs/cJSON"]
+	path = libs/cJSON
+	url = https://github.com/DaveGamble/cJSON
+[submodule "libs/json-c"]
+	path = libs/json-c
+	url = https://github.com/json-c/json-c
