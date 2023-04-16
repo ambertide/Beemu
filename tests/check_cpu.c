@@ -28,7 +28,7 @@
 	{                                            \
 		char msg[100];                           \
 		snprintf(msg, 100, format, __VA_ARGS__); \
-		TEST_MESSAGE(msg);                       \
+		printf(msg);                             \
 	}
 
 const int path_name_length = 48;
@@ -80,16 +80,10 @@ TestFiles get_cpu_tests()
 
 void setUp(void)
 {
-	cpu_files = get_cpu_tests();
 }
 
 void tearDown(void)
 {
-	for (int i = 0; i < cpu_files.test_file_count; i++)
-	{
-		free(cpu_files.test_file_paths[i]);
-	}
-	free(cpu_files.test_file_paths);
 }
 
 /**
@@ -176,13 +170,16 @@ void exec_test_case(json_object *test)
 	beemu_processor_free(processor);
 }
 
+char **data_file_ptr;
+
 /**
  * @brief Test a single CPU instruction.
  *
  * @param data_file Data file that contains tests.
  */
-void exec_single_instruction(char *data_file)
+void test_single_instruction(void)
 {
+	char *data_file = *data_file_ptr;
 	TEST_MESSAGEF("Starting Test %s.", data_file);
 	json_object *root = json_object_from_file(data_file);
 	if (!root)
@@ -203,23 +200,20 @@ void exec_single_instruction(char *data_file)
 	json_object_put(root);
 }
 
-void test_cpu_functionality(void)
-{
-	for (int i = 0; i < cpu_files.test_file_count; i++)
-	{
-		exec_single_instruction(cpu_files.test_file_paths[i]);
-	}
-	json_object *root = json_object_from_file("../libs/gameboy-test-data/cpu_tests/00.json");
-	if (!root)
-		TEST_ASSERT_TRUE(0);
-	json_object_put(root);
-	TEST_ASSERT_TRUE(1);
-}
-
 // not needed when using generate_test_runner.rb
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_cpu_functionality);
+	cpu_files = get_cpu_tests();
+	for (int i = 0; i < cpu_files.test_file_count; i++)
+	{
+		*data_file_ptr = cpu_files.test_file_paths[i];
+		RUN_TEST(test_single_instruction);
+	}
+	for (int i = 0; i < cpu_files.test_file_count; i++)
+	{
+		free(cpu_files.test_file_paths[i]);
+	}
+	free(cpu_files.test_file_paths);
 	return UNITY_END();
 }
