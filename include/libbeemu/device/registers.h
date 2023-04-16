@@ -2,58 +2,7 @@
 #define BEEMU_DEVICE_REGISTERS_H
 #include <stdint.h>
 #include <stdbool.h>
-
-/**
- * @brief Conditions that dictate when to jump.
- */
-typedef enum BeemuJumpCondition
-{
-	BEEMU_JUMP_IF_NO_CONDITION,
-	BEEMU_JUMP_IF_CARRY,
-	BEEMU_JUMP_IF_NOT_CARRY,
-	BEEMU_JUMP_IF_ZERO,
-	BEEMU_JUMP_IF_NOT_ZERO
-} BeemuJumpCondition;
-
-/**
- * @brief Represents 8 Bit registers.
- */
-typedef enum BeemuRegister_8
-{
-	BEEMU_REGISTER_A,
-	BEEMU_REGISTER_B,
-	BEEMU_REGISTER_C,
-	BEEMU_REGISTER_D,
-	BEEMU_REGISTER_E,
-	BEEMU_REGISTER_H,
-	BEEMU_REGISTER_L
-} BeemuRegister_8;
-
-/**
- * @brief Get one of the 8 bit registers from its letters.
- *
- * @param letter Letter that refeers to the register.
- * @return BeemuRegister_8 Register refeered or A if not valid.
- */
-BeemuRegister_8 beemu_get_register_from_letter_8(const char letter);
-
-/**
- * @brief Represents the 16 bit registers
- *
- * These include the 16 bit combination registers
- * as well as pseudo-register M and special registers
- * SP and PC.
- */
-typedef enum BeemuRegister_16
-{
-	BEEMU_REGISTER_BC,
-	BEEMU_REGISTER_DE,
-	BEEMU_REGISTER_HL,
-	BEEMU_REGISTER_M,
-	BEEMU_REGISTER_SP,
-	BEEMU_REGISTER_PC,
-	BEEMU_REGISTER_AF
-} BeemuRegister_16;
+#include "primitives/register.h"
 
 /**
  * @brief Represents the flags.
@@ -66,64 +15,6 @@ typedef enum BeemuFlag
 	BEEMU_FLAG_H = 5, // Parity
 	BEEMU_FLAG_C = 4  // Carry
 } BeemuFlag;
-
-/**
- * @brief Enums representing binary operations.
- *
- */
-typedef enum BeemuOperation
-{
-	BEEMU_OP_ADD,
-	BEEMU_OP_SUB,
-	BEEMU_OP_AND,
-	BEEMU_OP_OR,
-	BEEMU_OP_CP,
-	BEEMU_OP_XOR
-} BeemuOperation;
-
-/**
- * @brief Enums representing stack operation.
- */
-typedef enum BeemuStackOperation
-{
-	BEEMU_SOP_POP,
-	BEEMU_SOP_PUSH
-} BeemuStackOperation;
-
-/**
- * @brief Enums representing unary operations.
- *
- */
-typedef enum BeemuUnaryOperation
-{
-	BEEMU_UOP_INC,
-	BEEMU_UOP_DEC
-} BeemuUnaryOperation;
-
-/**
- * @brief Represents bit operations on a register.
- */
-typedef enum BeemuBitOperation
-{
-	BEEMU_BIT_OP_BIT,
-	BEEMU_BIT_OP_SET,
-	BEEMU_BIT_OP_RES
-} BeemuBitOperation;
-
-/**
- * @brief Represents unary bit operations on a register.
- */
-typedef enum BeemuUnaryBitOperation
-{
-	BEEMU_BIT_UOP_RLC,
-	BEEMU_BIT_UOP_RRC,
-	BEEMU_BIT_UOP_RL,
-	BEEMU_BIT_UOP_RR,
-	BEEMU_BIT_UOP_SLA,
-	BEEMU_BIT_UOP_SRA,
-	BEEMU_BIT_UOP_SWAP,
-	BEEMU_BIT_UOP_SRL
-} BeemuUnaryBitOperation;
 
 /**
  * @brief Struct holding registers and flags.

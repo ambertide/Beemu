@@ -31,5 +31,6 @@
     "stdlib.h": "c"
   },
   "cmake.configureOnOpen": true,
-  "editor.formatOnType": true
+  "editor.formatOnType": true,
+  "editor.lineNumbers": "relative"
 }
