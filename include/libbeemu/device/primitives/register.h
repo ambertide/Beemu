@@ -1,8 +1,15 @@
-#ifndef BEEMU_REGISTER_H
-#define BEEMU_REGISTER_H
+#ifndef BEEMU_REGISTER_PRIMITIVES_H
+#define BEEMU_REGISTER_PRIMITIVES_H
 /**
  * @brief Represents 8 Bit registers.
  */
+
+typedef enum BeemuRegisterType
+{
+	BEEMU_EIGHT_BIT_REGISTER,
+	BEEMU_SIXTEEN_BIT_REGISTER,
+} BeemuRegisterType;
+
 typedef enum BeemuRegister_8
 {
 	BEEMU_REGISTER_A,
@@ -40,4 +47,14 @@ typedef enum BeemuRegister_16
 	BEEMU_REGISTER_AF
 } BeemuRegister_16;
 
-#endif // BEEMU_REGISTER_H
+typedef struct BeemuRegister
+{
+	BeemuRegisterType type;
+	union
+	{
+		BeemuRegister_8 eight_bit_register;
+		BeemuRegister_16 sixteen_bit_register;
+	} name_of;
+} BeemuRegister;
+
+#endif // BEEMU_REGISTER_PRIMITIVES_H
