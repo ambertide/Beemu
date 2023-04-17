@@ -57,7 +57,7 @@ void beemu_registers_free(BeemuRegisters *registers);
  * @param register_ Register value to read from.
  * @return uint16_t Value.
  */
-uint16_t beemu_read_register_value(BeemuRegisters *registers, BeemuRegister register_);
+uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuRegister register_);
 
 /**
  * @brief Write to a register, a value.
@@ -66,6 +66,6 @@ uint16_t beemu_read_register_value(BeemuRegisters *registers, BeemuRegister regi
  * @param register_ Register to write to.
  * @param value Value to write.
  */
-void beemu_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value);
+void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value);
 
 #endif // BEEMU_DEVICE_REGISTERS_H

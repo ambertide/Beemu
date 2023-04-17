@@ -138,7 +138,7 @@ beemu_get_register_ptr_16(BeemuRegisters *registers, BeemuRegister_16 register_)
 	}
 }
 
-uint16_t beemu_read_register_value(BeemuRegisters *registers, BeemuRegister register_)
+uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuRegister register_)
 {
 	if (register_.type == BEEMU_EIGHT_BIT_REGISTER)
 	{
@@ -155,7 +155,7 @@ uint16_t beemu_read_register_value(BeemuRegisters *registers, BeemuRegister regi
 	}
 }
 
-void beemu_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value)
+void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value)
 {
 	if (register_.type == BEEMU_EIGHT_BIT_REGISTER)
 	{

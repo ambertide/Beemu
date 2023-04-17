@@ -8,29 +8,34 @@
 typedef enum beemuInstructionType
 {
 	// Categorization based on https://gbdev.io/pandocs/CPU_Instruction_Set.html
-	LOAD_8,
-	LOAD_16,
-	ARITHMATIC_8,
-	ARITHMATIC_16,
-	ROT_SHIFT,
-	BITWISE,
-	CPU_CONTROL,
-	JUMP
+	BEEMU_INSTRUCTION_TYPE_LOAD_8,
+	BEEMU_INSTRUCTION_TYPE_LOAD_16,
+	BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8,
+	BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16,
+	BEEMU_INSTRUCTION_TYPE_ROT_SHIFT,
+	BEEMU_INSTRUCTION_TYPE_BITWISE,
+	BEEMU_INSTRUCTION_TYPE_CPU_CONTROL,
+	BEEMU_INSTRUCTION_TYPE_JUMP
 } BeemuInstructionType;
 
 /**
  * @brief Describes the type of a single param.
  *
  */
-typedef enum beemuParamType
+typedef enum BeemuParamType
 {
-	MEMORY,
-	REGISTER_8,
-	REGISTER_16,
-	UINT_8,
-	UINT16,
-	INT_8
+	BEEMU_PARAM_TYPE_REGISTER_8,
+	BEEMU_PARAM_TYPE_REGISTER_16,
+	BEEMU_PARAM_TYPE_UINT_8,
+	BEEMU_PARAM_TYPE_UINT16,
+	BEEMU_PARAM_TYPE_INT_8
 } BeemuParamType;
+
+typedef enum BeemuWriteLength
+{
+	BEEMU_WRITE_LENGTH_8,
+	BEEMU_WRITE_LENGTH_16
+} BeemuWriteLength;
 
 /**
  * @brief Holds a single param.
@@ -44,14 +49,15 @@ typedef struct BeemuParam
 	bool pointer;
 	/** Type of a the variable. */
 	BeemuParamType type;
+	/** This determines the write length, useful for write loads */
+	BeemuWriteLength write_length;
 	/** Actual value hold within. */
 	union
 	{
-		uint16_t memory_address;
 		uint16_t value;
 		int8_t signed_value;
-		BeemuRegister_8 register_;
-		BeemuRegister_16 register_;
+		BeemuRegister_8 register_16;
+		BeemuRegister_16 register_8;
 	} value;
 } BeemuParam;
 
@@ -102,10 +108,10 @@ typedef struct BeemuArithmaticParams
  */
 typedef enum BeemuRotShiftOp
 {
-	ROTATE,
-	SHIFT_ARITHMATIC,
-	SWAP,
-	SHIFT_LOGICAL
+	BEEMU_ROTATE_OP,
+	BEEMU_SHIFT_ARITHMATIC_OP,
+	BEEMU_SWAP_OP,
+	BEEMU_SHIFT_LOGICAL_OP
 } BeemuRotShiftOp;
 
 /**
@@ -114,8 +120,8 @@ typedef enum BeemuRotShiftOp
  */
 typedef enum BeemuRotShiftDirection
 {
-	LEFT,
-	RIGHT,
+	BEMU_LEFT_DIRECTION,
+	BEEMU_RIGHT_DIRECTION,
 } BeemuRotShiftDirection;
 
 typedef struct BeemuRotShiftParams
@@ -161,10 +167,10 @@ typedef enum BeemuJumpCondition
 
 typedef enum BeemuJumpType
 {
-	JUMP,
-	CALL,
-	RET,
-	RST
+	BEMU_JUMP_TYPE_JUMP,
+	BEEMU_JUMP_TYPE_CALL,
+	BEEMU_JUMP_TYPE_RET,
+	BEEMU_JUMP_TYPE_RST
 } BeemuJumpType;
 
 /** Params used by jump instructions */
@@ -182,13 +188,13 @@ typedef struct BeemuJumpParams
 
 typedef enum BeemuSystemOperation
 {
-	XOR_CARRY_FLAG,
-	SET_CARRY_FLAG,
-	NOP,
-	HALT,
-	STOP,
-	DISABLE_INTERRUPTS,
-	ENABLE_INTERRUPTS
+	BEEMU_CPU_OP_XOR_CARRY_FLAG,
+	BEEMU_CPU_OP_SET_CARRY_FLAG,
+	BEEMU_CPU_OP_NOP,
+	BEEMU_CPU_OP_HALT,
+	BEEMU_CPU_OP_STOP,
+	BEEMU_CPU_OP_DISABLE_INTERRUPTS,
+	BEEMU_CPU_OP_ENABLE_INTERRUPTS
 } BeemuSystemOperation;
 
 /**

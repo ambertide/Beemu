@@ -28,7 +28,9 @@
     "memory.h": "c",
     "utility": "c",
     "stdint.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "executor.h": "c",
+    "registers.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true,
