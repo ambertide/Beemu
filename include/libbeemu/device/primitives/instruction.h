@@ -40,6 +40,8 @@ typedef enum beemuParamType
  */
 typedef struct BeemuParam
 {
+	/** Identifies whether to dereference before usage. */
+	bool pointer;
 	/** Type of a the variable. */
 	BeemuParamType type;
 	/** Actual value hold within. */
@@ -59,8 +61,6 @@ typedef struct BeemuParam
  */
 typedef struct BeemuLoadParams
 {
-	bool dereference_source_before_assigning;
-	bool dereference_dest_before_assigning;
 	/** Load from */
 	BeemuParam source;
 	/** Load to */
@@ -88,10 +88,6 @@ typedef enum BeemuOperation
 /** Params for arithmatic and logic ops. */
 typedef struct BeemuArithmaticParams
 {
-	/** Certain instructions may also add or remove Cy */
-	bool include_carry;
-	/** Deref the source as a pointer, typically HL. */
-	bool dereference_source_before;
 	/** Specific arithmatic/logic operation to perform. */
 	BeemuOperation operation;
 	/** First operand as well as the destination register. */
