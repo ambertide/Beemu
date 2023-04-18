@@ -171,3 +171,9 @@ void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegist
 		beemu_write_composed_register(registers, register_.name_of.sixteen_bit_register, value);
 	}
 }
+
+void beemu_registers_flags_set_flag(BeemuRegisters *registers, BeemuFlag flag, uint8_t value)
+{
+	// This should probably work.
+	registers->flags |= value << flag;
+}

@@ -68,7 +68,7 @@ int resolve_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam par
  * @param value Value to write.
  * @param type Type of the location.
  */
-void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam param, uint16_t value, BeemuInstructionType type)
+void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam param, uint16_t value, bool is_eight_bit_write)
 {
 	BeemuRegister register_;
 	uint16_t write_location;
@@ -114,7 +114,7 @@ void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam p
 	// write location, or we are about to segfault. A logical person
 	// would try to do an error check, I am, however, not a logical person
 	// nor particularly intelligent, so...
-	if (type == BEEMU_INSTRUCTION_TYPE_LOAD_8)
+	if (is_eight_bit_write)
 	{
 		beemu_memory_write(memory, write_location, value);
 	}
@@ -131,10 +131,85 @@ void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam p
  * @param memory Memory pointer.
  * @param instruction Instruction to execute.
  */
-void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+inline void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
 {
 	const uint16_t load_value = resolve_param(registers, memory, instruction.params.load_params.source);
-	write_to_param(memory, registers, instruction.params.load_params.dest, load_value, instruction.type);
+	write_to_param(memory, registers, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD_8);
+}
+
+/**
+ * @brief Resolve a value to adjust to a given type.
+ *
+ * Calculate underflows, overflows, and positive adjustments as well.
+ * @param num
+ * @param paramType
+ * @return int
+ */
+inline uint16_t resolve_flows(int value, BeemuParamType resolve_to)
+{
+	switch (resolve_to)
+	{
+	case BEEMU_PARAM_TYPE_INT_8:
+	case BEEMU_PARAM_TYPE_UINT_8:
+	case BEEMU_PARAM_TYPE_REGISTER_8:
+		return (uint8_t)value;
+	case BEEMU_PARAM_TYPE_UINT16:
+	case BEEMU_PARAM_TYPE_REGISTER_16:
+		return (uint16_t)value;
+	default:
+		return value;
+	}
+}
+
+inline void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+{
+	// First we need to resolve the operands.
+	const int operand_one = resolve_param(registers, memory, instruction.params.arithmatic_params.dest);
+	const int operand_two = resolve_param(registers, memory, instruction.params.arithmatic_params.source);
+	int result = operand_one;
+	// Do not assign the result.
+	bool silent = false;
+	// Then we need to take our operation upon it.
+	switch (instruction.params.arithmatic_params.operation)
+	{
+	case BEEMU_OP_ADD:
+		result += operand_two;
+		break;
+	case BEEMU_OP_AND:
+		result &= operand_two;
+		break;
+	case BEEMU_OP_CP:
+		silent = true;
+	case BEEMU_OP_SUB:
+		result -= operand_two;
+		break;
+	case BEEMU_OP_XOR:
+		result ^= operand_two;
+		break;
+	case BEEMU_OP_OR:
+		result |= operand_two;
+		break;
+	}
+	// Great, now we will do a few things, first,
+	// we need to properly encode the result
+	// including the over/undef-flows.
+	uint16_t resolved_result = resolve_flows(result, instruction.params.arithmatic_params.dest.type);
+	// Calculate the flag states.
+	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_Z, resolved_result == 0);
+	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_C, resolved_result != result);
+	// Write the actual result.
+	if (!silent)
+	{
+		write_to_param(
+			memory,
+			registers,
+			instruction.params.arithmatic_params.dest,
+			resolved_result,
+			beemu_util_is_one_of_two(
+				instruction.params.arithmatic_params.dest.type,
+				BEEMU_PARAM_TYPE_REGISTER_8,
+				BEEMU_PARAM_TYPE_UINT_8));
+	}
 }
 
 void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction)
@@ -143,7 +218,11 @@ void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruc
 	{
 	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
 	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
-		execute_load(memory, file, instruction);
+		execute_load(file, memory, instruction);
+		break;
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
+		execute_arithmatic(file, memory, instruction);
 		break;
 	}
 }
