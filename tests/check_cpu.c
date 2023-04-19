@@ -43,8 +43,17 @@ void tearDown(void)
  */
 void test_single_instruction(void)
 {
-	TEST_MESSAGEF("Starting Test %s", "for executor.");
-	TEST_MESSAGEF("Test %s Passed.", "for executor");
+	TEST_MESSAGEF("Starting Test %s\n", "for executor.");
+	BeemuInstruction instruction = {.type = BEEMU_INSTRUCTION_TYPE_LOAD_8,
+									.params = {.load_params = {
+												   .dest = {.pointer = false, .type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_A},
+												   .source = {.pointer = false, .type = BEEMU_PARAM_TYPE_UINT_8, .value.value = 10}}}};
+	BeemuMemory *memory = beemu_memory_new(64000);
+	BeemuRegisters *registers = beemu_registers_new();
+	TEST_ASSERT_EQUAL_UINT8(0, registers->registers[BEEMU_REGISTER_A]);
+	execute_instruction(memory, registers, instruction);
+	TEST_ASSERT_EQUAL_UINT8(10, registers->registers[BEEMU_REGISTER_A]);
+	TEST_MESSAGEF("Test %s Passed.\n", "for executor");
 }
 
 // not needed when using generate_test_runner.rb
