@@ -56,8 +56,8 @@ typedef struct BeemuParam
 	{
 		uint16_t value;
 		int8_t signed_value;
-		BeemuRegister_8 register_16;
-		BeemuRegister_16 register_8;
+		BeemuRegister_8 register_8;
+		BeemuRegister_16 register_16;
 	} value;
 } BeemuParam;
 
@@ -85,10 +85,6 @@ typedef enum BeemuOperation
 	BEEMU_OP_OR,
 	BEEMU_OP_CP,
 	BEEMU_OP_XOR,
-	BEEMU_POP,
-	BEEMU_PUSH,
-	BEEMU_INC,
-	BEEMU_DEC
 } BeemuOperation;
 
 /** Params for arithmatic and logic ops. */

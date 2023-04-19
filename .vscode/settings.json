@@ -30,7 +30,9 @@
     "stdint.h": "c",
     "stdlib.h": "c",
     "executor.h": "c",
-    "registers.h": "c"
+    "registers.h": "c",
+    "processor.h": "c",
+    "register.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true,

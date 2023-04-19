@@ -1,7 +1,7 @@
 #ifndef BEEMU_DEVICE_DEVICE_H
 #define BEEMU_DEVICE_DEVICE_H
 
-#include "processor.h"
+#include "processor/processor.h"
 
 /**
  * @brief Device object that keeps everything contained.

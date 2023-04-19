@@ -20,7 +20,7 @@
  * @param param Parameter to be resolved.
  * @return int Integer value.
  */
-int resolve_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam param)
+int resolve_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam param)
 {
 	BeemuRegister register_;
 	uint16_t param_value = 0;
@@ -68,7 +68,7 @@ int resolve_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam par
  * @param value Value to write.
  * @param type Type of the location.
  */
-void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam param, uint16_t value, bool is_eight_bit_write)
+void write_to_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam param, uint16_t value, bool is_eight_bit_write)
 {
 	BeemuRegister register_;
 	uint16_t write_location;
@@ -131,10 +131,10 @@ void write_to_param(BeemuMemory *memory, BeemuRegisters *registers, BeemuParam p
  * @param memory Memory pointer.
  * @param instruction Instruction to execute.
  */
-inline void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
 {
 	const uint16_t load_value = resolve_param(registers, memory, instruction.params.load_params.source);
-	write_to_param(memory, registers, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD_8);
+	write_to_param(registers, memory, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD_8);
 }
 
 /**
@@ -145,7 +145,7 @@ inline void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuIn
  * @param paramType
  * @return int
  */
-inline uint16_t resolve_flows(int value, BeemuParamType resolve_to)
+uint16_t resolve_flows(int value, BeemuParamType resolve_to)
 {
 	switch (resolve_to)
 	{
@@ -161,7 +161,7 @@ inline uint16_t resolve_flows(int value, BeemuParamType resolve_to)
 	}
 }
 
-inline void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
 {
 	// First we need to resolve the operands.
 	const int operand_one = resolve_param(registers, memory, instruction.params.arithmatic_params.dest);
@@ -201,8 +201,8 @@ inline void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, B
 	if (!silent)
 	{
 		write_to_param(
-			memory,
 			registers,
+			memory,
 			instruction.params.arithmatic_params.dest,
 			resolved_result,
 			beemu_util_is_one_of_two(

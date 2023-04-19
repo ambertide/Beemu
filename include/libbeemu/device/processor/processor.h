@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "registers.h"
-#include "memory.h"
+#include "executor.h"
+#include "../memory.h"
 
 static const BeemuRegister_8 ORDERED_REGISTER_NAMES[8] = {BEEMU_REGISTER_B,
 														  BEEMU_REGISTER_C,

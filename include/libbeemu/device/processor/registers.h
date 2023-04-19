@@ -69,17 +69,6 @@ uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuReg
 void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value);
 
 /**
- * @brief Describes one of the flags of the device.
- */
-typedef enum BeemuFlag
-{
-	BEEMU_FLAG_Z,
-	BEEMU_FLAG_N,
-	BEEMU_FLAG_H,
-	BEEMU_FLAG_C
-} BeemuFlag;
-
-/**
  * @brief Set the value of a single flag.
  *
  * @param registers Register file pointer.

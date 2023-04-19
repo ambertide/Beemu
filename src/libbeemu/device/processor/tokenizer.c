@@ -1,64 +1,49 @@
 #include <stdlib.h>
-#include <libbeemu/device/processor.h>
+#include <libbeemu/device/processor/tokenizer.h>
+#include <libbeemu/device/processor/processor.h>
 #include <libbeemu/device/memory.h>
 #include <libbeemu/internals/utility.h>
 
-BeemuProcessor *beemu_processor_new(void)
+/**
+ * @brief These are transpiled two normal OPs.
+ *
+ */
+typedef enum BeemuUnaryOperation
 {
-	BeemuProcessor *processor = (BeemuProcessor *)malloc(sizeof(BeemuProcessor));
-	processor->memory = beemu_memory_new(BEEMU_DEVICE_MEMORY_SIZE);
-	processor->registers = beemu_registers_new();
-	processor->interrupts_enabled = true;
-	processor->processor_state = BEEMU_DEVICE_NORMAL;
-	beemu_registers_write_16(processor->registers, BEEMU_REGISTER_PC, BEEMU_DEVICE_MEMORY_ROM_LOCATION);
-	return processor;
-}
+	BEEMU_UOP_INC,
+	BEEMU_UOP_DEC
+} BeemuUnaryOperation;
 
-void beemu_processor_free(BeemuProcessor *processor)
+typedef enum BeemuStackOperation
 {
-	beemu_memory_free(processor->memory);
-	beemu_registers_free(processor->registers);
-	free(processor);
-}
+	BEEMU_SOP_PUSH,
+	BEEMU_SOP_POP
+} BeemuStackOperation;
 
 /**
- * @brief Set the elapsed clock cycle count for the processor.
+ * @brief These are also compiled to existing instructions.
  *
- * @param processor BeemuProcessor object pointer.
- * @param value Value to be set.
  */
-static inline void beemu_processor_set_elapsed_clock_cycle(BeemuProcessor *processor, uint8_t value)
+typedef enum BeemuUnaryBitOperation
 {
-	processor->elapsed_clock_cycle = value;
-}
-
-/**
- * @brief Reset the processor's elapsed clock cycle to 0.
- *
- * @param processor BeemuProcessor object pointer.
- */
-static inline void beemu_processor_reset_elapsed_clock_cycle(BeemuProcessor *processor)
-{
-	beemu_processor_set_elapsed_clock_cycle(processor, 0);
-}
-
-BeemuProcessorState beemu_processor_get_processor_state(BeemuProcessor *processor)
-{
-	return processor->processor_state;
-}
-
-void beemu_processor_set_state(BeemuProcessor *processor, BeemuProcessorState state)
-{
-	processor->processor_state = state;
-}
+	BEEMU_BIT_UOP_RLC,
+	BEEMU_BIT_UOP_RRC,
+	BEEMU_BIT_UOP_RL,
+	BEEMU_BIT_UOP_RR,
+	BEEMU_BIT_UOP_SLA,
+	BEEMU_BIT_UOP_SRA,
+	BEEMU_BIT_UOP_SWAP,
+	BEEMU_BIT_UOP_SRL
+} BeemuUnaryBitOperation;
 
 /**
  * @brief Peek the next instruction.
  *
- * Get the next instruction to be executed.
+ * Get the next instruction to be tokenized.
  * @param processor
  */
-static inline uint8_t peek_instruction(BeemuProcessor *processor)
+static inline uint8_t
+peek_instruction(BeemuProcessor *processor)
 {
 	const uint16_t next_instruction_location = beemu_registers_read_16(processor->registers, BEEMU_REGISTER_PC);
 	const uint8_t next_instruction = beemu_memory_read(processor->memory, next_instruction_location);
@@ -68,7 +53,7 @@ static inline uint8_t peek_instruction(BeemuProcessor *processor)
 /**
  * @brief Pop the next instruction.
  *
- * Get the next instruction to be executed, increment
+ * Get the next instruction to be tokenized, increment
  * the program counter.
  * @param processor
  */
@@ -167,14 +152,14 @@ static inline const BeemuRegister_8 decode_ld_register_from_instruction(uint8_t 
 }
 
 /**
- * @brief Execute an arithmatic register instruction
+ * @brief tokenize an arithmatic register instruction
  *
- * Execute ADD, ADC, SUB, SBC, AND, XOR, OR and CP with registers
+ * tokenize ADD, ADC, SUB, SBC, AND, XOR, OR and CP with registers
  * affecting the acumulator.
  *
  * @param processor BeemuProcessor object.
  */
-static inline void execute_arithmatic_register_instruction(BeemuProcessor *processor)
+static inline void tokenize_arithmatic_register_instruction(BeemuProcessor *processor)
 {
 	BeemuOperation operation = BEEMU_OP_ADD;
 	switch (processor->current_instruction.first_nibble)
@@ -233,11 +218,11 @@ static inline void execute_arithmatic_register_instruction(BeemuProcessor *proce
 }
 
 /**
- * @brief Execute a load instruction.
+ * @brief tokenize a load instruction.
  *
  * @param processor BeemuProcessor object.
  */
-static inline void execute_load_instruction(BeemuProcessor *processor)
+static inline void tokenize_load_instruction(BeemuProcessor *processor)
 {
 	const BeemuRegister_8 destination_register = decode_register_from_instruction(processor->current_instruction.instruction);
 	uint8_t value = dereference_hl(processor);
@@ -260,15 +245,15 @@ static inline void execute_load_instruction(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute unary inc or dec on memory.
+ * @brief tokenize unary inc or dec on memory.
  *
- * Execute an increment or a decrement operation on the
+ * tokenize an increment or a decrement operation on the
  * value of a memory address dereferenced by HL and
  * write it to the same memory, set the flags.
  * @param processor BeemuProcessor object pointer.
  * @param operation Operation to perform.
  */
-void execute_unary_on_memory(BeemuProcessor *processor, BeemuUnaryOperation operation)
+void tokenize_unary_on_memory(BeemuProcessor *processor, BeemuUnaryOperation operation)
 {
 	uint8_t previous_value = dereference_hl(processor);
 	const uint8_t new_value = operation == BEEMU_UOP_INC ? previous_value + 1 : previous_value - 1;
@@ -296,21 +281,21 @@ BeemuRegister_8 decode_03_block_sym_register(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute a register increment or decrement operation.
+ * @brief tokenize a register increment or decrement operation.
  *
- * Execute a register increment or decrement operation, the register to
+ * tokenize a register increment or decrement operation, the register to
  * operate on depends on the instruction.
  * @param processor BeemuProcessor object pointer.
  * @param increment If set to true, increment, otherwise decrement.
  */
-void execute_unary_operand(BeemuProcessor *processor, bool increment)
+void tokenize_unary_operand(BeemuProcessor *processor, bool increment)
 {
 	const bool on_the_left = processor->current_instruction.second_nibble < 0x07;
 	const BeemuUnaryOperation uop = increment ? BEEMU_UOP_INC : BEEMU_UOP_DEC;
 	if (on_the_left && processor->current_instruction.first_nibble == 0x30)
 	{
 		// These act on the dereferenced HL.
-		execute_unary_on_memory(processor, uop);
+		tokenize_unary_on_memory(processor, uop);
 	}
 	else
 	{
@@ -321,13 +306,13 @@ void execute_unary_operand(BeemuProcessor *processor, bool increment)
 }
 
 /**
- * @brief Execute a register increment or decrement operation on 16.
+ * @brief tokenize a register increment or decrement operation on 16.
  *
- * Execute a register increment or decrement operation, the register to
+ * tokenize a register increment or decrement operation, the register to
  * operate on depends on the instruction.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_unary_operand_16(BeemuProcessor *processor)
+void tokenize_unary_operand_16(BeemuProcessor *processor)
 {
 	const bool on_the_left = processor->current_instruction.second_nibble < 0x07;
 	const int index = processor->current_instruction.first_nibble >> 1;
@@ -336,14 +321,14 @@ void execute_unary_operand_16(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute an arithmatic register instruction
+ * @brief tokenize an arithmatic register instruction
  *
- * Execute ADD with 16 bitregisters
+ * tokenize ADD with 16 bitregisters
  * affecting the HL.
  *
  * @param processor BeemuProcessor object.
  */
-static inline void execute_arithmatic_register_instruction_16(BeemuProcessor *processor)
+static inline void tokenize_arithmatic_register_instruction_16(BeemuProcessor *processor)
 {
 	// Only supported 16 bit OP is ADD (for some reason.).
 	BeemuOperation operation = BEEMU_OP_ADD;
@@ -360,7 +345,7 @@ static inline void execute_arithmatic_register_instruction_16(BeemuProcessor *pr
  * @param is_byte_length If set to true, interpret as a load to
  * a 8 register.
  */
-void execute_load_direct(BeemuProcessor *processor, bool is_byte_length)
+void tokenize_load_direct(BeemuProcessor *processor, bool is_byte_length)
 {
 	if (is_byte_length)
 	{
@@ -379,14 +364,14 @@ void execute_load_direct(BeemuProcessor *processor, bool is_byte_length)
 }
 
 /**
- * @brief Execute LD to/from dereferenced memory addresses to/from accumulator.
+ * @brief tokenize LD to/from dereferenced memory addresses to/from accumulator.
  *
  * @param processor BeemuProcessor object pointer.
  * @param from_accum if set to true, load from accumulator to the
  * dereferenced memory location, otherwise, load from the dereferenced
  * memory location to the accumulator register.
  */
-static void execute_load_accumulator_16(BeemuProcessor *processor, bool from_accum)
+static void tokenize_load_accumulator_16(BeemuProcessor *processor, bool from_accum)
 {
 	// Finally, you may have to decrement or increment.
 	static const BeemuRegister_16 registers[4] = {
@@ -428,7 +413,7 @@ static void execute_load_accumulator_16(BeemuProcessor *processor, bool from_acc
  * @brief Decode condition for JP, JR, CALL or RET
  *
  * Some instruction have condition to decide whether or not
- * to execute.
+ * to tokenize.
  * @param processor
  * @return BeemuJumpCondition
  */
@@ -470,13 +455,13 @@ BeemuJumpCondition decide_condition(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute a JP or JR instruction.
+ * @brief tokenize a JP or JR instruction.
  *
- * Execute a JP or JR instruction, decide the correct parameters
+ * tokenize a JP or JR instruction, decide the correct parameters
  * based on the instruction.
  * @param processor
  */
-void execute_jump(BeemuProcessor *processor)
+void tokenize_jump(BeemuProcessor *processor)
 {
 	const bool is_jr = processor->current_instruction.first_nibble < 0x70;
 	BeemuJumpCondition condition = decide_condition(processor);
@@ -498,12 +483,12 @@ void execute_jump(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute one of the rotate.
+ * @brief tokenize one of the rotate.
  *
- * Execute RLCA, RLA, RRCA or RRA instructions.
+ * tokenize RLCA, RLA, RRCA or RRA instructions.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_rotate_a(BeemuProcessor *processor)
+void tokenize_rotate_a(BeemuProcessor *processor)
 {
 	const bool rotate_right = processor->current_instruction.second_nibble = 0x0F;
 	const bool through_c = processor->current_instruction.first_nibble = 0x00;
@@ -517,7 +502,7 @@ void execute_rotate_a(BeemuProcessor *processor)
  * the data.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_load_sp_to_mem(BeemuProcessor *processor)
+void tokenize_load_sp_to_mem(BeemuProcessor *processor)
 {
 	pop_data(processor, false);
 	const uint16_t address = processor->data.data_16;
@@ -527,14 +512,14 @@ void execute_load_sp_to_mem(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute an instruction that will either set
+ * @brief tokenize an instruction that will either set
  * or complement the carry flag.
  *
  * @param processor BeemuProcessor object pointer.
  */
-void execute_set_complement_flag(BeemuProcessor *processor)
+void tokenize_set_complement_flag(BeemuProcessor *processor)
 {
-	// Use symmetry to determine which one to execute.
+	// Use symmetry to determine which one to tokenize.
 	const bool is_set = processor->current_instruction.second_nibble == 0x07;
 	// Set H and N flags.
 	beemu_registers_flag_set(processor->registers, BEEMU_FLAG_H, false);
@@ -582,13 +567,13 @@ uint16_t pop_stack(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute a stack operation.
+ * @brief tokenize a stack operation.
  *
- * Operating on the stack portion of the memory execute
+ * Operating on the stack portion of the memory tokenize
  * a POP or PUSH operation based on the SP register.
  * @param processor
  */
-void execute_stack_op(BeemuProcessor *processor, BeemuStackOperation operation)
+void tokenize_stack_op(BeemuProcessor *processor, BeemuStackOperation operation)
 {
 	const uint16_t stack_pointer = beemu_registers_read_16(processor->registers, BEEMU_REGISTER_PC);
 	const int index = (processor->current_instruction.first_nibble - 0xC0) >> 1;
@@ -611,12 +596,12 @@ void execute_stack_op(BeemuProcessor *processor, BeemuStackOperation operation)
 }
 
 /**
- * @brief Execute a "partial" load.
+ * @brief tokenize a "partial" load.
  *
- * Execute a load from/to $FF00 + Register
+ * tokenize a load from/to $FF00 + Register
  * @param processor
  */
-void execute_load_partial(BeemuProcessor *processor)
+void tokenize_load_partial(BeemuProcessor *processor)
 {
 	const uint8_t address_lower = beemu_registers_read_8(processor->registers, BEEMU_REGISTER_C);
 	const uint8_t address = beemu_util_combine_8_to_16(0xFF, address_lower);
@@ -635,13 +620,13 @@ void execute_load_partial(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute a RST instruction.
+ * @brief tokenize a RST instruction.
  *
  * Push the current address to the stack and jump to
  * an address close to 0x0000.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_reset_instruction(BeemuProcessor *processor)
+void tokenize_reset_instruction(BeemuProcessor *processor)
 {
 	const uint16_t offset = processor->current_instruction.first_nibble - 0xC0;
 	const uint16_t base = processor->current_instruction.second_nibble == 0x7E ? 0x00 : 0x08;
@@ -654,12 +639,12 @@ void execute_reset_instruction(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute a call instruction
+ * @brief tokenize a call instruction
  *
- * Execute a CALL instruction.
+ * tokenize a CALL instruction.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_call_instruction(BeemuProcessor *processor)
+void tokenize_call_instruction(BeemuProcessor *processor)
 {
 	BeemuJumpCondition condition = decide_condition(processor);
 	const uint16_t current_address = beemu_registers_read_16(processor->registers, BEEMU_REGISTER_PC);
@@ -675,7 +660,7 @@ void execute_call_instruction(BeemuProcessor *processor)
  * @param processor BeemuProcessor object pointer.
  * @param from_accumulator If true, get value from A.
  */
-void execute_load_A_dereference(BeemuProcessor *processor, bool from_accumulator)
+void tokenize_load_A_dereference(BeemuProcessor *processor, bool from_accumulator)
 {
 	pop_data(processor, false);
 	if (from_accumulator)
@@ -698,7 +683,7 @@ void execute_load_A_dereference(BeemuProcessor *processor, bool from_accumulator
  * @param processor BeemuProcessor object pointer.
  * @param from_accumulator If true, get value from A.
  */
-void execute_ldh(BeemuProcessor *processor, bool from_accumulator)
+void tokenize_ldh(BeemuProcessor *processor, bool from_accumulator)
 {
 	pop_data(processor, true);
 	const uint16_t address = 0xFF00 + ((uint16_t)processor->data.data_8);
@@ -714,7 +699,7 @@ void execute_ldh(BeemuProcessor *processor, bool from_accumulator)
 	}
 }
 
-void execute_ret(BeemuProcessor *processor)
+void tokenize_ret(BeemuProcessor *processor)
 {
 	const BeemuJumpCondition condition = decide_condition(processor);
 	const uint16_t memory_address = pop_stack(processor);
@@ -731,7 +716,7 @@ void execute_ret(BeemuProcessor *processor)
  *
  * @param processor
  */
-void execute_add_sp_r8(BeemuProcessor *processor)
+void tokenize_add_sp_r8(BeemuProcessor *processor)
 {
 	const uint16_t value = beemu_registers_read_16(processor->registers, BEEMU_REGISTER_SP);
 	pop_data(processor, true);
@@ -748,13 +733,13 @@ void execute_add_sp_r8(BeemuProcessor *processor)
 }
 
 /**
- * @brief Execute LD HL, SP related instructions.
+ * @brief tokenize LD HL, SP related instructions.
  *
  * These instructions load SP to HL or vice versa,
  * sometimes with an addition to SP value first.
  * @param processor
  */
-void execute_ldhl_sp(BeemuProcessor *processor)
+void tokenize_ldhl_sp(BeemuProcessor *processor)
 {
 	if (processor->current_instruction.instruction == 0xF8)
 	{
@@ -828,13 +813,13 @@ uint8_t get_offset(uint8_t instruction)
 }
 
 /**
- * @brief Execute a bit operation in the memory.
+ * @brief tokenize a bit operation in the memory.
  *
  * @param processor BeemuProcessor object pointer.
- * @param operation Operation to execute.
+ * @param operation Operation to tokenize.
  * @param value Value operand.
  */
-void execute_in_memory_bit_operation(BeemuProcessor *processor, BeemuBitOperation operation, uint8_t masked_value)
+void tokenize_in_memory_bit_operation(BeemuProcessor *processor, BeemuBitOperation operation, uint8_t masked_value)
 {
 	const uint8_t current_value = dereference_hl(processor);
 	const uint8_t mask = 0x01 << masked_value;
@@ -864,12 +849,12 @@ void execute_in_memory_bit_operation(BeemuProcessor *processor, BeemuBitOperatio
 }
 
 /**
- * @brief Execute BIT, RES or SET.
+ * @brief tokenize BIT, RES or SET.
  *
- * Execute the bit operations in the CB prefix.
+ * tokenize the bit operations in the CB prefix.
  * @param processor
  */
-void execute_bit_operations(BeemuProcessor *processor)
+void tokenize_bit_operations(BeemuProcessor *processor)
 {
 	static const BeemuBitOperation operations[3] = {
 		BEEMU_BIT_OP_BIT,
@@ -887,23 +872,23 @@ void execute_bit_operations(BeemuProcessor *processor)
 	const uint8_t mask_value = offsetted_value - index;
 	if (in_memory)
 	{
-		execute_in_memory_bit_operation(processor, operation, mask_value);
+		tokenize_in_memory_bit_operation(processor, operation, mask_value);
 	}
 	else
 	{
 		// Index is the integer division, and gives us the register.
-		beemu_registers_execute_bit_operation(processor->registers, operation,
-											  affected_register, mask_value);
+		beemu_registers_tokenize_bit_operation(processor->registers, operation,
+											   affected_register, mask_value);
 	}
 }
 
 /**
- * @brief Execute an in memory unary bit operation.
+ * @brief tokenize an in memory unary bit operation.
  *
  * @param processor BeemuProcessor object pointer.
- * @param operation Operation to execute.
+ * @param operation Operation to tokenize.
  */
-void execute_in_memory_unary_bit_operation(BeemuProcessor *processor, BeemuUnaryBitOperation operation)
+void tokenize_in_memory_unary_bit_operation(BeemuProcessor *processor, BeemuUnaryBitOperation operation)
 {
 	const uint8_t value = dereference_hl(processor);
 	uint8_t new_value = 0;
@@ -930,11 +915,11 @@ void execute_in_memory_unary_bit_operation(BeemuProcessor *processor, BeemuUnary
 }
 
 /**
- * @brief Execute an unary bit operation.
+ * @brief tokenize an unary bit operation.
  *
  * @param processor
  */
-void execute_unary_bit_operations(BeemuProcessor *processor)
+void tokenize_unary_bit_operations(BeemuProcessor *processor)
 {
 	static const BeemuUnaryBitOperation operations[8] = {
 		BEEMU_BIT_UOP_RLC,
@@ -954,12 +939,12 @@ void execute_unary_bit_operations(BeemuProcessor *processor)
 	const BeemuRegister_8 affected_register = ORDERED_REGISTER_NAMES[index];
 	if (in_memory)
 	{
-		execute_in_memory_unary_bit_operation(processor, operation);
+		tokenize_in_memory_unary_bit_operation(processor, operation);
 	}
 	else
 	{
-		beemu_registers_execute_unary_bit_operation(processor->registers, operation,
-													affected_register);
+		beemu_registers_tokenize_unary_bit_operation(processor->registers, operation,
+													 affected_register);
 	}
 }
 
@@ -968,55 +953,55 @@ void execute_unary_bit_operations(BeemuProcessor *processor)
  *
  * @param processor
  */
-void execute_cb_prefix(BeemuProcessor *processor)
+void tokenize_cb_prefix(BeemuProcessor *processor)
 {
 	pop_instruction(processor);
 	if (processor->current_instruction.first_nibble >= 0x40)
 	{
-		execute_bit_operations(processor);
+		tokenize_bit_operations(processor);
 	}
 	else
 	{
-		execute_unary_bit_operations(processor);
+		tokenize_unary_bit_operations(processor);
 	}
 }
 
 /**
- * @brief Execute an instruction from the CF block.
+ * @brief tokenize an instruction from the CF block.
  *
  * CF block comprimises those instructions from 0xC0 to
  * 0xFF.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_cf_block(BeemuProcessor *processor)
+void tokenize_cf_block(BeemuProcessor *processor)
 {
 	switch (processor->current_instruction.second_nibble)
 	{
 	case 0x00:
 		if (processor->current_instruction.second_nibble >= 0xE0)
 		{
-			execute_ldh(processor, processor->current_instruction.instruction == 0xE0);
+			tokenize_ldh(processor, processor->current_instruction.instruction == 0xE0);
 		}
-		execute_ret(processor);
+		tokenize_ret(processor);
 		break;
 	case 0x01:
 	case 0x05:
-		execute_stack_op(processor, processor->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
+		tokenize_stack_op(processor, processor->current_instruction.second_nibble == 0x05 ? BEEMU_SOP_PUSH : BEEMU_SOP_POP);
 		break;
 	case 0x02:
 		if (processor->current_instruction.first_nibble <= 0xD0)
 		{
 			// Jump
-			execute_jump(processor);
+			tokenize_jump(processor);
 		}
 		else
 		{
-			execute_load_partial(processor);
+			tokenize_load_partial(processor);
 		}
 	case 0x03:
 		if (processor->current_instruction.first_nibble == 0xC0)
 		{
-			execute_jump(processor);
+			tokenize_jump(processor);
 		}
 		else if (processor->current_instruction.first_nibble == 0xF0)
 		{
@@ -1030,12 +1015,12 @@ void execute_cf_block(BeemuProcessor *processor)
 		{
 			break;
 		}
-		execute_call_instruction(processor);
+		tokenize_call_instruction(processor);
 		break;
 	case 0x06:
 	case 0x07:
 	case 0x0F:
-		execute_reset_instruction(processor);
+		tokenize_reset_instruction(processor);
 		break;
 	case 0x08:
 	case 0x09:
@@ -1045,35 +1030,35 @@ void execute_cf_block(BeemuProcessor *processor)
 		case 0xD8:
 		case 0xC9:
 		case 0xD9:
-			execute_ret(processor);
+			tokenize_ret(processor);
 			break;
 		case 0xE9:
-			execute_jump(processor);
+			tokenize_jump(processor);
 			break;
 		case 0xE8:
-			execute_add_sp_r8(processor);
+			tokenize_add_sp_r8(processor);
 			break;
 		case 0xF8:
 		case 0xF9:
-			execute_ldhl_sp(processor);
+			tokenize_ldhl_sp(processor);
 			break;
 		}
 		break;
 	case 0x0A:
 		if (processor->current_instruction.second_nibble <= 0xD0)
 		{
-			execute_jump(processor);
+			tokenize_jump(processor);
 		}
 		else
 		{
-			execute_load_A_dereference(processor, processor->current_instruction.first_nibble == 0xE0);
+			tokenize_load_A_dereference(processor, processor->current_instruction.first_nibble == 0xE0);
 		}
 		break;
 	case 0x0B:
 		switch (processor->current_instruction.first_nibble)
 		{
 		case 0xC0:
-			execute_cb_prefix(processor);
+			tokenize_cb_prefix(processor);
 			break;
 		case 0xF0:
 			beemu_processor_set_state(processor, BEEMU_DEVICE_AWAITING_INTERRUPT_ENABLE);
@@ -1083,19 +1068,19 @@ void execute_cf_block(BeemuProcessor *processor)
 		}
 		break;
 	case 0x0E:
-		execute_arithmatic_register_instruction(processor);
+		tokenize_arithmatic_register_instruction(processor);
 		break;
 	}
 }
 
 /**
- * @brief Execute the block of instructions between row 0x00 and 0x30.
+ * @brief tokenize the block of instructions between row 0x00 and 0x30.
  *
  * These blocks of instructions display a periodic table like behaviour
  * depending on the last nibble.
  * @param processor BeemuProcessor object pointer.
  */
-void execute_block_03(BeemuProcessor *processor)
+void tokenize_block_03(BeemuProcessor *processor)
 {
 	switch (processor->current_instruction.second_nibble)
 	{
@@ -1109,30 +1094,30 @@ void execute_block_03(BeemuProcessor *processor)
 			break;
 		case 0x20:
 		case 0x30:
-			execute_jump(processor);
+			tokenize_jump(processor);
 			break;
 		default:
 			break;
 		}
 	case 0x01:
-		execute_load_direct(processor, false);
+		tokenize_load_direct(processor, false);
 		break;
 	case 0x02:
-		execute_load_accumulator_16(processor, true);
+		tokenize_load_accumulator_16(processor, true);
 		break;
 	case 0x0A:
-		execute_load_accumulator_16(processor, false);
+		tokenize_load_accumulator_16(processor, false);
 		break;
 	case 0x04:
 	case 0x05:
 	case 0x0C:
 	case 0x0D:
 		// INC and DEC
-		execute_unary_operand(processor, processor->current_instruction.second_nibble == 0x04 || processor->current_instruction.second_nibble == 0x0C);
+		tokenize_unary_operand(processor, processor->current_instruction.second_nibble == 0x04 || processor->current_instruction.second_nibble == 0x0C);
 		break;
 	case 0x06:
 	case 0x0E:
-		execute_load_direct(processor, true);
+		tokenize_load_direct(processor, true);
 		break;
 	case 0x07:
 	case 0x0F:
@@ -1140,7 +1125,7 @@ void execute_block_03(BeemuProcessor *processor)
 		{
 		case 0x00:
 		case 0x10:
-			execute_rotate_a(processor);
+			tokenize_rotate_a(processor);
 			break;
 		case 0x20:
 			if (processor->current_instruction.second_nibble == 0x0F)
@@ -1153,30 +1138,30 @@ void execute_block_03(BeemuProcessor *processor)
 			}
 			break;
 		case 0x30:
-			execute_set_complement_flag(processor);
+			tokenize_set_complement_flag(processor);
 			break;
 		}
 	case 0x08:
 		switch (processor->current_instruction.first_nibble)
 		{
 		case 0x00:
-			execute_load_sp_to_mem(processor);
+			tokenize_load_sp_to_mem(processor);
 			break;
 		case 0x10:
 		case 0x20:
 		case 0x30:
-			execute_jump(processor);
+			tokenize_jump(processor);
 			break;
 		}
 	case 0x09:
-		execute_arithmatic_register_instruction_16(processor);
+		tokenize_arithmatic_register_instruction_16(processor);
 		break;
 	default:
 		break;
 	}
 }
 
-uint8_t beemu_processor_run(BeemuProcessor *processor)
+uint8_t beemu_tokenizer_tokenize(BeemuProcessor *processor)
 {
 	beemu_processor_reset_elapsed_clock_cycle(processor);
 	process_processor_state(processor);
@@ -1187,7 +1172,7 @@ uint8_t beemu_processor_run(BeemuProcessor *processor)
 	case 0x10:
 	case 0x20:
 	case 0x30:
-		execute_block_03(processor);
+		tokenize_block_03(processor);
 	case 0x40:
 	case 0x50:
 	case 0x60:
@@ -1199,20 +1184,20 @@ uint8_t beemu_processor_run(BeemuProcessor *processor)
 		}
 		else
 		{
-			execute_load_instruction(processor);
+			tokenize_load_instruction(processor);
 		}
 		break;
 	case 0x80:
 	case 0x90:
 	case 0xA0:
 	case 0xB0:
-		execute_arithmatic_register_instruction(processor);
+		tokenize_arithmatic_register_instruction(processor);
 		break;
 	case 0xC0:
 	case 0xD0:
 	case 0xE0:
 	case 0xF0:
-		execute_cf_block(processor);
+		tokenize_cf_block(processor);
 	}
 	return processor->elapsed_clock_cycle;
 }
