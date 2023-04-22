@@ -212,6 +212,109 @@ void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuIns
 	}
 }
 
+bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
+{
+	const uint8_t zero = beemu_registers_flags_get_flag(registers, BEEMU_FLAG_Z);
+	const uint8_t carry = beemu_registers_flags_get_flag(registers, BEEMU_FLAG_C);
+	switch (condition)
+	{
+	case BEEMU_JUMP_IF_CARRY:
+		return carry == 1;
+	case BEEMU_JUMP_IF_NOT_CARRY:
+		return carry == 0;
+	case BEEMU_JUMP_IF_ZERO:
+		return zero == 1;
+	case BEEMU_JUMP_IF_NOT_ZERO:
+		return zero == 0;
+	default:
+		return true;
+	}
+}
+
+/**
+ * @brief Push to the stack a 16 bit value.
+ *
+ * @param registers
+ * @param memory
+ * @param value
+ */
+void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
+{
+	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC};
+	const uint8_t current_sp = beemu_registers_read_register_value(registers, sp);
+	beemu_registers_write_register_value(registers, sp, current_sp - 2);
+	beemu_memory_write_16(memory, current_sp - 2, current_sp);
+}
+
+/**
+ * @brief Pop from the stack a 16 bit value.
+ *
+ * @param registers
+ * @param memory
+ * @return uint16_t
+ */
+uint16_t pop_stack(BeemuRegisters *registers, BeemuMemory *memory)
+{
+	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
+	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
+	const uint16_t val = beemu_memory_read_16(memory, current_sp);
+	beemu_registers_write_register_value(registers, sp, current_sp + 2);
+	return val;
+}
+
+/**
+ * @brief Execute a JUMP instruction
+ *
+ * This is a CALL, RET, JR, JMP or RST instruction.
+ *
+ * @param memory
+ * @param registers
+ * @param instruction
+ */
+void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstruction instruction)
+{
+	static const BeemuRegister pc = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC};
+	uint16_t current_address = registers->program_counter;
+	BeemuJumpParams params = instruction.params.jump_params;
+	// Could be a pointer, relative or direct addr.
+	const int addr_param = resolve_param(registers, memory, params.param);
+	if (params.is_conditional && !test_condition(registers, params.condition))
+	{
+		// Conditional jumps that do not fit the conditions are not executed.
+		return;
+	}
+	// Either non-conditional or true cond.
+	uint16_t new_address = 0x0; // RST
+	if (params.is_relative)
+	{
+		new_address = current_address + addr_param;
+	}
+	else if (params.type == BEEMU_JUMP_TYPE_RET)
+	{
+		// It could also be a RET jump too,
+		// so the addr is determined by the stack.
+		new_address = pop_stack(registers, memory);
+	}
+	else
+	{
+		// Finally, it could be a direct jump.
+		// or a RST.
+		new_address = addr_param;
+	}
+
+	if (params.type == BEEMU_JUMP_TYPE_CALL)
+	{
+		// Though, if it is a call, some extra
+		// stuff is needed.
+		// Store current address.
+		push_stack(registers, memory, current_address);
+	}
+
+	// We can finally, actually, jump.
+	beemu_registers_write_register_value(registers, pc, new_address);
+	// TODO: Enable interrupts.
+}
+
 void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction)
 {
 	switch (instruction.type)
@@ -223,6 +326,9 @@ void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruc
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
 		execute_arithmatic(file, memory, instruction);
+		break;
+	case BEEMU_INSTRUCTION_TYPE_JUMP:
+		execute_jump(file, memory, instruction);
 		break;
 	}
 }

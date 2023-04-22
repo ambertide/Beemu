@@ -89,6 +89,7 @@ extern "C"
 	 * @return uint8_t Flag value, either 1 or 0.
 	 */
 	uint8_t beemu_registers_flags_get_flag(BeemuRegisters *registers, BeemuFlag flag);
+
 #ifdef __cplusplus
 }
 #endif
