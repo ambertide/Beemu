@@ -177,3 +177,8 @@ void beemu_registers_flags_set_flag(BeemuRegisters *registers, BeemuFlag flag, u
 	// This should probably work.
 	registers->flags |= value << flag;
 }
+
+uint8_t beemu_registers_flags_get_flag(BeemuRegisters *registers, BeemuFlag flag)
+{
+	return (registers->flags >> flag) & 0b00000001;
+}

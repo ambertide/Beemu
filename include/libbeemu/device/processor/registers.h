@@ -80,6 +80,15 @@ extern "C"
 	 * @param value Value to set.
 	 */
 	void beemu_registers_flags_set_flag(BeemuRegisters *registers, BeemuFlag flag, uint8_t value);
+
+	/**
+	 * @brief Get the value of a given flag.
+	 *
+	 * @param registers Register file pointer.
+	 * @param flag Flag to get.
+	 * @return uint8_t Flag value, either 1 or 0.
+	 */
+	uint8_t beemu_registers_flags_get_flag(BeemuRegisters *registers, BeemuFlag flag);
 #ifdef __cplusplus
 }
 #endif
