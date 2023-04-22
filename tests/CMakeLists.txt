@@ -1,6 +1,7 @@
 add_executable(
 	tests
-	test_executor.cpp
+	executor/test_arithmatic.cpp
+	executor/test_load.cpp
 	test_registers.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
 )
