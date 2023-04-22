@@ -83,7 +83,7 @@ beemu_read_composed_register(BeemuRegisters *registers, BeemuRegister_16 registe
 void beemu_write_composed_register(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value)
 {
 	const uint16_t left_value = value >> 8;
-	const uint16_t right_value = value & 0x0F;
+	const uint16_t right_value = value & 0xFF;
 	if (register_ == BEEMU_REGISTER_AF)
 	{
 		registers->registers[BEEMU_REGISTER_A] = left_value;
@@ -103,7 +103,7 @@ void beemu_write_composed_register(BeemuRegisters *registers, BeemuRegister_16 r
 	uint16_t left_register = beemu_16_to_8_bit_converter[index][0];
 	uint16_t right_register = beemu_16_to_8_bit_converter[index][1];
 	registers->registers[left_register] = left_value;
-	registers->registers[right_register] = right_register;
+	registers->registers[right_register] = right_value;
 }
 
 uint8_t *

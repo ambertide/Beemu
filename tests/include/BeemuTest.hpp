@@ -9,6 +9,7 @@ namespace BeemuTests
 	protected:
 		BeemuMemory *memory;
 		BeemuRegisters *registers;
+		BeemuRegister hl_register = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_HL};
 
 		void SetUp() override;
 

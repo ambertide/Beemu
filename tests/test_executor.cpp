@@ -81,11 +81,11 @@ namespace BeemuTests
 		BeemuRegister l = {.type = BEEMU_EIGHT_BIT_REGISTER, .name_of.eight_bit_register = BEEMU_REGISTER_L};
 		BeemuInstruction instruction = generate_load_instruction(
 			(BeemuParam){.type = BEEMU_PARAM_TYPE_REGISTER_16, .value.register_16 = BEEMU_REGISTER_HL},
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_UINT16, .value.value = 0xDF},
+			(BeemuParam){.type = BEEMU_PARAM_TYPE_UINT16, .value.value = 0xAAFF},
 			true);
 		execute_instruction(memory, registers, instruction);
-		EXPECT_EQ(0xDF, beemu_registers_read_register_value(registers, hl));
-		EXPECT_EQ(0xF, beemu_registers_read_register_value(registers, h));
-		EXPECT_EQ(0xD, beemu_registers_read_register_value(registers, l));
+		EXPECT_EQ(0xAAFF, beemu_registers_read_register_value(registers, hl));
+		EXPECT_EQ(0xAA, beemu_registers_read_register_value(registers, h));
+		EXPECT_EQ(0xFF, beemu_registers_read_register_value(registers, l));
 	}
 }
