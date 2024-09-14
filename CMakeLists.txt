@@ -29,8 +29,3 @@ enable_testing()
 add_subdirectory(tests)
 
 target_include_directories(tests PRIVATE include)
-
-add_test(
-	NAME tests
-	COMMAND $<TARGET_FILE:tests>
-)
