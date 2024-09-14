@@ -113,15 +113,15 @@ beemu_get_register_ptr_8(BeemuRegisters *registers, BeemuRegister_8 register_)
 }
 
 /**
- * @brief Read a register ptr from a 16 bit register.
+ * @brief Read a register value from a special register
  * Do keep in mind that the ptrs for BC, DE and HL  and AF is not here.
  *
  * @param registers
  * @param register_
- * @return uint16_t
+ * @return uint16_t Value of the register
  */
-uint16_t *
-beemu_get_register_ptr_16(BeemuRegisters *registers, BeemuRegister_16 register_)
+uint16_t
+beemu_get_special_register_16(BeemuRegisters *registers, BeemuRegister_16 register_)
 {
 	switch (register_)
 	{
@@ -138,6 +138,35 @@ beemu_get_register_ptr_16(BeemuRegisters *registers, BeemuRegister_16 register_)
 	}
 }
 
+/**
+ * @brief Set the value of one of the special registers (SP, PC, M or AF)
+ *
+ * @param registers Registers pointer.
+ * @param register_ Register whose value is being set.
+ * @param value Value to set the register into.
+ */
+void beemu_set_special_register_16(BeemuRegisters *registers, BeemuRegister_16 register_, uint16_t value)
+{
+	switch (register_)
+	{
+	case BEEMU_REGISTER_M:
+		// Pseudo register m.
+		registers->m_register = value;
+		break;
+	case BEEMU_REGISTER_AF:
+		// This one combines the A with flags.
+		registers->registers[BEEMU_REGISTER_A] = (value & 0xF0 >> 8);
+		registers->flags = value & 0x0F;
+		break;
+	case BEEMU_REGISTER_SP:
+		registers->stack_pointer = value;
+		break;
+	case BEEMU_REGISTER_PC:
+		registers->program_counter = value;
+		break;
+	}
+}
+
 uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuRegister register_)
 {
 	if (register_.type == BEEMU_EIGHT_BIT_REGISTER)
@@ -146,7 +175,7 @@ uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuReg
 	}
 	else if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
 	{
-		return *beemu_get_register_ptr_16(registers, register_.name_of.sixteen_bit_register);
+		return beemu_get_special_register_16(registers, register_.name_of.sixteen_bit_register);
 	}
 	else
 	{
@@ -163,7 +192,7 @@ void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegist
 	}
 	else if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
 	{
-		*beemu_get_register_ptr_16(registers, register_.name_of.sixteen_bit_register) = value;
+		beemu_set_special_register_16(registers, register_.name_of.sixteen_bit_register, value);
 	}
 	else
 	{
