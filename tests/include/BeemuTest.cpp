@@ -2,7 +2,7 @@
 
 void BeemuTests::BeemuTestFixture::SetUp()
 {
-	this->memory = beemu_memory_new(64000);
+	this->memory = beemu_memory_new(65536);
 	this->registers = beemu_registers_new();
 }
 
