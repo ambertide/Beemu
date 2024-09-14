@@ -241,7 +241,7 @@ bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
 void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
 {
 	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC};
-	const uint8_t current_sp = beemu_registers_read_register_value(registers, sp);
+	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
 	beemu_registers_write_register_value(registers, sp, current_sp - 2);
 	beemu_memory_write_16(memory, current_sp - 2, current_sp);
 }
