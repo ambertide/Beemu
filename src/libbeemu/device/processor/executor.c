@@ -328,7 +328,7 @@ void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruc
 		execute_arithmatic(file, memory, instruction);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
-		execute_jump(file, memory, instruction);
+		execute_jump(memory, file, instruction);
 		break;
 	}
 }
