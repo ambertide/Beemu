@@ -1,4 +1,5 @@
 #include <libbeemu/device/memory.h>
+#include <libbeemu/internals/logger.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
@@ -35,7 +36,7 @@ bool beemu_memory_write_buffer(BeemuMemory *memory, int address, uint8_t *buffer
 	{
 		return false;
 	}
-	memcpy(buffer, memory->memory + address, size);
+	memcpy(memory->memory + address, buffer, size);
 	return true;
 }
 
@@ -68,14 +69,14 @@ bool beemu_memory_copy(BeemuMemory *memory, BeemuMemory *destination, int start,
 
 uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address)
 {
-	const uint8_t lower = beemu_memory_read(memory, address);
+	const uint8_t lower = beemu_memory_read(memory, address + 1);
 	const uint8_t higher = beemu_memory_read(memory, address);
-	return (((uint16_t)lower) << 8) & ((uint16_t)higher);
+	return (((uint16_t)lower) << 8) | ((uint16_t)higher);
 }
 
 void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value)
 {
-	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF >> 8)), ((uint8_t)(value & 0xFF00))};
+	uint8_t deconstructed[2] = {((uint8_t)(value & 0x00FF)), ((uint8_t)((value & 0xFF00) >> 8))};
 	beemu_memory_write_buffer(memory, address, deconstructed, 2);
 }
 

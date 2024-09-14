@@ -240,10 +240,10 @@ bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
  */
 void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
 {
-	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC};
+	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
 	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
+	beemu_memory_write_16(memory, current_sp, value);
 	beemu_registers_write_register_value(registers, sp, current_sp - 2);
-	beemu_memory_write_16(memory, current_sp - 2, current_sp);
 }
 
 /**
@@ -257,8 +257,8 @@ uint16_t pop_stack(BeemuRegisters *registers, BeemuMemory *memory)
 {
 	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
 	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
-	const uint16_t val = beemu_memory_read_16(memory, current_sp);
 	beemu_registers_write_register_value(registers, sp, current_sp + 2);
+	const uint16_t val = beemu_memory_read_16(memory, current_sp + 2);
 	return val;
 }
 
@@ -307,7 +307,7 @@ void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstructi
 		// Though, if it is a call, some extra
 		// stuff is needed.
 		// Store current address.
-		push_stack(registers, memory, current_address);
+		push_stack(registers, memory, current_address + 3);
 	}
 
 	// We can finally, actually, jump.
