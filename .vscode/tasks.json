@@ -11,9 +11,18 @@
 			"group": "build",
 			"problemMatcher": {
 				"base": "$gcc",
-            	"fileLocation": ["absolute"]
+				"fileLocation": [
+					"absolute"
+				]
 			},
 			"detail": "CMake template build task"
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: test",
+			"command": "test",
+			"problemMatcher": [],
+			"detail": "CMake template test task"
 		}
 	]
 }
