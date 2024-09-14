@@ -16,8 +16,10 @@ extern "C"
 	 * @param memory device memory.
 	 * @param file register file.
 	 * @param instruction Instruction to execute.
+	 *
+	 * @return elapsed clock cycles
 	 */
-	void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction);
+	uint8_t execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction);
 
 #ifdef __cplusplus
 }
