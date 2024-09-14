@@ -24,7 +24,7 @@ namespace BeemuTests
 										.params = {.load_params = {
 													   .dest = {.pointer = false, .type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_A},
 													   .source = {.pointer = false, .type = BEEMU_PARAM_TYPE_UINT_8, .value.value = 10}}}};
-		EXPECT_EQ(0, registers->registers[BEEMU_REGISTER_A]);
+		EXPECT_EQ(0x1, registers->registers[BEEMU_REGISTER_A]);
 		execute_instruction(memory, registers, instruction);
 		EXPECT_EQ(10, registers->registers[BEEMU_REGISTER_A]);
 	}
@@ -38,8 +38,8 @@ namespace BeemuTests
 			(BeemuParam){.pointer = false, .type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_B},
 			(BeemuParam){.pointer = false, .type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_A},
 			false);
-		EXPECT_EQ(0, registers->registers[BEEMU_REGISTER_A]);
-		EXPECT_EQ(0, registers->registers[BEEMU_REGISTER_B]);
+		EXPECT_EQ(0x1, registers->registers[BEEMU_REGISTER_A]);
+		EXPECT_EQ(0xff, registers->registers[BEEMU_REGISTER_B]);
 		beemu_registers_write_register_value(registers, (BeemuRegister){.type = BEEMU_EIGHT_BIT_REGISTER, .name_of.eight_bit_register = BEEMU_REGISTER_A}, 5);
 		execute_instruction(memory, registers, instruction);
 		EXPECT_EQ(5, registers->registers[BEEMU_REGISTER_B]);

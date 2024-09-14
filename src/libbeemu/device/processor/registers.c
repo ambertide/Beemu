@@ -5,6 +5,10 @@
 BeemuRegisters *beemu_registers_new(void)
 {
 	BeemuRegisters *registers = (BeemuRegisters *)malloc(sizeof(BeemuRegisters));
+#ifdef DSKIP_BOOTROM_EMULATION
+	// Normally these values are set by the boot room
+	// but since getting a boot rom has... "questionable"
+	// legality, by default we set them ourselves.
 	registers->m_register = 0x0;
 	registers->program_counter = 0x0;
 	registers->stack_pointer = 0x0;
@@ -13,6 +17,19 @@ BeemuRegisters *beemu_registers_new(void)
 	{
 		registers->registers[i] = 0x0;
 	}
+#else
+	registers->m_register = 0x00;
+	registers->program_counter = 0x0100;
+	registers->stack_pointer = 0xfffe;
+	registers->flags = 0x0;
+	registers->registers[BEEMU_REGISTER_A] = 0x01;
+	registers->registers[BEEMU_REGISTER_B] = 0xff;
+	registers->registers[BEEMU_REGISTER_C] = 0x13;
+	registers->registers[BEEMU_REGISTER_D] = 0x00;
+	registers->registers[BEEMU_REGISTER_E] = 0xc1;
+	registers->registers[BEEMU_REGISTER_H] = 0x84;
+	registers->registers[BEEMU_REGISTER_L] = 0x03;
+#endif // DSKIP_BOOTROM_EMULATION
 	return registers;
 }
 
