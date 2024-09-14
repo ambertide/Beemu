@@ -315,7 +315,7 @@ void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstructi
 	// TODO: Enable interrupts.
 }
 
-void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction)
+uint8_t execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction)
 {
 	switch (instruction.type)
 	{
@@ -331,4 +331,6 @@ void execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruc
 		execute_jump(memory, file, instruction);
 		break;
 	}
+
+	return instruction.duration_in_clock_cycles;
 }
