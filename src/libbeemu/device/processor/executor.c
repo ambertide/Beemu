@@ -290,15 +290,15 @@ void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstructi
 	}
 	// Either non-conditional or true cond.
 	uint16_t new_address = 0x0; // RST
-	if (params.is_relative)
+	if (params.type == BEEMU_JUMP_TYPE_RET)
+	{
+		// First up, RET is a special case where
+		// the addr is determined by the stack.
+		new_address = pop_stack(registers, memory);
+	}
+	else if (params.is_relative)
 	{
 		new_address = current_address + addr_param;
-	}
-	else if (params.type == BEEMU_JUMP_TYPE_RET)
-	{
-		// It could also be a RET jump too,
-		// so the addr is determined by the stack.
-		new_address = pop_stack(registers, memory);
 	}
 	else
 	{

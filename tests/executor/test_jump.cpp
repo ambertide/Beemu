@@ -74,4 +74,27 @@ namespace BeemuTests
 		// Expect a jump to have occurred.
 		EXPECT_EQ(beemu_registers_read_register_value(registers, pc), 0xAA);
 	}
+
+	TEST_F(BeemuTestFixture, Ret)
+	{
+		BeemuInstruction call_instruction = generate_jump_instruction(
+			generate_jump_param(0xAA),
+			BEEMU_JUMP_TYPE_CALL);
+		const uint16_t previous_pc = beemu_registers_read_register_value(registers, pc);
+		const uint16_t previous_sp = beemu_registers_read_register_value(registers, sp);
+		// First note the existing program counter and jump to a location.
+		execute_instruction(memory, registers, call_instruction);
+		// Second construct the RET instruction and check if program counter
+		// resetted properly.
+		// the below 3 lines do nothing.
+		BeemuInstruction ret_instruction = generate_jump_instruction(
+			generate_jump_param(0x00),
+			BEEMU_JUMP_TYPE_RET);
+		execute_instruction(memory, registers, ret_instruction);
+		const uint16_t current_pc = beemu_registers_read_register_value(registers, pc);
+		EXPECT_EQ(previous_pc + 3, current_pc);
+		// Third, check if the stack was popped, ie, returned to its previous position.
+		const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
+		EXPECT_EQ(current_sp, previous_sp);
+	}
 }
