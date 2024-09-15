@@ -20,9 +20,15 @@ namespace BeemuTests
 	TEST_F(BeemuTestFixture, InstructionArithmaticAdd)
 	{
 		beemu_registers_write_register_value(registers, a, 15);
+		BeemuParam register_param;
+		register_param.type = BEEMU_PARAM_TYPE_REGISTER_8;
+		register_param.value.register_8 = BEEMU_REGISTER_A;
+		BeemuParam uint8_param;
+		uint8_param.type = BEEMU_PARAM_TYPE_UINT_8;
+		uint8_param.value.value = 15;
 		BeemuInstruction instruction = generate_arithmatic_instruction(
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_A},
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_UINT_8, .value.value = 15},
+			register_param,
+			uint8_param,
 			BEEMU_OP_ADD,
 			false);
 		execute_instruction(memory, registers, instruction);
@@ -32,9 +38,15 @@ namespace BeemuTests
 	TEST_F(BeemuTestFixture, InstructionArithmaticAddOverflow)
 	{
 		beemu_registers_write_register_value(registers, a, 250);
+		BeemuParam register_param;
+		register_param.type = BEEMU_PARAM_TYPE_REGISTER_8;
+		register_param.value.register_8 = BEEMU_REGISTER_A;
+		BeemuParam uint8_param;
+		uint8_param.type = BEEMU_PARAM_TYPE_UINT_8;
+		uint8_param.value.value = 15;
 		BeemuInstruction instruction = generate_arithmatic_instruction(
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_REGISTER_8, .value.register_8 = BEEMU_REGISTER_A},
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_UINT_8, .value.value = 15},
+			register_param,
+			uint8_param,
 			BEEMU_OP_ADD,
 			false);
 		// Here, we expect the value to overflow to 9
@@ -48,9 +60,17 @@ namespace BeemuTests
 	{
 		beemu_registers_write_register_value(registers, hl, 0x1000);
 		beemu_memory_write(memory, 15, 0xF);
+		BeemuParam register_hl_param;
+		register_hl_param.type = BEEMU_PARAM_TYPE_REGISTER_16;
+		register_hl_param.value.register_16 = BEEMU_REGISTER_HL;
+		// Now construct the ptr parameter.
+		BeemuParam ptr_param;
+		ptr_param.pointer = true;
+		ptr_param.type = BEEMU_PARAM_TYPE_UINT_8;
+		ptr_param.value.value = 15;
 		BeemuInstruction instruction = generate_arithmatic_instruction(
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_REGISTER_16, .value.register_16 = BEEMU_REGISTER_HL},
-			(BeemuParam){.pointer = true, .type = BEEMU_PARAM_TYPE_UINT_8, .value.value = 15},
+			register_hl_param,
+			ptr_param,
 			BEEMU_OP_ADD,
 			true);
 		execute_instruction(memory, registers, instruction);

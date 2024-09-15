@@ -20,10 +20,19 @@ namespace BeemuTests
 		return instruction;
 	}
 
+	BeemuParam generate_jump_param(uint16_t addr)
+	{
+		BeemuParam jump_location;
+		jump_location.type = BEEMU_PARAM_TYPE_UINT16;
+		jump_location.value.value = addr;
+		return jump_location;
+	}
+
 	TEST_F(BeemuTestFixture, JumpDirectTest)
 	{
 		beemu_registers_write_register_value(registers, pc, 0xAA);
-		execute_instruction(memory, registers, generate_jump_instruction((BeemuParam){.type = BEEMU_PARAM_TYPE_UINT16, .value = 0xFF}));
+		BeemuParam jump_location = generate_jump_param(0xFF);
+		execute_instruction(memory, registers, generate_jump_instruction(jump_location));
 		// Check if we, you know, jumped at all.
 		EXPECT_EQ(beemu_registers_read_register_value(registers, pc), 0xFF);
 	}
@@ -34,7 +43,8 @@ namespace BeemuTests
 		// on direct jump.
 		const uint8_t previous_sp = beemu_registers_read_register_value(registers, sp);
 		const uint16_t previous_sp_val = beemu_memory_read_16(memory, previous_sp);
-		execute_instruction(memory, registers, generate_jump_instruction((BeemuParam){.type = BEEMU_PARAM_TYPE_UINT16, .value = 0xFF}));
+		BeemuParam jump_location = generate_jump_param(0xFF);
+		execute_instruction(memory, registers, generate_jump_instruction(jump_location));
 		const uint8_t current_sp = beemu_registers_read_register_value(registers, sp);
 		const uint16_t current_sp_val = beemu_memory_read_16(memory, current_sp);
 		EXPECT_EQ(previous_sp, current_sp);
@@ -48,7 +58,7 @@ namespace BeemuTests
 	TEST_F(BeemuTestFixture, CallDirectTest)
 	{
 		BeemuInstruction jump_instruction = generate_jump_instruction(
-			(BeemuParam){.type = BEEMU_PARAM_TYPE_UINT16, .value = 0xAA},
+			generate_jump_param(0xAA),
 			BEEMU_JUMP_TYPE_CALL);
 		const uint16_t previous_pc = beemu_registers_read_register_value(registers, pc);
 		const uint16_t previous_sp = beemu_registers_read_register_value(registers, sp);
