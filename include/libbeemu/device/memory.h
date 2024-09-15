@@ -11,6 +11,7 @@ extern "C"
 	/**
 	 * @brief Represents a block in the memory.
 	 *
+	 * Stop is not included.
 	 */
 	typedef struct BeemuMemoryBlock
 	{
@@ -18,7 +19,13 @@ extern "C"
 		uint16_t stop;
 	} BeemuMemoryBlock;
 
-	static const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block);
+	/**
+	 * @brief Get the size of the memory block
+	 *
+	 * @param block Block to get the size of.
+	 * @return const uint16_t Size of the memory block.
+	 */
+	const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block);
 
 	typedef struct BeemuMemory
 	{

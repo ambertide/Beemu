@@ -32,7 +32,7 @@ void beemu_memory_write(BeemuMemory *memory, int address, uint8_t value)
 
 bool beemu_memory_write_buffer(BeemuMemory *memory, int address, uint8_t *buffer, int size)
 {
-	if (memory->memory_size <= address)
+	if (memory->memory_size <= address + size - 1)
 	{
 		return false;
 	}
@@ -42,11 +42,11 @@ bool beemu_memory_write_buffer(BeemuMemory *memory, int address, uint8_t *buffer
 
 bool beemu_memory_read_buffer(BeemuMemory *memory, int address, uint8_t *buffer, int size)
 {
-	if (memory->memory_size <= address)
+	if (memory->memory_size <= address + size - 1)
 	{
 		return false;
 	}
-	memcpy(memory->memory + address, buffer, size);
+	memcpy(buffer, memory->memory + address, size);
 	return true;
 }
 
@@ -62,7 +62,7 @@ bool beemu_memory_copy(BeemuMemory *memory, BeemuMemory *destination, int start,
 	}
 	else
 	{
-		memcpy(memory->memory + start, destination->memory + dst_start, size);
+		memcpy(destination->memory + dst_start, memory->memory + start, size);
 		return true;
 	}
 }
@@ -80,7 +80,7 @@ void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value
 	beemu_memory_write_buffer(memory, address, deconstructed, 2);
 }
 
-static const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block)
+const uint16_t beemu_memory_block_get_size(BeemuMemoryBlock block)
 {
 	return block.stop - block.start;
 }
