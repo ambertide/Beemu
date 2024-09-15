@@ -76,7 +76,7 @@ namespace BeemuTests
 			src);
 		EXPECT_EQ(0x1, registers->registers[BEEMU_REGISTER_A]);
 		EXPECT_EQ(0xff, registers->registers[BEEMU_REGISTER_B]);
-		beemu_registers_write_register_value(registers, (BeemuRegister){.type = BEEMU_EIGHT_BIT_REGISTER, .name_of.eight_bit_register = BEEMU_REGISTER_A}, 5);
+		beemu_registers_write_register_value(registers, a, 5);
 		execute_instruction(memory, registers, instruction);
 		EXPECT_EQ(5, registers->registers[BEEMU_REGISTER_B]);
 	}
