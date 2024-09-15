@@ -3,9 +3,11 @@ add_executable(
 	executor/test_arithmatic.cpp
 	executor/test_load.cpp
 	executor/test_jump.cpp
+	memory/test_memory.cpp
 	test_registers.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
 )
+
 target_link_libraries(
 	tests
 	PRIVATE
