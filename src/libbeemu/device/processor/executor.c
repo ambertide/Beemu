@@ -1,6 +1,7 @@
 #include <libbeemu/device/processor/executor.h>
 #include <libbeemu/device/primitives/register.h>
 #include <libbeemu/internals/utility.h>
+#include <libbeemu/internals/logger.h>
 
 /**
  * @brief Resolve a param's value.
@@ -240,10 +241,14 @@ bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
  */
 void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
 {
+	beemu_log(BEEMU_LOG_INFO, "Pushing value 0x%X to stack.", value);
 	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
 	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
 	beemu_memory_write_16(memory, current_sp, value);
+	beemu_log(BEEMU_LOG_INFO, "Value of stack pointer before push was 0x%X.", current_sp);
+	beemu_log(BEEMU_LOG_INFO, "Updating stack pointer");
 	beemu_registers_write_register_value(registers, sp, current_sp - 2);
+	beemu_log(BEEMU_LOG_INFO, "Stack push complete.");
 }
 
 /**

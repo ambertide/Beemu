@@ -1,5 +1,6 @@
 #include <libbeemu/device/processor/registers.h>
 #include <libbeemu/internals/utility.h>
+#include <libbeemu/internals/logger.h>
 #include <stdlib.h>
 
 BeemuRegisters *beemu_registers_new(void)
@@ -168,17 +169,21 @@ void beemu_set_special_register_16(BeemuRegisters *registers, BeemuRegister_16 r
 	{
 	case BEEMU_REGISTER_M:
 		// Pseudo register m.
+		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to M");
 		registers->m_register = value;
 		break;
 	case BEEMU_REGISTER_AF:
 		// This one combines the A with flags.
+		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to AF", value);
 		registers->registers[BEEMU_REGISTER_A] = (value & 0xF0 >> 8);
 		registers->flags = value & 0x0F;
 		break;
 	case BEEMU_REGISTER_SP:
+		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to SP", value);
 		registers->stack_pointer = value;
 		break;
 	case BEEMU_REGISTER_PC:
+		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to PC");
 		registers->program_counter = value;
 		break;
 	}

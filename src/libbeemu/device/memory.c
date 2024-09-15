@@ -34,8 +34,14 @@ bool beemu_memory_write_buffer(BeemuMemory *memory, int address, uint8_t *buffer
 {
 	if (memory->memory_size <= address + size - 1)
 	{
+		beemu_log(
+			BEEMU_LOG_WARN,
+			"Attempted memory address 0x%X for buffer write above maximum addressable memory address 0x%X",
+			address,
+			memory->memory_size - 1);
 		return false;
 	}
+	beemu_log(BEEMU_LOG_INFO, "Writing buffered value of size %i to memory address 0x%X", size, address);
 	memcpy(memory->memory + address, buffer, size);
 	return true;
 }
@@ -44,6 +50,11 @@ bool beemu_memory_read_buffer(BeemuMemory *memory, int address, uint8_t *buffer,
 {
 	if (memory->memory_size <= address + size - 1)
 	{
+		beemu_log(
+			BEEMU_LOG_WARN,
+			"Attempted memory address 0x%X for buffer read above maximum addressable memory address 0x%X",
+			address,
+			memory->memory_size - 1);
 		return false;
 	}
 	memcpy(buffer, memory->memory + address, size);
@@ -71,6 +82,7 @@ uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address)
 {
 	const uint8_t lower = beemu_memory_read(memory, address + 1);
 	const uint8_t higher = beemu_memory_read(memory, address);
+	beemu_log(BEEMU_LOG_INFO, "Read two bytes from 0x%X, which were 0x%X and 0x%X", address, lower, higher);
 	return (((uint16_t)lower) << 8) | ((uint16_t)higher);
 }
 
