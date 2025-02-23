@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <fstream>
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuRegister_8, {{BEEMU_REGISTER_A, "BEEMU_REGISTER_A"},
@@ -230,9 +231,56 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	}
 }
 
+struct BeemuJSONEncodedPair
+{
+	std::string instruction;
+	BeemuInstruction token;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+	BeemuJSONEncodedPair,
+	instruction,
+	token);
+
+struct BeemuTestJSON
+{
+	std::vector<BeemuJSONEncodedPair> tokens;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+	BeemuTestJSON,
+	tokens);
+
+bool operator==(const BeemuInstruction &lhs, const BeemuInstruction &rhs)
+{
+	return std::memcmp(&lhs, &rhs, sizeof(BeemuInstruction));
+}
+
 namespace BeemuTests
 {
-	class BeemuTokenTest : public ::testing::Test
+	/**
+	 * @brief Get the tokens to be tested from the encoded test file
+	 *
+	 * @return std::vector<std::pair<uint8_t, BeemuInstruction>>
+	 */
+	std::vector<std::pair<uint8_t, BeemuInstruction>> getTokensFromTestFile()
+	{
+		std::string test_file_path = PATH_TO_TEST_RESOURCES;
+		test_file_path += "/tokens.json";
+		std::ifstream test_file(test_file_path);
+		auto parsed_test_data = nlohmann::json::parse(test_file);
+		BeemuTestJSON test_data;
+		::from_json(parsed_test_data, test_data);
+		std::vector<std::pair<uint8_t, BeemuInstruction>> new_vector;
+		for (const BeemuJSONEncodedPair &encoded_pair : test_data.tokens)
+		{
+			uint8_t decoded_instruction = std::stoi(encoded_pair.instruction);
+			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
+			new_vector.push_back(pair);
+		}
+		return new_vector;
+	}
+	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint8_t, BeemuInstruction>>
 	{
 	protected:
 		void SetUp() override {}

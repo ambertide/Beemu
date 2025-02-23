@@ -9,7 +9,7 @@ extern "C"
 #include "../primitives/instruction.h"
 
 	BeemuInstruction tokenize_instruction(uint8_t instruction);
-
+	BeemuInstruction beemu_tokenizer_tokenize_new(uint8_t instruction);
 #ifdef __cplusplus
 }
 #endif

@@ -1,13 +1,19 @@
 #include <BeemuTokenTest.hpp>
+#include <libbeemu/device/processor/tokenizer.h>
 
 namespace BeemuTests
 {
-	TEST_F(BeemuTokenTest, NOP)
+	TEST_P(BeemuTokenParameterizedTestFixture, InstructionTokenizedCorrectly)
 	{
-		auto json = nlohmann::json::parse("{\"type\":\"BEEMU_INSTRUCTION_TYPE_CPU_CONTROL\",\"duration_in_clock_cycles\":1,\"original_machine_code\":0,\"params\":{\"system_op\":\"BEEMU_CPU_OP_NOP\"}}");
-		BeemuInstruction inst;
-		::from_json(json, inst);
-		ASSERT_EQ(inst.type, BEEMU_INSTRUCTION_TYPE_CPU_CONTROL);
-		ASSERT_EQ(inst.params.system_op, BEEMU_CPU_OP_NOP);
+		auto params = GetParam();
+		auto machine_code = params.first;
+		auto expected_instruction = params.second;
+		ASSERT_EQ(beemu_tokenizer_tokenize_new(machine_code), expected_instruction);
 	}
+
+	INSTANTIATE_TEST_SUITE_P(
+		BeemuTokenizerTests,
+		BeemuTokenParameterizedTestFixture,
+		::testing::ValuesIn(BeemuTests::getTokensFromTestFile()));
+
 }

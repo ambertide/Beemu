@@ -22,3 +22,5 @@ target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
+
+add_definitions("-DPATH_TO_TEST_RESOURCES=\"${CMAKE_SOURCE_DIR}/tests/resources\"")
