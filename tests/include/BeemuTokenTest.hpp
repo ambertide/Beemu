@@ -4,6 +4,8 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iostream>
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuRegister_8, {{BEEMU_REGISTER_A, "BEEMU_REGISTER_A"},
@@ -256,6 +258,12 @@ bool operator==(const BeemuInstruction &lhs, const BeemuInstruction &rhs)
 	return lhs_json == rhs_json;
 }
 
+// template <typename Sink>
+// void AbslStringify(Sink &sink, std::pair<uint16_t, BeemuInstruction> test)
+// {
+// 	absl::Format(&sink, "0x%02X", test.first);
+// }
+
 namespace BeemuTests
 {
 	/**
@@ -274,7 +282,9 @@ namespace BeemuTests
 		std::vector<std::pair<uint16_t, BeemuInstruction>> new_vector;
 		for (const BeemuJSONEncodedPair &encoded_pair : test_data.tokens)
 		{
-			uint16_t decoded_instruction = std::stoi(encoded_pair.instruction);
+			std::stringstream stream{encoded_pair.instruction};
+			uint16_t decoded_instruction = 0;
+			stream >> std::hex >> decoded_instruction;
 			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
 			new_vector.push_back(pair);
 		}
