@@ -94,7 +94,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 void to_json(nlohmann::json &json, const BeemuParam &param)
 {
 	json["pointer"] = param.pointer;
-	json["write_length"] = param.write_length;
 	json["type"] = param.type;
 
 	switch (param.type)
@@ -118,7 +117,6 @@ void to_json(nlohmann::json &json, const BeemuParam &param)
 void from_json(const nlohmann::json &json, BeemuParam &param)
 {
 	json.at("pointer").get_to(param.pointer);
-	json.at("write_length").get_to(param.write_length);
 	json.at("type").get_to(param.type);
 	switch (param.type)
 	{
@@ -253,7 +251,9 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 
 bool operator==(const BeemuInstruction &lhs, const BeemuInstruction &rhs)
 {
-	return std::memcmp(&lhs, &rhs, sizeof(BeemuInstruction));
+	auto lhs_json = nlohmann::json{lhs};
+	auto rhs_json = nlohmann::json{rhs};
+	return lhs_json == rhs_json;
 }
 
 namespace BeemuTests
@@ -261,9 +261,9 @@ namespace BeemuTests
 	/**
 	 * @brief Get the tokens to be tested from the encoded test file
 	 *
-	 * @return std::vector<std::pair<uint8_t, BeemuInstruction>>
+	 * @return std::vector<std::pair<uint16_t, BeemuInstruction>>
 	 */
-	std::vector<std::pair<uint8_t, BeemuInstruction>> getTokensFromTestFile()
+	std::vector<std::pair<uint16_t, BeemuInstruction>> getTokensFromTestFile()
 	{
 		std::string test_file_path = PATH_TO_TEST_RESOURCES;
 		test_file_path += "/tokens.json";
@@ -271,16 +271,16 @@ namespace BeemuTests
 		auto parsed_test_data = nlohmann::json::parse(test_file);
 		BeemuTestJSON test_data;
 		::from_json(parsed_test_data, test_data);
-		std::vector<std::pair<uint8_t, BeemuInstruction>> new_vector;
+		std::vector<std::pair<uint16_t, BeemuInstruction>> new_vector;
 		for (const BeemuJSONEncodedPair &encoded_pair : test_data.tokens)
 		{
-			uint8_t decoded_instruction = std::stoi(encoded_pair.instruction);
+			uint16_t decoded_instruction = std::stoi(encoded_pair.instruction);
 			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
 			new_vector.push_back(pair);
 		}
 		return new_vector;
 	}
-	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint8_t, BeemuInstruction>>
+	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint16_t, BeemuInstruction>>
 	{
 	protected:
 		void SetUp() override {}

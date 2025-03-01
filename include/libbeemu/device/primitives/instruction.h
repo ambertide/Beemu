@@ -54,8 +54,6 @@ extern "C"
 		bool pointer;
 		/** Type of a the variable. */
 		BeemuParamType type;
-		/** This determines the write length, useful for write loads */
-		BeemuWriteLength write_length;
 		/** Actual value hold within. */
 		union
 		{
@@ -206,7 +204,8 @@ extern "C"
 	{
 		BeemuInstructionType type;
 		uint8_t duration_in_clock_cycles;
-		uint8_t original_machine_code;
+		uint16_t original_machine_code;
+		bool is_16;
 		union
 		{
 			BeemuLoadParams load_params;

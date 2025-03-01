@@ -4,7 +4,7 @@
 #include <libbeemu/device/memory.h>
 #include <libbeemu/internals/utility.h>
 
-BeemuInstruction beemu_tokenizer_tokenize_new(uint8_t instruction)
+BeemuInstruction beemu_tokenizer_tokenize(uint16_t instruction)
 {
 	BeemuInstruction inst;
 	inst.original_machine_code = instruction;
