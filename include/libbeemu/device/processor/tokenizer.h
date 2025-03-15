@@ -18,7 +18,7 @@ extern "C"
 	 * @param instruction Instruction to tokenize
 	 * @return BeemuInstruction Instrcution, tokenized.
 	 */
-	BeemuInstruction beemu_tokenizer_tokenize(uint16_t instruction);
+	BeemuInstruction *beemu_tokenizer_tokenize(uint16_t instruction);
 
 #ifdef __cplusplus
 }

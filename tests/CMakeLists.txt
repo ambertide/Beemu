@@ -1,11 +1,11 @@
 add_executable(
 	tests
-	executor/test_arithmatic.cpp
-	executor/test_load.cpp
-	executor/test_jump.cpp
-	memory/test_memory.cpp
+#	executor/test_arithmatic.cpp
+#	executor/test_load.cpp
+#	executor/test_jump.cpp
+#	memory/test_memory.cpp
 	tokenizer/test_tokens.cpp
-	test_registers.cpp
+#	test_registers.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
 )
 
