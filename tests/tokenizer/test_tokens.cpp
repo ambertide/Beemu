@@ -12,9 +12,10 @@ namespace BeemuTests
 		ASSERT_EQ(*inst, expected_instruction);
 	}
 
+	auto tests = BeemuTests::getTokensFromTestFile();
+
 	INSTANTIATE_TEST_SUITE_P(
 		BeemuTokenizerTests,
 		BeemuTokenParameterizedTestFixture,
-		::testing::ValuesIn(BeemuTests::getTokensFromTestFile()));
-
+		::testing::ValuesIn(tests.begin(), tests.end()));
 }
