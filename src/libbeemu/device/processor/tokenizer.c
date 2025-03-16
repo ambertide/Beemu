@@ -41,7 +41,7 @@ void bt16_rot_shift_determine_params(BeemuInstruction *instruction)
 {
 	BeemuRotShiftOp subtype = instruction->params.rot_shift_params.operation;
 	uint8_t arithmatic_differentiator = instruction->original_machine_code & 0x00FF;
-	uint8_t rotshift_differentiator = arithmatic_differentiator >> 8;
+	uint8_t rotshift_differentiator = arithmatic_differentiator >> 4;
 	// C flag affects are true for the 0xCB00-CB10 RLA/RRA bloc, 0xCB20-CB30 SLA/SRA bloc and the 0xCB38-CB40 SRL bloc.
 	instruction->params.rot_shift_params.through_carry = rotshift_differentiator == 0x0 || rotshift_differentiator == 0x2 || arithmatic_differentiator >= 0x38;
 	// Theoratically the below is false since SWAP should not have a direction, but BEMU_LEFT_DIRECTION is 0 in memory
