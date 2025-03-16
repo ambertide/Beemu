@@ -26,7 +26,7 @@ void bt16_rot_shift_determine_subtype(BeemuInstruction *inst)
 	}
 	else
 	{
-		inst->params.rot_shift_params.operation = subtypes_by_second_bit[arithmatic_differentiator >> 8];
+		inst->params.rot_shift_params.operation = subtypes_by_second_bit[arithmatic_differentiator >> 4];
 	}
 }
 
