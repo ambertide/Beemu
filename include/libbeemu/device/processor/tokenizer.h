@@ -20,6 +20,13 @@ extern "C"
 	 */
 	BeemuInstruction *beemu_tokenizer_tokenize(uint16_t instruction);
 
+	/**
+	 * @brief Free a instruction token.
+	 *
+	 * @param token token to free.
+	 */
+	void beemu_tokenizer_free_token(BeemuInstruction *token);
+
 #ifdef __cplusplus
 }
 #endif

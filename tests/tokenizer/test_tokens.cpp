@@ -10,6 +10,7 @@ namespace BeemuTests
 		auto expected_instruction = params.second;
 		auto inst = beemu_tokenizer_tokenize(machine_code);
 		ASSERT_EQ(*inst, expected_instruction);
+		beemu_tokenizer_free_token(inst);
 	}
 
 	auto tests = BeemuTests::getTokensFromTestFile();
