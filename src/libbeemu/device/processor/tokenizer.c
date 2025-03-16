@@ -137,6 +137,7 @@ void bt16_tokenize(BeemuInstruction *instruction)
 {
 	// now, a very cool fact of life is that we can actually lowkey
 	// determine the instruction parameters seperately.
+	instruction->is_16 = true;
 	bt16_determine_type(instruction);
 	bt16_determine_params(instruction);
 	bt16_determine_clock_cycles(instruction);
