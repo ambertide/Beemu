@@ -18,5 +18,13 @@ namespace BeemuTests
 	INSTANTIATE_TEST_SUITE_P(
 		BeemuTokenizerTests,
 		BeemuTokenParameterizedTestFixture,
-		::testing::ValuesIn(tests.begin(), tests.end()));
+		::testing::ValuesIn(tests.begin(), tests.end()),
+		[](const testing::TestParamInfo<BeemuTokenParameterizedTestFixture::ParamType> &info)
+		{
+			// Can use info.param here to generate the test suffix
+			std::stringstream stream;
+			stream << "0x" << std::hex << std::uppercase << info.param.second.original_machine_code;
+			std::string name = stream.str();
+			return name;
+		});
 }
