@@ -78,8 +78,9 @@ for opcode in range(BLOCK_START, BLOCK_END + 1):
             "token": {
                 "type": "BEEMU_INSTRUCTION_TYPE_BITWISE",
                 "duration_in_clock_cycles": clock_cycle,
+                "original_machine_code": opcode,
                 "is_16": True,
-                "payload": {
+                "params": {
                     "bitwise_params": {
                         "operation": op,
                         "bit_number": ((opcode - baseline) // 8),
