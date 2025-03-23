@@ -4,6 +4,51 @@
 #include <libbeemu/device/memory.h>
 #include <libbeemu/internals/utility.h>
 
+/** BT16 COMMON PARSING FUNCTIONS */
+
+/**
+ * @brief Tokenize the target instruction for a BT16 instruction.
+ *
+ * BT16 instructions always target a register (or the pseudoregister (HL)) and
+ * which one they target depend almost entirely on the most significant byte,
+ * (or specificially the last three bits of the MSB since they repeat every 8 bits.)
+ *
+ * @param instruction Partially constructed token.
+ * @return BeemuParam Param to put to the target field.
+ */
+BeemuParam bt16_tokenize_target(BeemuInstruction *instruction)
+{
+	uint8_t arithmatic_differentiator = instruction->original_machine_code & 0x00FF;
+	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
+	BeemuParam target;
+	if (register_differentiator == 0x06)
+	{
+		// This is the case for (HL), the dereferenced HL pointer to the memory.
+		target.pointer = true;
+		target.type = BEEMU_PARAM_TYPE_REGISTER_16;
+		target.value.register_16 = BEEMU_REGISTER_HL;
+	}
+	else
+	{
+		const static BeemuRegister_8 registers[] = {
+			BEEMU_REGISTER_B,
+			BEEMU_REGISTER_C,
+			BEEMU_REGISTER_D,
+			BEEMU_REGISTER_E,
+			BEEMU_REGISTER_H,
+			BEEMU_REGISTER_L,
+			BEEMU_REGISTER_A, // Technically the code should NEVER hit here.
+			BEEMU_REGISTER_A};
+		// Otherwise all 0xCB00-40 block acts on 8 bit register values.
+		target.pointer = false; // Not really necessary btw.
+		target.type = BEEMU_PARAM_TYPE_REGISTER_8;
+		target.value.register_8 = registers[register_differentiator];
+	}
+	return target;
+}
+
+/** BT16 ROT/SHIFT OPERATIONS */
+
 /**
  * @brief Determine rot shift op subtype.
  *
@@ -48,30 +93,62 @@ void bt16_rot_shift_determine_params(BeemuInstruction *instruction)
 	// so it *should* be fine.
 	instruction->params.rot_shift_params.direction = rotshift_differentiator <= 0x8 ? BEMU_LEFT_DIRECTION : BEEMU_RIGHT_DIRECTION;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
-	if (register_differentiator == 0x06)
-	{
-		// This is the case for (HL), the dereferenced HL pointer to the memory.
-		instruction->params.rot_shift_params.target.pointer = true;
-		instruction->params.rot_shift_params.target.type = BEEMU_PARAM_TYPE_REGISTER_16;
-		instruction->params.rot_shift_params.target.value.register_16 = BEEMU_REGISTER_HL;
-	}
-	else
-	{
-		const static BeemuRegister_8 registers[] = {
-			BEEMU_REGISTER_B,
-			BEEMU_REGISTER_C,
-			BEEMU_REGISTER_D,
-			BEEMU_REGISTER_E,
-			BEEMU_REGISTER_H,
-			BEEMU_REGISTER_L,
-			BEEMU_REGISTER_A, // Technically the code should NEVER hit here.
-			BEEMU_REGISTER_A};
-		// Otherwise all 0xCB00-40 block acts on 8 bit register values.
-		instruction->params.rot_shift_params.target.pointer = false; // Not really necessary btw.
-		instruction->params.rot_shift_params.target.type = BEEMU_PARAM_TYPE_REGISTER_8;
-		instruction->params.rot_shift_params.target.value.register_8 = registers[register_differentiator];
-	}
+	instruction->params.rot_shift_params.target = bt16_tokenize_target(instruction);
 }
+
+/** BT16 BITWISE OPERATIONS */
+
+/**
+ * @brief Determine the subtype of a bitwise inst
+ *
+ * This is one of the BIT, SET or RES instructions.
+ *
+ * @param inst partially constructed instruction token.
+ */
+void bt16_bitwise_determine_subtype(BeemuInstruction *inst)
+{
+	static const BeemuBitOperation operations[] = {
+		BEEMU_BIT_OP_BIT,
+		BEEMU_BIT_OP_RES,
+		BEEMU_BIT_OP_SET};
+	// You can determine the operation using 4th most significant
+	// nibble and than negating one from it, so for instance, starting
+	// from the second most significant byte:
+	// 0x4 0100 > 2 = 01 - 01 = 0 BIT
+	// 0x5 0101 > 2 = 01 - 01 = 0 BIT
+	// 0x6 0110 > 2 = 01 - 01 = 0 BIT
+	// 0x7 0111 > 2 = 01 - 01 = 0 BIT
+	// 0x8 1000 > 2 = 10 - 01 = 1 RES
+	// 0x9 1001 > 2 = 10 - 01 = 1 RES
+	// 0xA 1010 > 2 = 10 - 01 = 1 RES
+	// 0xB 1011 > 2 = 10 - 01 = 1 RES
+	// 0xC 1100 > 2 = 11 - 01 = 2 SET
+	// 0xD 1101 > 2 = 11 - 01 = 2 SET
+	// 0xE 1110 > 2 = 11 - 01 = 2 SET
+	// 0xF 1111 > 2 = 11 - 01 = 2 SET
+	// Mask the fourth most significant nibble
+	// shift it rightwards to be at the start and
+	// then subtract one from it.
+	const uint8_t op_differentiator = ((inst->original_machine_code & 0x00C0) >> 2) - 1;
+	inst->params.bitwise_params.operation = operations[op_differentiator];
+}
+
+/**
+ * @brief Determine the parameters of a BIT/RES/SET instruction.
+ *
+ * Determines the bit number and the register.
+ * @param inst
+ */
+void bt16_bitwise_determine_params(BeemuInstruction *inst)
+{
+	inst->params.bitwise_params.target = bt16_tokenize_target(inst);
+	// We are taking this as our target as this bitmask matches the pattern of incrementing
+	// the bit index every once in 8 instructions AND resetting every once in 64 instructions
+	// or so.
+	inst->params.bitwise_params.bit_number = (inst->original_machine_code & 0b111000) > 3;
+}
+
+/** COMMON BT16 OPERATIONS */
 
 /**
  * @brief Determine 16 bit operation and suboperations.
@@ -87,6 +164,11 @@ void bt16_determine_type(BeemuInstruction *inst)
 		inst->type = BEEMU_INSTRUCTION_TYPE_ROT_SHIFT;
 		bt16_rot_shift_determine_subtype(inst);
 	}
+	else
+	{
+		inst->type = BEEMU_INSTRUCTION_TYPE_BITWISE;
+		bt16_bitwise_determine_subtype(inst);
+	}
 }
 
 /**
@@ -99,6 +181,10 @@ void bt16_determine_params(BeemuInstruction *instruction)
 	if (instruction->type == BEEMU_INSTRUCTION_TYPE_ROT_SHIFT)
 	{
 		bt16_rot_shift_determine_params(instruction);
+	}
+	else if (instruction->type == BEEMU_INSTRUCTION_TYPE_BITWISE)
+	{
+		bt16_bitwise_determine_params(instruction);
 	}
 }
 
