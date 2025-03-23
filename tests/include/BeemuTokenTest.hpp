@@ -258,6 +258,22 @@ bool operator==(const BeemuInstruction &lhs, const BeemuInstruction &rhs)
 	return lhs_json == rhs_json;
 }
 
+/**
+ * @brief Define how a beemu instruction behaves on a ostream.
+ *
+ * Apperantly overriding this will allow the GTest to correct
+ * output my values, allegedly.
+ *
+ * @param os
+ * @param obj
+ * @return std::ostream&
+ */
+std::ostream &operator<<(std::ostream &os, const BeemuInstruction &obj)
+{
+	nlohmann::json json_rep(obj);
+	// write obj to stream
+	return os << json_rep.dump();
+}
 // template <typename Sink>
 // void AbslStringify(Sink &sink, std::pair<uint16_t, BeemuInstruction> test)
 // {
