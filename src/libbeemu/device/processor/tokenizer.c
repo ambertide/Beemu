@@ -114,22 +114,22 @@ void bt16_bitwise_determine_subtype(BeemuInstruction *inst)
 	// You can determine the operation using 4th most significant
 	// nibble and than negating one from it, so for instance, starting
 	// from the second most significant byte:
-	// 0x4 0100 > 2 = 01 - 01 = 0 BIT
-	// 0x5 0101 > 2 = 01 - 01 = 0 BIT
-	// 0x6 0110 > 2 = 01 - 01 = 0 BIT
-	// 0x7 0111 > 2 = 01 - 01 = 0 BIT
-	// 0x8 1000 > 2 = 10 - 01 = 1 RES
-	// 0x9 1001 > 2 = 10 - 01 = 1 RES
-	// 0xA 1010 > 2 = 10 - 01 = 1 RES
-	// 0xB 1011 > 2 = 10 - 01 = 1 RES
-	// 0xC 1100 > 2 = 11 - 01 = 2 SET
-	// 0xD 1101 > 2 = 11 - 01 = 2 SET
-	// 0xE 1110 > 2 = 11 - 01 = 2 SET
-	// 0xF 1111 > 2 = 11 - 01 = 2 SET
+	// 0x4 0100 xxxx > 6 = 01 - 01 = 0 BIT
+	// 0x5 0101 xxxx > 6 = 01 - 01 = 0 BIT
+	// 0x6 0110 xxxx > 6 = 01 - 01 = 0 BIT
+	// 0x7 0111 xxxx > 6 = 01 - 01 = 0 BIT
+	// 0x8 1000 xxxx > 6 = 10 - 01 = 1 RES
+	// 0x9 1001 xxxx > 6 = 10 - 01 = 1 RES
+	// 0xA 1010 xxxx > 6 = 10 - 01 = 1 RES
+	// 0xB 1011 xxxx > 6 = 10 - 01 = 1 RES
+	// 0xC 1100 xxxx > 6 = 11 - 01 = 2 SET
+	// 0xD 1101 xxxx > 6 = 11 - 01 = 2 SET
+	// 0xE 1110 xxxx > 6 = 11 - 01 = 2 SET
+	// 0xF 1111 xxxx > 6 = 11 - 01 = 2 SET
 	// Mask the fourth most significant nibble
 	// shift it rightwards to be at the start and
 	// then subtract one from it.
-	const uint8_t op_differentiator = ((inst->original_machine_code & 0x00C0) >> 2) - 1;
+	const uint8_t op_differentiator = ((inst->original_machine_code & 0x00C0) >> 6) - 1;
 	inst->params.bitwise_params.operation = operations[op_differentiator];
 }
 
