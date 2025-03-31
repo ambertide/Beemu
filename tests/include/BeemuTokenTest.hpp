@@ -274,11 +274,6 @@ std::ostream &operator<<(std::ostream &os, const BeemuInstruction &obj)
 	// write obj to stream
 	return os << json_rep.dump();
 }
-// template <typename Sink>
-// void AbslStringify(Sink &sink, std::pair<uint16_t, BeemuInstruction> test)
-// {
-// 	absl::Format(&sink, "0x%02X", test.first);
-// }
 
 namespace BeemuTests
 {
