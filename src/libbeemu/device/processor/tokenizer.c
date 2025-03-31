@@ -199,11 +199,17 @@ void bt16_determine_clock_cycles(BeemuInstruction *instruction)
 	if (clock_cycle_differentiator == 0x06)
 	{
 		// (HL) access instructions take longer.
-		uint8_t secondary_clock_cycle_differentiator = (instruction->original_machine_code & 0xFF) > 8;
-		// 'Tis a rather ugly hack to force integer underflow so we can check <= 3 correctly.
-		secondary_clock_cycle_differentiator -= 0x07;
-		// The BIT block is 4, others are 4 for (HL acccess)
-		instruction->duration_in_clock_cycles = secondary_clock_cycle_differentiator <= 3 ? 3 : 4;
+		uint8_t secondary_clock_cycle_differentiator = (instruction->original_machine_code & 0xFF) >> 4;
+		// BIT block between 0xCB40-0xCB70's (HL) accessing instructions execute in 3 clock cycles
+		// rather than 4.
+		if (secondary_clock_cycle_differentiator >= 0x04 && secondary_clock_cycle_differentiator <= 0x07)
+		{
+			instruction->duration_in_clock_cycles = 3;
+		}
+		else
+		{
+			instruction->duration_in_clock_cycles = 4;
+		}
 	}
 	else
 	{
