@@ -145,7 +145,7 @@ void bt16_bitwise_determine_params(BeemuInstruction *inst)
 	// We are taking this as our target as this bitmask matches the pattern of incrementing
 	// the bit index every once in 8 instructions AND resetting every once in 64 instructions
 	// or so.
-	inst->params.bitwise_params.bit_number = (inst->original_machine_code & 0b111000) > 3;
+	inst->params.bitwise_params.bit_number = ((inst->original_machine_code & 0b111000) >> 3);
 }
 
 /** COMMON BT16 OPERATIONS */
