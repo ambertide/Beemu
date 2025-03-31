@@ -58,6 +58,8 @@ def calc_clock_cycle(op: str, reg_type: str) -> int:
             return 4
 
 
+baseline = 0xCB40
+
 for opcode in range(BLOCK_START, BLOCK_END + 1):
     op = "BEEMU_BIT_OP_BIT"
     if 0xCBC0 > opcode >= 0xCB80:
@@ -65,13 +67,12 @@ for opcode in range(BLOCK_START, BLOCK_END + 1):
     elif opcode >= 0xCBC0:
         op = "BEEMU_BIT_OP_SET"
 
-    baseline = 0xCB40
-
     if opcode == 0xCB80 or opcode == 0xCBC0:
         baseline = opcode
 
     reg_type, target = calc_target(opcode)
     clock_cycle = calc_clock_cycle(op, reg_type)
+    print(((opcode - baseline) // 8))
     ops.append(
         {
             "instruction": f"0x{opcode:4X}",
