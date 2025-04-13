@@ -16,7 +16,7 @@
  * @param instruction Partially constructed token.
  * @return BeemuParam Param to put to the target field.
  */
-BeemuParam bt16_tokenize_target(BeemuInstruction *instruction)
+BeemuParam cb_tokenize_target(BeemuInstruction *instruction)
 {
 	uint8_t arithmatic_differentiator = instruction->original_machine_code & 0x00FF;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
@@ -54,7 +54,7 @@ BeemuParam bt16_tokenize_target(BeemuInstruction *instruction)
  *
  * @param instr partially built instruction ptr.
  */
-void bt16_rot_shift_determine_subtype(BeemuInstruction *inst)
+void cb_rot_shift_determine_subtype(BeemuInstruction *inst)
 {
 	uint8_t arithmatic_differentiator = inst->original_machine_code & 0x00FF;
 	const static BeemuRotShiftOp subtypes_by_second_bit[] = {
@@ -82,7 +82,7 @@ void bt16_rot_shift_determine_subtype(BeemuInstruction *inst)
  * Basically everything EXCEPT the type/subtype.
  *
  */
-void bt16_rot_shift_determine_params(BeemuInstruction *instruction)
+void cb_rot_shift_determine_params(BeemuInstruction *instruction)
 {
 	BeemuRotShiftOp subtype = instruction->params.rot_shift_params.operation;
 	uint8_t arithmatic_differentiator = instruction->original_machine_code & 0x00FF;
@@ -93,10 +93,10 @@ void bt16_rot_shift_determine_params(BeemuInstruction *instruction)
 	// so it *should* be fine.
 	instruction->params.rot_shift_params.direction = rotshift_differentiator <= 0x8 ? BEMU_LEFT_DIRECTION : BEEMU_RIGHT_DIRECTION;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
-	instruction->params.rot_shift_params.target = bt16_tokenize_target(instruction);
+	instruction->params.rot_shift_params.target = cb_tokenize_target(instruction);
 }
 
-/** BT16 BITWISE OPERATIONS */
+/** CB-PREFIXED BITWISE OPERATIONS */
 
 /**
  * @brief Determine the subtype of a bitwise inst
@@ -105,7 +105,7 @@ void bt16_rot_shift_determine_params(BeemuInstruction *instruction)
  *
  * @param inst partially constructed instruction token.
  */
-void bt16_bitwise_determine_subtype(BeemuInstruction *inst)
+void cb_bitwise_determine_subtype(BeemuInstruction *inst)
 {
 	static const BeemuBitOperation operations[] = {
 		BEEMU_BIT_OP_BIT,
@@ -139,9 +139,9 @@ void bt16_bitwise_determine_subtype(BeemuInstruction *inst)
  * Determines the bit number and the register.
  * @param inst
  */
-void bt16_bitwise_determine_params(BeemuInstruction *inst)
+void cb_bitwise_determine_params(BeemuInstruction *inst)
 {
-	inst->params.bitwise_params.target = bt16_tokenize_target(inst);
+	inst->params.bitwise_params.target = cb_tokenize_target(inst);
 	// We are taking this as our target as this bitmask matches the pattern of incrementing
 	// the bit index every once in 8 instructions AND resetting every once in 64 instructions
 	// or so.
@@ -151,49 +151,49 @@ void bt16_bitwise_determine_params(BeemuInstruction *inst)
 /** COMMON BT16 OPERATIONS */
 
 /**
- * @brief Determine 16 bit operation and suboperations.
+ * @brief Determine cb prefixed operation and suboperations.
  *
  * @param inst partially built instruction ptr.
  */
-void bt16_determine_type(BeemuInstruction *inst)
+void cb_determine_type(BeemuInstruction *inst)
 {
 	uint8_t arithmatic_differentiator = inst->original_machine_code & 0x00FF;
 
 	if (arithmatic_differentiator < 0x40)
 	{
 		inst->type = BEEMU_INSTRUCTION_TYPE_ROT_SHIFT;
-		bt16_rot_shift_determine_subtype(inst);
+		cb_rot_shift_determine_subtype(inst);
 	}
 	else
 	{
 		inst->type = BEEMU_INSTRUCTION_TYPE_BITWISE;
-		bt16_bitwise_determine_subtype(inst);
+		cb_bitwise_determine_subtype(inst);
 	}
 }
 
 /**
- * @brief Determine parameters for a 16 bit instruction.
+ * @brief Determine parameters for a cb prefixed instruction.
  *
  * @param instruction
  */
-void bt16_determine_params(BeemuInstruction *instruction)
+void cb_determine_params(BeemuInstruction *instruction)
 {
 	if (instruction->type == BEEMU_INSTRUCTION_TYPE_ROT_SHIFT)
 	{
-		bt16_rot_shift_determine_params(instruction);
+		cb_rot_shift_determine_params(instruction);
 	}
 	else if (instruction->type == BEEMU_INSTRUCTION_TYPE_BITWISE)
 	{
-		bt16_bitwise_determine_params(instruction);
+		cb_bitwise_determine_params(instruction);
 	}
 }
 
 /**
- * @brief Determine the time it takes for an instruction execution to complete for 16 bit ones.
+ * @brief Determine the time it takes for an instruction execution to complete for cb prefixed ones.
  *
  * @param instruction
  */
-void bt16_determine_clock_cycles(BeemuInstruction *instruction)
+void cb_determine_clock_cycles(BeemuInstruction *instruction)
 {
 	uint8_t clock_cycle_differentiator = instruction->original_machine_code & 0x07;
 	if (clock_cycle_differentiator == 0x06)
@@ -213,26 +213,26 @@ void bt16_determine_clock_cycles(BeemuInstruction *instruction)
 	}
 	else
 	{
-		// Other 16 bit instructions take 2 cycles always.
+		// Other cb prefixed instructions take 2 cycles always.
 		instruction->duration_in_clock_cycles = 2;
 	}
 }
 
 /**
- * @brief Tokenize a 16-bit instruction.
+ * @brief Tokenize a CB prefixed instruction.
  *
  * This tokenizes the 0xCB00-0xCBFF block of instructions.
  *
  * @param instruction Partially created instruction to tokenize.
  */
-void bt16_tokenize(BeemuInstruction *instruction)
+void cb_tokenize(BeemuInstruction *instruction)
 {
 	// now, a very cool fact of life is that we can actually lowkey
 	// determine the instruction parameters seperately.
 	instruction->is_16 = true;
-	bt16_determine_type(instruction);
-	bt16_determine_params(instruction);
-	bt16_determine_clock_cycles(instruction);
+	cb_determine_type(instruction);
+	cb_determine_params(instruction);
+	cb_determine_clock_cycles(instruction);
 }
 
 BeemuInstruction *beemu_tokenizer_tokenize(uint16_t instruction)
@@ -242,8 +242,8 @@ BeemuInstruction *beemu_tokenizer_tokenize(uint16_t instruction)
 	uint8_t lower_bytes = instruction >> 8;
 	if (lower_bytes == 0xCB)
 	{
-		// Parse 16-bits seperately..
-		bt16_tokenize(inst);
+		// Parse cb prefix seperately..
+		cb_tokenize(inst);
 	}
 	return inst;
 };
