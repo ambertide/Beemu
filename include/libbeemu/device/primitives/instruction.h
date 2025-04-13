@@ -204,8 +204,8 @@ extern "C"
 	{
 		BeemuInstructionType type;
 		uint8_t duration_in_clock_cycles;
-		uint16_t original_machine_code;
-		bool is_16;
+		uint32_t original_machine_code;
+		uint8_t byte_length;
 		union
 		{
 			BeemuLoadParams load_params;

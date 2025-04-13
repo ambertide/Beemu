@@ -176,6 +176,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	json["original_machine_code"] = inst.original_machine_code;
 	json["duration_in_clock_cycles"] = inst.duration_in_clock_cycles;
 	json["type"] = inst.type;
+	json["byte_length"] = inst.byte_length;
 	switch (inst.type)
 	{
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
@@ -206,6 +207,7 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	json.at("original_machine_code").get_to(inst.original_machine_code);
 	json.at("duration_in_clock_cycles").get_to(inst.duration_in_clock_cycles);
 	json.at("type").get_to(inst.type);
+	json.at("byte_length").get_to(inst.byte_length);
 	switch (inst.type)
 	{
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
@@ -282,7 +284,7 @@ namespace BeemuTests
 	 *
 	 * @return std::vector<std::pair<uint16_t, BeemuInstruction>>
 	 */
-	std::vector<std::pair<uint16_t, BeemuInstruction>> getTokensFromTestFile()
+	std::vector<std::pair<uint32_t, BeemuInstruction>> getTokensFromTestFile()
 	{
 		std::string test_file_path = PATH_TO_TEST_RESOURCES;
 		test_file_path += "/tokens.json";
@@ -290,18 +292,20 @@ namespace BeemuTests
 		auto parsed_test_data = nlohmann::json::parse(test_file);
 		BeemuTestJSON test_data;
 		::from_json(parsed_test_data, test_data);
-		std::vector<std::pair<uint16_t, BeemuInstruction>> new_vector;
+		std::vector<std::pair<uint32_t, BeemuInstruction>> new_vector;
 		for (const BeemuJSONEncodedPair &encoded_pair : test_data.tokens)
 		{
 			std::stringstream stream{encoded_pair.instruction};
-			uint16_t decoded_instruction = 0;
+			uint32_t decoded_instruction = 0;
 			stream >> std::hex >> decoded_instruction;
+			decoded_instruction <<= 8;
+			decoded_instruction &= 0x00FFFF00;
 			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
 			new_vector.push_back(pair);
 		}
 		return new_vector;
 	}
-	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint16_t, BeemuInstruction>>
+	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint32_t, BeemuInstruction>>
 	{
 	protected:
 		void SetUp() override {}

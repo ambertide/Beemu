@@ -4,12 +4,12 @@
 #include <libbeemu/device/memory.h>
 #include <libbeemu/internals/utility.h>
 
-/** BT16 COMMON PARSING FUNCTIONS */
+/** CB Prefixed COMMON PARSING FUNCTIONS */
 
 /**
- * @brief Tokenize the target instruction for a BT16 instruction.
+ * @brief Tokenize the target instruction for a CB Prefixed instruction.
  *
- * BT16 instructions always target a register (or the pseudoregister (HL)) and
+ * CB Prefixed instructions always target a register (or the pseudoregister (HL)) and
  * which one they target depend almost entirely on the most significant byte,
  * (or specificially the last three bits of the MSB since they repeat every 8 bits.)
  *
@@ -47,7 +47,7 @@ BeemuParam cb_tokenize_target(BeemuInstruction *instruction)
 	return target;
 }
 
-/** BT16 ROT/SHIFT OPERATIONS */
+/** CB Prefixed ROT/SHIFT OPERATIONS */
 
 /**
  * @brief Determine rot shift op subtype.
@@ -148,7 +148,7 @@ void cb_bitwise_determine_params(BeemuInstruction *inst)
 	inst->params.bitwise_params.bit_number = ((inst->original_machine_code & 0b111000) >> 3);
 }
 
-/** COMMON BT16 OPERATIONS */
+/** COMMON CB Prefixed OPERATIONS */
 
 /**
  * @brief Determine cb prefixed operation and suboperations.
@@ -229,18 +229,38 @@ void cb_tokenize(BeemuInstruction *instruction)
 {
 	// now, a very cool fact of life is that we can actually lowkey
 	// determine the instruction parameters seperately.
-	instruction->is_16 = true;
 	cb_determine_type(instruction);
 	cb_determine_params(instruction);
 	cb_determine_clock_cycles(instruction);
 }
 
-BeemuInstruction *beemu_tokenizer_tokenize(uint16_t instruction)
+/**
+ * @brief Given an instruction, determine its byte length and canonize its rep.
+ *
+ * Instructions in gameboy architecture has variable sizes, between 1 and 3 bytes,
+ * therefore we need to cleanup up the clutter (ie: the actual instruction is left padded
+ * with some "noise" that must be deleted.)
+ *
+ * @param instruction Partially constructed instruction with a broken portion.
+ */
+void determine_byte_length_and_cleanup(BeemuInstruction *instruction)
+{
+	if (instruction->original_machine_code >> 16 == 0xCB)
+	{
+		// Toss away the last byte since all CB prefixed
+		// instructions are 2 byte long and set the byte length.
+		instruction->original_machine_code >>= 8;
+		instruction->original_machine_code &= 0x0000FFFF;
+		instruction->byte_length = 2;
+	}
+}
+
+BeemuInstruction *beemu_tokenizer_tokenize(uint32_t instruction)
 {
 	BeemuInstruction *inst = calloc(1, sizeof(BeemuInstruction));
 	inst->original_machine_code = instruction;
-	uint8_t lower_bytes = instruction >> 8;
-	if (lower_bytes == 0xCB)
+	determine_byte_length_and_cleanup(inst);
+	if (inst->byte_length == 2 && inst->original_machine_code >> 8 == 0xCB)
 	{
 		// Parse cb prefix seperately..
 		cb_tokenize(inst);
