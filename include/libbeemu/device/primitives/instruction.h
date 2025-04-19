@@ -65,6 +65,17 @@ extern "C"
 	} BeemuParam;
 
 	/**
+	 * @brief Extra operation to perform immediately following a load operation.
+	 *
+	 */
+	typedef enum BeemuPostLoadOperation
+	{
+		BEEMU_POST_LOAD_NOP,
+		BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE,
+		BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE
+	} BeemuPostLoadOperation;
+
+	/**
 	 * @brief Parameters for the LOAD instructions.
 	 *
 	 */
@@ -74,6 +85,11 @@ extern "C"
 		BeemuParam source;
 		/** Load to */
 		BeemuParam dest;
+		/**
+		 * @brief Certain instructions perform an additional op immediately
+		 * after loading.
+		 */
+		BeemuPostLoadOperation postLoadOperation;
 	} BeemuLoadParams;
 
 	/**

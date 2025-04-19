@@ -62,7 +62,13 @@ for dest_register in registers:
                 ),
                 "original_machine_code": opcode,
                 "byte_length": 1,
-                "params": {"load_params": {"source": src_param, "dest": dst_param}},
+                "params": {
+                    "load_params": {
+                        "source": src_param,
+                        "dest": dst_param,
+                        "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                    }
+                },
             },
         }
 
