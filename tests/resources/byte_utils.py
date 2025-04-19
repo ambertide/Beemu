@@ -1,0 +1,39 @@
+# Who knew byte operations could be complicated?
+# hint: not me...
+
+
+def get_opcode(instruction: int) -> int:
+    """This is the byte(s) used to distinguish instr category.
+
+    Gameboy instructions are variable in their byte count,
+    for instructions starting with the 0xCB, their TWO BYTES
+    are considered the opcode, meanwhile for others only the LSB
+    is considered the opcode.
+    Args:
+            instruction (int): Raw instruction
+
+    Returns:
+            int: Opcode that can be used to distinguish
+            instruction type.
+    """
+    opcode_lsb = 0x00
+    # One before lsb
+    possible_opcode_msb = 0x00
+    while instruction != 0x00:
+        possible_opcode_msb = opcode_lsb
+        opcode_lsb = instruction & 0xFF
+        instruction >>= 8
+    # When the instruction is zero, lsb will be the, well, lsb
+    # While the lsb2 will hopefully will be the one before lsb.
+    if opcode_lsb == 0xCB:
+        return (opcode_lsb << 8) | possible_opcode_msb
+    return opcode_lsb
+
+
+def sort_instructions(instruction: list[dict]) -> None:
+    """In place sort the instruction according to canonical opcodes.
+
+    Args:
+            instruction (list[dict]): List holding the instructions.
+    """
+    instruction.sort(key=lambda i: get_opcode(int(i["instruction"], base=16)))
