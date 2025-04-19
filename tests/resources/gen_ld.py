@@ -30,6 +30,12 @@ for token in tokens:
         0x36,
         0x3A,
         0x3E,
+        0xE0,
+        0xE2,
+        0xEA,
+        0xF0,
+        0xF2,
+        0xFA,
     ]:
         to_be_removed.append(token["token"]["original_machine_code"])
 
@@ -222,6 +228,154 @@ for lsn in range(4):
         # the operation as well.
         post_op = post_op.replace("DESTINATION", "SOURCE")
         tokens.append(token)
+
+# Finally the LDH and LD [imm16]s, written by hand for ease of use.
+
+addr_param = {
+    "pointer": True,
+    "type": "BEEMU_PARAM_TYPE_UINT_8",
+    "value": {"value": 0xBC},
+}
+
+addr16_param = {
+    "pointer": True,
+    "type": "BEEMU_PARAM_TYPE_UINT_16",
+    "value": {"value": 0xDEBC},
+}
+
+
+C_REGISTER_INDIRECT = {
+    "pointer": True,
+    "type": "BEEMU_PARAM_TYPE_REGISTER_8",
+    "value": f"BEEMU_REGISTER_C",
+}
+
+
+# LDH A, [a8]
+tokens.append(
+    {
+        "instruction": f"0x00E0BC",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 3,
+            "original_machine_code": 0x00E0BC,
+            "byte_length": 2,
+            "params": {
+                "load_params": {
+                    "source": A_REGISTER,
+                    "dest": addr_param,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
+
+# LDH [a8], A
+tokens.append(
+    {
+        "instruction": f"0x00F0BC",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 3,
+            "original_machine_code": 0x00F0BC,
+            "byte_length": 2,
+            "params": {
+                "load_params": {
+                    "source": addr_param,
+                    "dest": A_REGISTER,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
+
+# LDH [C], A
+tokens.append(
+    {
+        "instruction": f"0x0000E2",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 2,
+            "original_machine_code": 0x0000E2,
+            "byte_length": 1,
+            "params": {
+                "load_params": {
+                    "source": A_REGISTER,
+                    "dest": C_REGISTER_INDIRECT,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
+
+# LDH A, [C]
+tokens.append(
+    {
+        "instruction": f"0x0000F2",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 2,
+            "original_machine_code": 0x0000F2,
+            "byte_length": 1,
+            "params": {
+                "load_params": {
+                    "source": C_REGISTER_INDIRECT,
+                    "dest": A_REGISTER,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
+# LD [a16], A
+
+tokens.append(
+    {
+        "instruction": f"0xEADEBC",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 4,
+            "original_machine_code": 0xEADEBC,
+            "byte_length": 3,
+            "params": {
+                "load_params": {
+                    "source": A_REGISTER,
+                    "dest": addr16_param,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
+# LD A, [a16]
+
+tokens.append(
+    {
+        "instruction": f"0xFADEBC",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "duration_in_clock_cycles": 4,
+            "original_machine_code": 0xFADEBC,
+            "byte_length": 3,
+            "params": {
+                "load_params": {
+                    "source": addr16_param,
+                    "dest": A_REGISTER,
+                    "postLoadOperation": "BEEMU_POST_LOAD_NOP",
+                }
+            },
+        },
+    }
+)
+
 
 sort_instructions(tokens)
 
