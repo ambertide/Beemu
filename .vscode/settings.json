@@ -97,7 +97,8 @@
     "print": "cpp",
     "queue": "cpp",
     "stack": "cpp",
-    "__availability": "cpp"
+    "__availability": "cpp",
+    "tokenize_common.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true,
