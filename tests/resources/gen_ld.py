@@ -180,7 +180,7 @@ for lsb in range(4):
 A_REGISTER = {
     "pointer": False,
     "type": "BEEMU_PARAM_TYPE_REGISTER_8",
-    "value": f"BEEMU_REGISTER_A",
+    "value": {"register_8": f"BEEMU_REGISTER_A"},
 }
 
 registers = ["BC", "DE", "HL", "HL"]
@@ -239,7 +239,7 @@ addr_param = {
 
 addr16_param = {
     "pointer": True,
-    "type": "BEEMU_PARAM_TYPE_UINT_16",
+    "type": "BEEMU_PARAM_TYPE_UINT16",
     "value": {"value": 0xDEBC},
 }
 
@@ -247,7 +247,7 @@ addr16_param = {
 C_REGISTER_INDIRECT = {
     "pointer": True,
     "type": "BEEMU_PARAM_TYPE_REGISTER_8",
-    "value": f"BEEMU_REGISTER_C",
+    "value": {"register_8": f"BEEMU_REGISTER_C"},
 }
 
 
