@@ -1,4 +1,5 @@
 #include "tokenize_cbxx.h"
+#include "tokenize_common.h"
 
 /** CB Prefixed COMMON PARSING FUNCTIONS */
 
@@ -17,29 +18,7 @@ BeemuParam cb_tokenize_target(BeemuInstruction *instruction)
 	uint8_t arithmatic_differentiator = instruction->original_machine_code & 0x00FF;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
 	BeemuParam target;
-	if (register_differentiator == 0x06)
-	{
-		// This is the case for (HL), the dereferenced HL pointer to the memory.
-		target.pointer = true;
-		target.type = BEEMU_PARAM_TYPE_REGISTER_16;
-		target.value.register_16 = BEEMU_REGISTER_HL;
-	}
-	else
-	{
-		const static BeemuRegister_8 registers[] = {
-			BEEMU_REGISTER_B,
-			BEEMU_REGISTER_C,
-			BEEMU_REGISTER_D,
-			BEEMU_REGISTER_E,
-			BEEMU_REGISTER_H,
-			BEEMU_REGISTER_L,
-			BEEMU_REGISTER_A, // Technically the code should NEVER hit here.
-			BEEMU_REGISTER_A};
-		// Otherwise all 0xCB00-40 block acts on 8 bit register values.
-		target.pointer = false; // Not really necessary btw.
-		target.type = BEEMU_PARAM_TYPE_REGISTER_8;
-		target.value.register_8 = registers[register_differentiator];
-	}
+	tokenize_register_param_with_index(&target, register_differentiator);
 	return target;
 }
 

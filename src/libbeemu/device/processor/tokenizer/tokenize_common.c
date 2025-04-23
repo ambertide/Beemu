@@ -47,3 +47,30 @@ uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
 
 	return opcode;
 }
+
+void tokenize_register_param_with_index(BeemuParam *param, uint8_t index)
+{
+	if (index == 0x06)
+	{
+		// This is the case for (HL), the dereferenced HL pointer to the memory.
+		param->pointer = true;
+		param->type = BEEMU_PARAM_TYPE_REGISTER_16;
+		param->value.register_16 = BEEMU_REGISTER_HL;
+	}
+	else
+	{
+		const static BeemuRegister_8 registers[] = {
+			BEEMU_REGISTER_B,
+			BEEMU_REGISTER_C,
+			BEEMU_REGISTER_D,
+			BEEMU_REGISTER_E,
+			BEEMU_REGISTER_H,
+			BEEMU_REGISTER_L,
+			BEEMU_REGISTER_A, // Technically the code should NEVER hit here.
+			BEEMU_REGISTER_A};
+		// Otherwise all 0xCB00-40 block acts on 8 bit register values.
+		param->pointer = false; // Not really necessary btw.
+		param->type = BEEMU_PARAM_TYPE_REGISTER_8;
+		param->value.register_8 = registers[index];
+	}
+}

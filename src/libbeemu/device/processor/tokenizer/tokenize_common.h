@@ -34,6 +34,17 @@ extern "C"
 	 */
 	uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction);
 
+	/**
+	 * @brief Given an index, receive the register param in that index.
+	 *
+	 * Gameboy consistently enumerates the registers as B, C, D, E, H, L, (HL) and A
+	 * for 8 bit instruction param, this function is used to construct a register param
+	 * given that order.
+	 * @param param param to modify
+	 * @param register_index Index of the register param to receive
+	 */
+	void tokenize_register_param_with_index(BeemuParam *param, const uint8_t register_index);
+
 #ifdef __cplusplus
 }
 #endif
