@@ -306,8 +306,14 @@ namespace BeemuTests
 			std::stringstream stream{encoded_pair.instruction};
 			uint32_t decoded_instruction = 0;
 			stream >> std::hex >> decoded_instruction;
-			decoded_instruction <<= 8;
-			decoded_instruction &= 0x00FFFF00;
+			if ((decoded_instruction & 0xFFFFFF00) == 0)
+			{
+				decoded_instruction <<= 16;
+			}
+			else if ((decoded_instruction & 0xFFFF0000) == 0)
+			{
+				decoded_instruction <<= 8;
+			}
 			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
 			new_vector.push_back(pair);
 		}
