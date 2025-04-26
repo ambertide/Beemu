@@ -23,14 +23,8 @@ uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
 	// Some of them also include invalid or SYSTEM instructions which should have been handled prior
 	// to this.
 	if (
-		(opcode & 0xCF == 1) || opcode == 0x8 || (opcode & 0xEE == 0xC2) || (opcode & 0xCF == 0xC4) || ((opcode & 0xC0) == 0 && (opcode - 0xC) <= 4))
-	{
-		instruction->original_machine_code &= 0x00FFFFFF;
-		instruction->byte_length = 3;
-	}
-	else if (
-		(
-			(opcode < 0x40 || opcode >= 0xC0) && (opcode & 0xF7 == 0x06)) ||
+		((opcode & 0b11000111) == 0b0110) ||
+		((opcode < 0x40 || opcode >= 0xC0) && (opcode & 0xF7 == 0x06)) ||
 		((opcode >= 0xE0 || (opcode < 0x40 && opcode >= 0x10)) && (opcode & 0xF7 == 0)))
 	{
 		instruction->original_machine_code >>= 8;
