@@ -19,6 +19,21 @@
 extern "C"
 {
 #endif
+
+	/**
+	 * @brief Differentiate the Load8 subtype during tokenization stage.
+	 *
+	 */
+	typedef enum BEEMU_TOKENIZER_LOAD8_SUBTYPE
+	{
+		/** Emitted when not load. */
+		BEEMU_TOKENIZER_LOAD8_INVALID_LOAD,
+		/** Emitted when 0x40-0x7F mainline */
+		BEEMU_TOKENIZER_LOAD8_MAINLINE,
+		/** Emitted for 0xn6 - 0xnE premainline D8 instruction. */
+		BEEMU_TOKENIZER_LOAD8_D8
+	} BEEMU_TOKENIZER_LOAD8_SUBTYPE;
+
 	/**
 	 * @brief Given a partially initiated instruction tokenize it as a load instruction.
 	 *
@@ -27,6 +42,14 @@ extern "C"
 	 * @param opcode Opcode portion of the instruction for faster checks for some operations.
 	 */
 	void tokenize_load8(BeemuInstruction *instruction, uint8_t opcode);
+
+	/**
+	 * @brief Check if the given OPCODE is a load operation and if so determine its subtype.
+	 *
+	 * @param opcode Opcode to check against, must not be a CBXX opcode.
+	 * @return subtype of the load operation if one exists.
+	 */
+	BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode);
 
 #ifdef __cplusplus
 }

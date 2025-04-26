@@ -17,10 +17,12 @@ BeemuInstruction *beemu_tokenizer_tokenize(uint32_t instruction)
 		// Parse cb prefix seperately..
 		cb_tokenize(inst);
 	}
-	if (((opcode >> 4) & 0b1100) == 0b0100)
+
+	if (load_subtype_if_load(opcode))
 	{
 		tokenize_load8(inst, opcode);
 	}
+
 	return inst;
 };
 
