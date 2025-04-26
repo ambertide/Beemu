@@ -159,7 +159,7 @@ for lsb in range(4):
                     3 if dest_register == "HL" or source_register == "HL" else 2
                 ),
                 "original_machine_code": instruction,
-                "byte_length": 3,
+                "byte_length": 2,
                 "params": {
                     "load_params": {
                         "source": src_param,
