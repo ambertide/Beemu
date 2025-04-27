@@ -1,9 +1,9 @@
 {
   "editor.insertSpaces": false,
   "files.associations": {
+    "*.embeddedhtml": "html",
     "*.erd": "json",
     "*.vuerd": "json",
-    "*.embeddedhtml": "html",
     "*.in": "c",
     "version.h": "c",
     "__bit_reference": "c",
@@ -98,7 +98,8 @@
     "queue": "cpp",
     "stack": "cpp",
     "__availability": "cpp",
-    "tokenize_common.h": "c"
+    "tokenize_common.h": "c",
+    "tokenize_load8.h": "c"
   },
   "cmake.configureOnOpen": true,
   "editor.formatOnType": true,
