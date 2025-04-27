@@ -30,6 +30,8 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 	static const uint8_t LOAD_M16_IDENTIFIER_EXPECTED = 0b00000010;
 	static const uint8_t LOAD_LDH_IDENTIFIER = 0b11101101;
 	static const uint8_t LOAD_LDH_IDENTIFIER_EXPECTED = 0b11100000;
+	static const uint8_t LOAD_ADDR16_IDENTIFIER = 0b11101111;
+	static const uint8_t LOAD_ADDR16_IDENTIFIER_EXPECTED = 0b11101010;
 
 	// Group them to a struct for easier packing.
 	struct BeemuTokenizerLoad8SubtypeDifferentiator
@@ -47,7 +49,8 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		{LOAD_MAINLINE_IDENTIFIER, LOAD_MAINLINE_IDENTIFIER_EXPECTED},
 		{LOAD_D8_IDENTIFIER, LOAD_D8_IDENTIFIER_EXPECTED},
 		{LOAD_M16_IDENTIFIER, LOAD_M16_IDENTIFIER_EXPECTED},
-		{LOAD_LDH_IDENTIFIER, LOAD_LDH_IDENTIFIER_EXPECTED}};
+		{LOAD_LDH_IDENTIFIER, LOAD_LDH_IDENTIFIER_EXPECTED},
+		{LOAD_ADDR16_IDENTIFIER, LOAD_ADDR16_IDENTIFIER_EXPECTED}};
 
 	for (int i = 1; i < 6; i++)
 	{
@@ -158,6 +161,31 @@ void determine_load8_ldh_params(BeemuInstruction *instruction, uint8_t opcode)
 	instruction->params.load_params.source = source_array[differentiatior];
 }
 
+void determine_load8_addr16_params(BeemuInstruction *instruction, uint8_t opcode)
+{
+	assert(opcode == 0xFA || opcode == 0xEA);
+	static const BeemuParam register_a = {.pointer = false,
+										  .type = BEEMU_PARAM_TYPE_REGISTER_8,
+										  .value.register_8 = BEEMU_REGISTER_A};
+	const uint16_t memory_addr = instruction->original_machine_code & 0xFFFF;
+	const BeemuParam ptr = {
+		.pointer = true,
+		.type = BEEMU_PARAM_TYPE_UINT16,
+		.value.value = memory_addr};
+
+	if (opcode == 0xEA)
+	{
+		instruction->params.load_params.dest = ptr;
+		instruction->params.load_params.source = register_a;
+	}
+	else
+	{
+		// 0xFA case is the reverse
+		instruction->params.load_params.dest = register_a;
+		instruction->params.load_params.source = ptr;
+	}
+}
+
 typedef void (*determine_param_function_ptr)(BeemuInstruction *, uint8_t);
 
 // Array used to dispatch to the determine_load8_SUBTYPE_params function
@@ -168,7 +196,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
 	&determine_load8_mainspace_params,
 	&determine_load8_d8_params,
 	&determine_load8_m16_params,
-	&determine_load8_ldh_params};
+	&determine_load8_ldh_params,
+	&determine_load8_addr16_params};
 
 void determine_load8_params(BeemuInstruction *instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype)
 {
@@ -189,6 +218,10 @@ void determine_load8_clock_cycles(BeemuInstruction *instruction)
 	{
 		// If the source or destination is a direct 8, then the duration starts as 2.
 		instruction->duration_in_clock_cycles++;
+	}
+	else if (instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_UINT16 || instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_UINT16)
+	{
+		instruction->duration_in_clock_cycles += 2;
 	}
 	if (instruction->params.load_params.dest.pointer || instruction->params.load_params.source.pointer)
 	{
