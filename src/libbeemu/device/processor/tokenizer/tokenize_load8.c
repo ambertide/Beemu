@@ -27,15 +27,35 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 	static const uint8_t LOAD_D8_IDENTIFIER = 0b11000111;
 	static const uint8_t LOAD_D8_IDENTIFIER_EXPECTED = 0b0110;
 
-	if ((opcode & LOAD_MAINLINE_IDENTIFIER) == LOAD_MAINLINE_IDENTIFIER_EXPECTED)
+	// Group them to a struct for easier packing.
+	struct BeemuTokenizerLoad8SubtypeDifferentiator
 	{
-		return BEEMU_TOKENIZER_LOAD8_MAINLINE;
-	}
-	else if ((opcode & LOAD_D8_IDENTIFIER) == LOAD_D8_IDENTIFIER_EXPECTED)
+		uint8_t bitwise_and_operand;
+		uint8_t bitwise_and_expected_result;
+	};
+
+	// Paralel array to the enum values of BEEMU_TOKENIZER_LOAD8_SUBTYPE
+	// if for a specific test in a specific index opcode & _operand == _expetcted_result
+	// then it is the load for that specific operand.
+	static const struct BeemuTokenizerLoad8SubtypeDifferentiator tests[] = {
+		// DO NOT USE THE ZEROTH ELEMENT
+		{0xFF, 0xFF},
+		{LOAD_MAINLINE_IDENTIFIER, LOAD_MAINLINE_IDENTIFIER_EXPECTED},
+		{LOAD_D8_IDENTIFIER, LOAD_D8_IDENTIFIER_EXPECTED}};
+
+	for (int i = 1; i < 3; i++)
 	{
-		return BEEMU_TOKENIZER_LOAD8_D8;
+		// Test against each possible test and if it returns the expected result
+		// we found the relevant subtype.
+		struct BeemuTokenizerLoad8SubtypeDifferentiator current_test = tests[i];
+		if ((opcode & current_test.bitwise_and_operand) == current_test.bitwise_and_expected_result)
+		{
+			// This *seems* to be well defined behaviour.
+			return i;
+		}
 	}
 
+	// Otherwise just return the invalid load.
 	return BEEMU_TOKENIZER_LOAD8_INVALID_LOAD;
 }
 
