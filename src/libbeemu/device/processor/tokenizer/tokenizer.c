@@ -17,8 +17,7 @@ BeemuInstruction *beemu_tokenizer_tokenize(uint32_t instruction)
 		// Parse cb prefix seperately..
 		tokenize_cbxx(inst);
 	}
-
-	if (load_subtype_if_load(opcode))
+	else if (load_subtype_if_load(opcode))
 	{
 		tokenize_load8(inst, opcode);
 	}
