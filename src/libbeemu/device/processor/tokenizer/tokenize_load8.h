@@ -33,7 +33,9 @@ extern "C"
 		/** Emitted for 0xn6 - 0xnE premainline D8 instruction. */
 		BEEMU_TOKENIZER_LOAD8_D8,
 		/** Emitted for 0xn2 - 0xnA premainline M16 instruction */
-		BEEMU_TOKENIZER_LOAD8_M16
+		BEEMU_TOKENIZER_LOAD8_M16,
+		/** Emitted for 0xE0 and 0xF0 postmainline address indirect loads. */
+		BEEMU_TOKENIZER_LOAD8_ADDR8
 	} BEEMU_TOKENIZER_LOAD8_SUBTYPE;
 
 	/**
