@@ -15,7 +15,7 @@ BeemuInstruction *beemu_tokenizer_tokenize(uint32_t instruction)
 	if (inst->byte_length == 2 && opcode == 0xCB)
 	{
 		// Parse cb prefix seperately..
-		cb_tokenize(inst);
+		tokenize_cbxx(inst);
 	}
 
 	if (load_subtype_if_load(opcode))

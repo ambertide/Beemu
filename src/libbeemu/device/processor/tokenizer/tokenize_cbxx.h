@@ -26,7 +26,7 @@ extern "C"
 	 *
 	 * @param instruction Partially created instruction to tokenize.
 	 */
-	void cb_tokenize(BeemuInstruction *instruction);
+	void tokenize_cbxx(BeemuInstruction *instruction);
 
 #ifdef __cplusplus
 }

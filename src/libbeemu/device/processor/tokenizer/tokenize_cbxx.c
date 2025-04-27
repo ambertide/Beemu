@@ -193,7 +193,7 @@ void cb_determine_clock_cycles(BeemuInstruction *instruction)
 	}
 }
 
-void cb_tokenize(BeemuInstruction *instruction)
+void tokenize_cbxx(BeemuInstruction *instruction)
 {
 	// now, a very cool fact of life is that we can actually lowkey
 	// determine the instruction parameters seperately.
