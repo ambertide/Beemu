@@ -113,23 +113,22 @@ void determine_load8_m16_params(BeemuInstruction *instruction, uint8_t opcode)
 	register8_param->value.register_8 = BEEMU_REGISTER_A;
 }
 
+typedef void (*determine_param_function_ptr)(BeemuInstruction *, uint8_t);
+
+// Array used to dispatch to the determine_load8_SUBTYPE_params function
+// for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
+// values
+static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
+	0,
+	&determine_load8_mainspace_params,
+	&determine_load8_d8_params,
+	&determine_load8_m16_params};
+
 void determine_load8_params(BeemuInstruction *instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype)
 {
 	instruction->params.load_params.postLoadOperation = tokenize_load8_post_load_op(opcode);
-	switch (load_subtype)
-	{
-	case BEEMU_TOKENIZER_LOAD8_MAINLINE:
-		determine_load8_mainspace_params(instruction, opcode);
-		break;
-	case BEEMU_TOKENIZER_LOAD8_D8:
-		determine_load8_d8_params(instruction, opcode);
-		break;
-	case BEEMU_TOKENIZER_LOAD8_M16:
-		determine_load8_m16_params(instruction, opcode);
-		break;
-	default:
-		break;
-	}
+	determine_param_function_ptr determine_params_func = DETERMINE_PARAM_DISPATCH[load_subtype];
+	determine_params_func(instruction, opcode);
 }
 
 /**
