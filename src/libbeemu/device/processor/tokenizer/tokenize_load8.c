@@ -119,7 +119,7 @@ void determine_load8_clock_cycles(BeemuInstruction *instruction)
 		// If the source is a direct 8, then the duration starts as 2.
 		instruction->duration_in_clock_cycles++;
 	}
-	if (instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 || instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16)
+	if (instruction->params.load_params.dest.pointer || instruction->params.load_params.source.pointer)
 	{
 		// Memory destructuring due to HL immediately adds a +1 to the clock cycle.
 		instruction->duration_in_clock_cycles++;
