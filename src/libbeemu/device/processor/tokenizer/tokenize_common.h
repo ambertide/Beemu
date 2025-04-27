@@ -45,6 +45,24 @@ extern "C"
 	 */
 	void tokenize_register_param_with_index(BeemuParam *param, const uint8_t register_index);
 
+	/**
+	 * @brief Much like its older sister above, this function emits a register, but a 16 bit one.
+	 *
+	 * Gameboy once again has a consistent register enumeration for 16 bit registers, in this
+	 * case BC, DE, HL and then either HL again, SP or AF, but that depends. Unlike its 8 bit counterpart
+	 * whether or not the param is a pointer also depends.
+	 *
+	 * @param param Paremeter pointer to modify
+	 * @param register_index Register differentiatior for the param.
+	 * @param is_poiner If true, param is set to a pointer.
+	 * @param last_register This is used to determine what the index = 3 case resolves to.
+	 */
+	void tokenize_register16_param_with_index(
+		BeemuParam *param,
+		const uint8_t register_index,
+		const bool is_pointer,
+		const BeemuRegister_16 last_register);
+
 #ifdef __cplusplus
 }
 #endif

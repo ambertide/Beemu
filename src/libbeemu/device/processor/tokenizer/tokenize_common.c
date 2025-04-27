@@ -1,4 +1,5 @@
 #include "tokenize_common.h"
+#include <assert.h>
 
 uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
 {
@@ -67,4 +68,21 @@ void tokenize_register_param_with_index(BeemuParam *param, uint8_t index)
 		param->type = BEEMU_PARAM_TYPE_REGISTER_8;
 		param->value.register_8 = registers[index];
 	}
+}
+
+void tokenize_register16_param_with_index(
+	BeemuParam *param,
+	const uint8_t register_index,
+	const bool is_pointer,
+	const BeemuRegister_16 last_register)
+{
+	assert(register_index <= 3);
+	const BeemuRegister_16 registers[] = {
+		BEEMU_REGISTER_BC,
+		BEEMU_REGISTER_DE,
+		BEEMU_REGISTER_HL,
+		last_register};
+	param->type = BEEMU_PARAM_TYPE_REGISTER_16;
+	param->pointer = is_pointer;
+	param->value.register_16 = registers[register_index];
 }
