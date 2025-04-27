@@ -31,7 +31,9 @@ extern "C"
 		/** Emitted when 0x40-0x7F mainline */
 		BEEMU_TOKENIZER_LOAD8_MAINLINE,
 		/** Emitted for 0xn6 - 0xnE premainline D8 instruction. */
-		BEEMU_TOKENIZER_LOAD8_D8
+		BEEMU_TOKENIZER_LOAD8_D8,
+		/** Emitted for 0xn2 - 0xnA premainline M16 instruction */
+		BEEMU_TOKENIZER_LOAD8_M16
 	} BEEMU_TOKENIZER_LOAD8_SUBTYPE;
 
 	/**

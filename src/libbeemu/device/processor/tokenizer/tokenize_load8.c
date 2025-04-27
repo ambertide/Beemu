@@ -26,6 +26,8 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 	static const uint8_t LOAD_MAINLINE_IDENTIFIER_EXPECTED = 0b01000000;
 	static const uint8_t LOAD_D8_IDENTIFIER = 0b11000111;
 	static const uint8_t LOAD_D8_IDENTIFIER_EXPECTED = 0b0110;
+	static const uint8_t LOAD_M16_IDENTIFIER = 0b11000111;
+	static const uint8_t LOAD_M16_IDENTIFIER_EXPECTED = 0b00000010;
 
 	// Group them to a struct for easier packing.
 	struct BeemuTokenizerLoad8SubtypeDifferentiator
@@ -41,9 +43,10 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		// DO NOT USE THE ZEROTH ELEMENT
 		{0xFF, 0xFF},
 		{LOAD_MAINLINE_IDENTIFIER, LOAD_MAINLINE_IDENTIFIER_EXPECTED},
-		{LOAD_D8_IDENTIFIER, LOAD_D8_IDENTIFIER_EXPECTED}};
+		{LOAD_D8_IDENTIFIER, LOAD_D8_IDENTIFIER_EXPECTED},
+		{LOAD_M16_IDENTIFIER, LOAD_M16_IDENTIFIER_EXPECTED}};
 
-	for (int i = 1; i < 3; i++)
+	for (int i = 1; i < 4; i++)
 	{
 		// Test against each possible test and if it returns the expected result
 		// we found the relevant subtype.
@@ -90,6 +93,26 @@ void determine_load8_d8_params(BeemuInstruction *instruction, uint8_t opcode)
 	instruction->params.load_params.source.value.value = source_direct_value;
 }
 
+void determine_load8_m16_params(BeemuInstruction *instruction, uint8_t opcode)
+{
+	// For 0xn2 we go from r8 -> (r16)
+	BeemuParam *register16_param = &(instruction->params.load_params.dest);
+	BeemuParam *register8_param = &(instruction->params.load_params.source);
+	if ((opcode & 0xF) == 0xA)
+	{
+		// But for 0xnA, it is the reverse.
+		BeemuParam *temp = register16_param;
+		register16_param = register8_param;
+		register8_param = temp;
+	}
+	// Anyway, we then need to parse the 16 bit portion.
+	tokenize_register16_param_with_index(register16_param, ((opcode >> 4) & 0xF), true, BEEMU_REGISTER_HL);
+	// And for the 8 bit portion we get to just put the A register.
+	register8_param->pointer = false;
+	register8_param->type = BEEMU_PARAM_TYPE_REGISTER_8,
+	register8_param->value.register_8 = BEEMU_REGISTER_A;
+}
+
 void determine_load8_params(BeemuInstruction *instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype)
 {
 	instruction->params.load_params.postLoadOperation = tokenize_load8_post_load_op(opcode);
@@ -100,6 +123,9 @@ void determine_load8_params(BeemuInstruction *instruction, uint8_t opcode, BEEMU
 		break;
 	case BEEMU_TOKENIZER_LOAD8_D8:
 		determine_load8_d8_params(instruction, opcode);
+		break;
+	case BEEMU_TOKENIZER_LOAD8_M16:
+		determine_load8_m16_params(instruction, opcode);
 		break;
 	default:
 		break;
