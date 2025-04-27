@@ -1,4 +1,5 @@
 #include "tokenize_common.h"
+#include "bytewidth_lookup_table.gen.h"
 #include <assert.h>
 
 uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
@@ -20,24 +21,35 @@ uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
 	// Very cool, secondarily, the opcode of an instruction determines
 	// the byte length of the operand and thus the canonical instruction itself.
 
-	// These values are bitmasks I created from looking at the GB instruction space.
-	// Some of them also include invalid or SYSTEM instructions which should have been handled prior
-	// to this.
-	if (
-		((opcode & 0b11000111) == 0b0110) ||
-		((opcode < 0x40 || opcode >= 0xC0) && (opcode & 0xF7 == 0x06)) ||
-		((opcode >= 0xE0 || (opcode < 0x40 && opcode >= 0x10)) && (opcode & 0xF7 == 0)))
+	// Easiest way to resolve the byte length is of course a lookup table
+	// though seperated into two, for brevity.
+
+	uint8_t byte_length = 1;
+	if (opcode < 0x40)
+	{
+		byte_length = PRE_0X40_BYTE_LENGTH_LOOKUP[opcode];
+	}
+	else if (opcode >= 0xC0)
+	{
+		byte_length = POST_0XBF_BYTE_LENGTH_LOOKUP[opcode - 0xC0];
+	}
+	// Otherwise it is always 1.
+	// Now we need to act on the data using this information.
+	instruction->byte_length = byte_length;
+
+	if (byte_length == 1)
+	{
+		instruction->original_machine_code >>= 16;
+		instruction->original_machine_code &= 0xFF;
+	}
+	else if (byte_length == 2)
 	{
 		instruction->original_machine_code >>= 8;
-		instruction->original_machine_code &= 0x0000FFFFF;
-		instruction->byte_length = 2;
+		instruction->original_machine_code &= 0xFFFF;
 	}
 	else
 	{
-		// FINALLY, otherwise, it is just opcode.
-		instruction->original_machine_code >>= 16;
-		instruction->original_machine_code &= 0xFF;
-		instruction->byte_length = 1;
+		instruction->original_machine_code &= 0xFFFFFF;
 	}
 
 	return opcode;
