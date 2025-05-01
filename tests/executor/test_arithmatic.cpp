@@ -11,8 +11,8 @@ namespace BeemuTests
 	{
 		BeemuInstruction instruction;
 		instruction.type = is_16 ? BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16 : BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8;
-		instruction.params.arithmatic_params.dest = dest;
-		instruction.params.arithmatic_params.source = source;
+		instruction.params.arithmatic_params.dest_or_first = dest;
+		instruction.params.arithmatic_params.source_or_second = source;
 		instruction.params.arithmatic_params.operation = operation;
 		return instruction;
 	}

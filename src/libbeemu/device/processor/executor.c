@@ -165,8 +165,8 @@ uint16_t resolve_flows(int value, BeemuParamType resolve_to)
 void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
 {
 	// First we need to resolve the operands.
-	const int operand_one = resolve_param(registers, memory, instruction.params.arithmatic_params.dest);
-	const int operand_two = resolve_param(registers, memory, instruction.params.arithmatic_params.source);
+	const int operand_one = resolve_param(registers, memory, instruction.params.arithmatic_params.dest_or_first);
+	const int operand_two = resolve_param(registers, memory, instruction.params.arithmatic_params.source_or_second);
 	int result = operand_one;
 	// Do not assign the result.
 	bool silent = false;
@@ -194,7 +194,7 @@ void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuIns
 	// Great, now we will do a few things, first,
 	// we need to properly encode the result
 	// including the over/undef-flows.
-	uint16_t resolved_result = resolve_flows(result, instruction.params.arithmatic_params.dest.type);
+	uint16_t resolved_result = resolve_flows(result, instruction.params.arithmatic_params.dest_or_first.type);
 	// Calculate the flag states.
 	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_Z, resolved_result == 0);
 	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_C, resolved_result != result);
@@ -204,10 +204,10 @@ void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuIns
 		write_to_param(
 			registers,
 			memory,
-			instruction.params.arithmatic_params.dest,
+			instruction.params.arithmatic_params.dest_or_first,
 			resolved_result,
 			beemu_util_is_one_of_two(
-				instruction.params.arithmatic_params.dest.type,
+				instruction.params.arithmatic_params.dest_or_first.type,
 				BEEMU_PARAM_TYPE_REGISTER_8,
 				BEEMU_PARAM_TYPE_UINT_8));
 	}

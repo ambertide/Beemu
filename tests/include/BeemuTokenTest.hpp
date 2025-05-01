@@ -154,8 +154,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuArithmaticParams,
 	operation,
-	dest,
-	source);
+	dest_or_first,
+	source_or_second);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuRotShiftParams,

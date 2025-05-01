@@ -101,7 +101,9 @@ extern "C"
 	typedef enum BeemuOperation
 	{
 		BEEMU_OP_ADD,
+		BEEMU_OP_ADC,
 		BEEMU_OP_SUB,
+		BEEMU_OP_SBC,
 		BEEMU_OP_AND,
 		BEEMU_OP_OR,
 		BEEMU_OP_CP,
@@ -114,9 +116,9 @@ extern "C"
 		/** Specific arithmatic/logic operation to perform. */
 		BeemuOperation operation;
 		/** First operand as well as the destination register. */
-		BeemuParam dest;
-		/** Second operand, if exists. */
-		BeemuParam source;
+		BeemuParam dest_or_first;
+		/** Second operand and (possibly one of) the source register(s). */
+		BeemuParam source_or_second;
 	} BeemuArithmaticParams;
 
 	/**
