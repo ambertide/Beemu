@@ -2,6 +2,9 @@
 # hint: not me...
 
 
+from json import load
+
+
 def get_opcode(instruction: int) -> int:
     """This is the byte(s) used to distinguish instr category.
 
@@ -37,3 +40,15 @@ def sort_instructions(instruction: list[dict]) -> None:
             instruction (list[dict]): List holding the instructions.
     """
     instruction.sort(key=lambda i: get_opcode(int(i["instruction"], base=16)))
+
+def get_tokens_except(except_ = []) -> list[dict]:    
+    with open("tokens.json") as file:
+        data = load(file)
+        tokens: list[dict] = data["tokens"]
+    before = len(tokens);
+    tokens = [token for token in tokens if get_opcode(token['token']['original_machine_code']) not in except_]
+    after = len(tokens);
+    print(f"Removed {before - after} existing tokens.")
+    return tokens
+
+

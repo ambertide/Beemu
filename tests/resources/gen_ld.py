@@ -1,19 +1,11 @@
 # Generate every single load instruction
 from json import load, dump
-from byte_utils import get_opcode, sort_instructions
+from utils import get_tokens_except, sort_instructions
 
 registers = ["B", "C", "D", "E", "H", "L", "HL", "A"]
 
-with open("tokens.json") as file:
-    data = load(file)
-    tokens: list[dict] = data["tokens"]
-
-
-to_be_removed = []
-for token in tokens:
-    opcode = get_opcode(token["token"]["original_machine_code"])
-
-    if (0x7F >= opcode >= 0x40) or opcode in [
+tokens = get_tokens_except([
+        *range(0x40, 0x80),
         0x02,
         0x06,
         0x0A,
@@ -36,14 +28,8 @@ for token in tokens:
         0xF0,
         0xF2,
         0xFA,
-    ]:
-        to_be_removed.append(token["token"]["original_machine_code"])
+    ])
 
-tokens[:] = [
-    t for t in tokens if t["token"]["original_machine_code"] not in to_be_removed
-]
-
-print(f"Removed {len(to_be_removed)} tokens already existing.")
 print(
     f"Starting inserting load operations with existing instruction set of {len(tokens)}"
 )
