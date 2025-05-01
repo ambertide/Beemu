@@ -41,7 +41,15 @@ def sort_instructions(instruction: list[dict]) -> None:
     """
     instruction.sort(key=lambda i: get_opcode(int(i["instruction"], base=16)))
 
-def get_tokens_except(except_ = []) -> list[dict]:    
+def get_tokens_except(except_ = []) -> list[dict]:
+    """Get all tokens except those whose opcodes are listed.
+
+    Args:
+        except_ (list, optional): Opcodes of the tokens to be ignored.. Defaults to [].
+
+    Returns:
+        list[dict]: A list of all tokens besides those listed.
+    """        
     with open("tokens.json") as file:
         data = load(file)
         tokens: list[dict] = data["tokens"]
@@ -52,3 +60,25 @@ def get_tokens_except(except_ = []) -> list[dict]:
     return tokens
 
 
+def gen_register(register_name: str) -> dict:
+    """Generate a register payload that suits BeemuParam
+
+    Args:
+        register_name (str): Name of the register in all caps.
+
+    Returns:
+        dict: the BeemuParam as a dictionary.
+    """
+    return {
+            "pointer": register_name == "HL",
+            "type": (
+                "BEEMU_PARAM_TYPE_REGISTER_16"
+                if register_name == "HL"
+                else "BEEMU_PARAM_TYPE_REGISTER_8"
+            ),
+            "value": (
+                {"register_16": f"BEEMU_REGISTER_{register_name}"}
+                if register_name == "HL"
+                else {"register_8": f"BEEMU_REGISTER_{register_name}"}
+            ),
+        }

@@ -1,6 +1,6 @@
 # Generate every single load instruction
 from json import load, dump
-from utils import get_tokens_except, sort_instructions
+from utils import get_tokens_except, sort_instructions, gen_register
 
 registers = ["B", "C", "D", "E", "H", "L", "HL", "A"]
 
@@ -38,33 +38,9 @@ opcode = 0x40
 
 # First generate the large block between 0x40 and 0x7F, inclusive.
 for dest_register in registers:
-    dst_param = {
-        "pointer": dest_register == "HL",
-        "type": (
-            "BEEMU_PARAM_TYPE_REGISTER_16"
-            if dest_register == "HL"
-            else "BEEMU_PARAM_TYPE_REGISTER_8"
-        ),
-        "value": (
-            {"register_16": f"BEEMU_REGISTER_{dest_register}"}
-            if dest_register == "HL"
-            else {"register_8": f"BEEMU_REGISTER_{dest_register}"}
-        ),
-    }
+    dst_param = gen_register(dest_register)
     for source_register in registers:
-        src_param = {
-            "pointer": source_register == "HL",
-            "type": (
-                "BEEMU_PARAM_TYPE_REGISTER_16"
-                if source_register == "HL"
-                else "BEEMU_PARAM_TYPE_REGISTER_8"
-            ),
-            "value": (
-                {"register_16": f"BEEMU_REGISTER_{source_register}"}
-                if source_register == "HL"
-                else {"register_8": f"BEEMU_REGISTER_{source_register}"}
-            ),
-        }
+        src_param = gen_register(source_register)
         instruction = {
             "instruction": f"0x{opcode:06X}",
             "token": {
@@ -105,19 +81,7 @@ for lsb in range(4):
     for msb in [0x6, 0xE]:
         dest_register = registers[register_index]
         instruction = (lsb << 4) | msb
-        dst_param = {
-            "pointer": dest_register == "HL",
-            "type": (
-                "BEEMU_PARAM_TYPE_REGISTER_16"
-                if dest_register == "HL"
-                else "BEEMU_PARAM_TYPE_REGISTER_8"
-            ),
-            "value": (
-                {"register_16": f"BEEMU_REGISTER_{dest_register}"}
-                if dest_register == "HL"
-                else {"register_8": f"BEEMU_REGISTER_{dest_register}"}
-            ),
-        }
+        dst_param = gen_register(dest_register)
         # These always take an imm8 as their source, oh, wait, this is interesting,
         # because then we need to add this to the instruction as well, shite...
         # Let's just add the instruction twice? this way the imm is also test variable.
@@ -163,11 +127,7 @@ for lsb in range(4):
 # 0xX2 and 0x0A, and what loads indirectly form 16-bit registers or loads TO them from A
 
 
-A_REGISTER = {
-    "pointer": False,
-    "type": "BEEMU_PARAM_TYPE_REGISTER_8",
-    "value": {"register_8": f"BEEMU_REGISTER_A"},
-}
+A_REGISTER = gen_register('A')
 
 registers = ["BC", "DE", "HL", "HL"]
 ops = [
