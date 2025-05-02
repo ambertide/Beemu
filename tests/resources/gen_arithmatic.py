@@ -4,8 +4,9 @@ from itertools import cycle, repeat
 
 arithmatics = [*range(0x80, 0xC0)]
 inc_dec = [*range(0x04, 0x3D, 8), *range(0x05, 0x3F, 8)]
+arithmatic_direct = [*range(0xC6, 0xFF, 8)]
 
-tokens = get_tokens_except([*arithmatics, *inc_dec])
+tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct])
 
 
 a_register = gen_register("A")
@@ -85,6 +86,31 @@ for operation, opcode_range in (
             }
         )
 
+# Add the direct arithmatics of type OPERATION A, n8
+for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
+    full_instruction = (opcode << 8) | 0xDF
+    tokens.append(
+        {
+            "instruction": f"{full_instruction:06X}",
+            "token": {
+                "duration_in_clock_cycles": (
+                    1 if source_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8" else 2
+                ),
+                "original_machine_code": opcode,
+                "params": {
+                    "arithmatic_params": {
+                        "operation": operation,
+                        "dest_or_first": a_register,
+                        "source_or_second": {
+                            "pointer": False,
+                            "type": "BEEMU_PARAM_TYPE_UINT_8",
+                            "value": {"value": 0xDF},
+                        },
+                    }
+                },
+            },
+        }
+    )
 
 sort_instructions(tokens)
 with open("tokens.json", "w") as file:
