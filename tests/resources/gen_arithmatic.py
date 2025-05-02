@@ -39,6 +39,7 @@ for opcode, subop, source_register in zip(
                     1 if source_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8" else 2
                 ),
                 "original_machine_code": opcode,
+                "byte_length": 1,
                 "params": {
                     "arithmatic_params": {
                         "operation": subop,
@@ -72,6 +73,7 @@ for operation, opcode_range in (
                         else 3
                     ),
                     "original_machine_code": opcode,
+                    "byte_length": 1,
                     "params": {
                         "arithmatic_params": {
                             "operation": operation,
@@ -98,6 +100,7 @@ for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
                     1 if source_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8" else 2
                 ),
                 "original_machine_code": opcode,
+                "byte_length": 2,
                 "params": {
                     "arithmatic_params": {
                         "operation": full_instruction,
@@ -123,6 +126,7 @@ for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
             "token": {
                 "duration_in_clock_cycles": 1,
                 "original_machine_code": opcode,
+                "byte_length": 1,
                 "params": {
                     "arithmatic_params": {
                         "operation": operation,
