@@ -108,6 +108,10 @@ extern "C"
 		BEEMU_OP_OR,
 		BEEMU_OP_CP,
 		BEEMU_OP_XOR,
+		BEEMU_OP_DAA,
+		BEEMU_OP_SCF,
+		BEEMU_OP_CPL,
+		BEEMU_OP_CCF
 	} BeemuOperation;
 
 	/** Params for arithmatic and logic ops. */
