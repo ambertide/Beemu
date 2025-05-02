@@ -5,8 +5,9 @@ from itertools import cycle, repeat
 arithmatics = [*range(0x80, 0xC0)]
 inc_dec = [*range(0x04, 0x3D, 8), *range(0x05, 0x3F, 8)]
 arithmatic_direct = [*range(0xC6, 0xFF, 8)]
+weird = [*range(0x27, 0x40, 8)]
 
-tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct])
+tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird])
 
 
 a_register = gen_register("A")
@@ -99,13 +100,34 @@ for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
                 "original_machine_code": opcode,
                 "params": {
                     "arithmatic_params": {
-                        "operation": operation,
+                        "operation": full_instruction,
                         "dest_or_first": a_register,
                         "source_or_second": {
                             "pointer": False,
                             "type": "BEEMU_PARAM_TYPE_UINT_8",
                             "value": {"value": 0xDF},
                         },
+                    }
+                },
+            },
+        }
+    )
+
+
+# "Weird" arithmatics block.
+weird_operations = ["BEEMU_OP_DAA", "BEEMU_OP_SCF", "BEEMU_OP_CPL", "BEEMU_OP_CCF"]
+for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
+    tokens.append(
+        {
+            "instruction": f"{opcode:06X}",
+            "token": {
+                "duration_in_clock_cycles": 1,
+                "original_machine_code": opcode,
+                "params": {
+                    "arithmatic_params": {
+                        "operation": operation,
+                        "dest_or_first": a_register,
+                        "source_or_second": a_register,
                     }
                 },
             },
