@@ -15,8 +15,7 @@
 #ifndef BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_COMMON_H
 #define BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_COMMON_H
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	/**
 	 * @brief Given an instruction, determine its byte length and canonize its rep.
@@ -32,7 +31,7 @@ extern "C"
 	 * @return least-significant byte of the instruction, for CBXX this is, of course CB
 	 * but for other instructions this is the OPCODE itself.
 	 */
-	uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction);
+	uint8_t determine_byte_length_and_cleanup(BeemuInstruction* instruction);
 
 	/**
 	 * @brief Given an index, receive the register param in that index.
@@ -43,7 +42,7 @@ extern "C"
 	 * @param param param to modify
 	 * @param register_index Index of the register param to receive
 	 */
-	void tokenize_register_param_with_index(BeemuParam *param, const uint8_t register_index);
+	void tokenize_register_param_with_index(BeemuParam* param, const uint8_t register_index);
 
 	/**
 	 * @brief Much like its older sister above, this function emits a register, but a 16 bit one.
@@ -58,10 +57,42 @@ extern "C"
 	 * @param last_register This is used to determine what the index = 3 case resolves to.
 	 */
 	void tokenize_register16_param_with_index(
-		BeemuParam *param,
-		const uint8_t register_index,
-		const bool is_pointer,
-		const BeemuRegister_16 last_register);
+	    BeemuParam* param,
+	    const uint8_t register_index,
+	    const bool is_pointer,
+	    const BeemuRegister_16 last_register);
+
+	typedef int INSTRUCTION_SUBTYPE;
+
+	// Group them to a struct for easier packing.
+	typedef struct BeemuTokenizerSubtypeDifferentiator {
+		uint8_t bitwise_and_operand;
+		uint8_t bitwise_and_expected_result;
+	} BeemuTokenizerSubtypeDifferentiator;
+
+	/**
+	 * @brief Given an instruction and subtypes and differentiation
+	 * rules for a specific instruction, decide if the instruction
+	 * belong to that type of instruction and return its subtype.
+	 *
+	 * @param instruction Partially built instruction whose
+	 * original_machine_code is expected to be true.
+	 * @param opcode The opcode of the instruction.
+	 * @param differentiator_rules Rules that are used to distinguish
+	 * between members of a specific type's subtype.
+	 * @param zeroth_instruction_subtype Zeroth (first but zeroth because
+	 * it takes to value of zero as per C standard) member of the subtype
+	 * enum for this instructions.
+	 * @param terminal_instruction_subtype Last subtype of the intsruction.
+	 * @return INSTRUCTION_SUBTYPE The enum value of the instruction
+	 * subtype, or its ZERO-EQUIVALENT value if it is not of the requested
+	 * type.
+	 */
+	INSTRUCTION_SUBTYPE instruction_subtype_if_of_instruction_type(
+	    uint8_t opcode,
+	    const BeemuTokenizerSubtypeDifferentiator* differentiator_rules,
+	    INSTRUCTION_SUBTYPE zeroth_instruction_subtype,
+	    INSTRUCTION_SUBTYPE terminal_instruction_subtype);
 
 #ifdef __cplusplus
 }

@@ -2,10 +2,9 @@
 #include "bytewidth_lookup_table.gen.h"
 #include <assert.h>
 
-uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
+uint8_t determine_byte_length_and_cleanup(BeemuInstruction* instruction)
 {
-	if (instruction->original_machine_code >> 16 == 0xCB)
-	{
+	if (instruction->original_machine_code >> 16 == 0xCB) {
 		// Toss away the last byte since all CB prefixed
 		// instructions are 2 byte long and set the byte length.
 		instruction->original_machine_code >>= 8;
@@ -25,47 +24,36 @@ uint8_t determine_byte_length_and_cleanup(BeemuInstruction *instruction)
 	// though seperated into two, for brevity.
 
 	uint8_t byte_length = 1;
-	if (opcode < 0x40)
-	{
+	if (opcode < 0x40) {
 		byte_length = PRE_0X40_BYTE_LENGTH_LOOKUP[opcode];
-	}
-	else if (opcode >= 0xC0)
-	{
+	} else if (opcode >= 0xC0) {
 		byte_length = POST_0XBF_BYTE_LENGTH_LOOKUP[opcode - 0xC0];
 	}
 	// Otherwise it is always 1.
 	// Now we need to act on the data using this information.
 	instruction->byte_length = byte_length;
 
-	if (byte_length == 1)
-	{
+	if (byte_length == 1) {
 		instruction->original_machine_code >>= 16;
 		instruction->original_machine_code &= 0xFF;
-	}
-	else if (byte_length == 2)
-	{
+	} else if (byte_length == 2) {
 		instruction->original_machine_code >>= 8;
 		instruction->original_machine_code &= 0xFFFF;
-	}
-	else
-	{
+	} else {
 		instruction->original_machine_code &= 0xFFFFFF;
 	}
 
 	return opcode;
 }
 
-void tokenize_register_param_with_index(BeemuParam *param, uint8_t index)
+void tokenize_register_param_with_index(BeemuParam* param, uint8_t index)
 {
-	if (index == 0x06)
-	{
+	if (index == 0x06) {
 		// This is the case for (HL), the dereferenced HL pointer to the memory.
 		param->pointer = true;
 		param->type = BEEMU_PARAM_TYPE_REGISTER_16;
 		param->value.register_16 = BEEMU_REGISTER_HL;
-	}
-	else
-	{
+	} else {
 		const static BeemuRegister_8 registers[] = {
 			BEEMU_REGISTER_B,
 			BEEMU_REGISTER_C,
@@ -74,7 +62,8 @@ void tokenize_register_param_with_index(BeemuParam *param, uint8_t index)
 			BEEMU_REGISTER_H,
 			BEEMU_REGISTER_L,
 			BEEMU_REGISTER_A, // Technically the code should NEVER hit here.
-			BEEMU_REGISTER_A};
+			BEEMU_REGISTER_A
+		};
 		// Otherwise all 0xCB00-40 block acts on 8 bit register values.
 		param->pointer = false; // Not really necessary btw.
 		param->type = BEEMU_PARAM_TYPE_REGISTER_8;
@@ -83,18 +72,42 @@ void tokenize_register_param_with_index(BeemuParam *param, uint8_t index)
 }
 
 void tokenize_register16_param_with_index(
-	BeemuParam *param,
-	const uint8_t register_index,
-	const bool is_pointer,
-	const BeemuRegister_16 last_register)
+    BeemuParam* param,
+    const uint8_t register_index,
+    const bool is_pointer,
+    const BeemuRegister_16 last_register)
 {
 	assert(register_index <= 3);
 	const BeemuRegister_16 registers[] = {
 		BEEMU_REGISTER_BC,
 		BEEMU_REGISTER_DE,
 		BEEMU_REGISTER_HL,
-		last_register};
+		last_register
+	};
 	param->type = BEEMU_PARAM_TYPE_REGISTER_16;
 	param->pointer = is_pointer;
 	param->value.register_16 = registers[register_index];
+}
+
+INSTRUCTION_SUBTYPE instruction_subtype_if_of_instruction_type(
+    uint8_t opcode,
+    const BeemuTokenizerSubtypeDifferentiator* differentiator_rules,
+    INSTRUCTION_SUBTYPE zeroth_instruction_subtype,
+    INSTRUCTION_SUBTYPE terminal_instruction_subtype)
+{
+	for (
+	    INSTRUCTION_SUBTYPE instruction_subtype = (zeroth_instruction_subtype + 1);
+	    instruction_subtype <= terminal_instruction_subtype;
+	    instruction_subtype++) {
+		// Test against each possible test and if it returns the expected result
+		// we found the relevant subtype.
+		BeemuTokenizerSubtypeDifferentiator current_test = differentiator_rules[instruction_subtype];
+		if ((opcode & current_test.bitwise_and_operand) == current_test.bitwise_and_expected_result) {
+			// This *seems* to be well defined behaviour.
+			return instruction_subtype;
+		}
+	}
+
+	// Otherwise just return the invalid load.
+	return zeroth_instruction_subtype;
 }
