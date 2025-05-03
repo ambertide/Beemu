@@ -64,6 +64,12 @@ extern "C" {
 
 	typedef int INSTRUCTION_SUBTYPE;
 
+	/**
+	 * @brief Common determine_param_INST_SUBTYPE
+	 *
+	 */
+	typedef void (*determine_param_function_ptr)(BeemuInstruction*, uint8_t);
+
 	// Group them to a struct for easier packing.
 	typedef struct BeemuTokenizerSubtypeDifferentiator {
 		uint8_t bitwise_and_operand;

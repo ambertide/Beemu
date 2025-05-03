@@ -24,7 +24,7 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
 	// Paralel array to the enum values of BEEMU_TOKENIZER_LOAD8_SUBTYPE
 	// if for a specific test in a specific index opcode & _operand == _expetcted_result
 	// then it is the load for that specific operand.
-	static const struct BeemuTokenizerSubtypeDifferentiator tests[] = {
+	static const BeemuTokenizerSubtypeDifferentiator tests[] = {
 		// DO NOT USE THE ZEROTH ELEMENT
 		{ 0xFF, 0xFF },
 		// MAINLINE
@@ -163,8 +163,6 @@ void determine_load8_addr16_params(BeemuInstruction* instruction, uint8_t opcode
 		instruction->params.load_params.source = ptr;
 	}
 }
-
-typedef void (*determine_param_function_ptr)(BeemuInstruction*, uint8_t);
 
 // Array used to dispatch to the determine_load8_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
