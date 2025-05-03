@@ -197,7 +197,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	{
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
-		json["params"]["aritmatic_params"] = inst.params.arithmatic_params;
+		json["params"]["arithmatic_params"] = inst.params.arithmatic_params;
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
 		json["params"]["bitwise_params"] = inst.params.bitwise_params;
@@ -228,7 +228,7 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	{
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
-		json.at("params").at("aritmatic_params").get_to(inst.params.arithmatic_params);
+		json.at("params").at("arithmatic_params").get_to(inst.params.arithmatic_params);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
 		json.at("params").at("bitwise_params").get_to(inst.params.bitwise_params);
