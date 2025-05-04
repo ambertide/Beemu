@@ -14,13 +14,14 @@ arithmatic8_subtype_if_arithmatic8(uint8_t opcode)
 		{ 0xC0, 0x80 },
 		{ 0xC6, 0x04 },
 		{ 0xC7, 0xC6 },
+		{ 0xC7, 0x07 }
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_ARITHMATIC8_INVALID_ARITHMATIC8,
-	    BEEMU_TOKENIZER_ARITHMATIC8_DIRECT);
+	    BEEMU_TOKENIZER_ARITHMATIC8_WEIRD);
 }
 
 void determine_mainline_arithmatic8_params(
@@ -111,6 +112,28 @@ void determine_arithmatic8_direct_params(
 	instruction->params.arithmatic_params.source_or_second = direct_param;
 }
 
+/**
+ * @brief Specifially used to parse DAA, CPL, SCF and CCF
+ *
+ * @param instruction Instruction partially tokenized
+ * @param opcode Opcode
+ */
+void determine_arithmatic8_weird_params(
+    BeemuInstruction* instruction,
+    uint8_t opcode)
+{
+	static const BeemuOperation operations[] = {
+		BEEMU_OP_DAA,
+		BEEMU_OP_CPL,
+		BEEMU_OP_SCF,
+		BEEMU_OP_CCF
+	};
+	const uint8_t operation_selector = ((opcode & 0b11000) >> 3);
+	instruction->params.arithmatic_params.operation = operations[operation_selector];
+	tokenize_register_param_with_index(&instruction->params.arithmatic_params.dest_or_first, 7);
+	tokenize_register_param_with_index(&instruction->params.arithmatic_params.source_or_second, 7);
+}
+
 // Array used to dispatch to the determine_load8_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
 // values
@@ -119,7 +142,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	      0,
 	      &determine_mainline_arithmatic8_params,
 	      &determine_arithmatic8_inc_dec_params,
-	      &determine_arithmatic8_direct_params
+	      &determine_arithmatic8_direct_params,
+	      &determine_arithmatic8_weird_params
       };
 
 void determine_arithmatic8_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE arithmatic8_params)

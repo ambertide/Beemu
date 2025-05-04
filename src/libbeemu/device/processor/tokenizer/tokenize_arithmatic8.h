@@ -31,7 +31,9 @@ extern "C" {
 		/** Emitted for INC/DEC r8 inst in 0b(00nn n10n) pattern */
 		BEEMU_TOKENIZER_ARITHMATIC8_INC_DEC,
 		/** Emitted for direct arithmatic loads post mainline. */
-		BEEMU_TOKENIZER_ARITHMATIC8_DIRECT
+		BEEMU_TOKENIZER_ARITHMATIC8_DIRECT,
+		/** Emitted for "weird" instructions of DAA, CPL, SCF and CCF*/
+		BEEMU_TOKENIZER_ARITHMATIC8_WEIRD
 	} BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE;
 
 	/**
