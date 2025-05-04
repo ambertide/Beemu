@@ -18,9 +18,9 @@ operations = [
     "BEEMU_OP_SUB",
     "BEEMU_OP_SBC",
     "BEEMU_OP_AND",
+    "BEEMU_OP_XOR",
     "BEEMU_OP_OR",
     "BEEMU_OP_CP",
-    "BEEMU_OP_XOR",
 ]
 
 # Encode mainline instructions first.
