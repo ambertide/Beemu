@@ -98,14 +98,12 @@ for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
             "instruction": f"{full_instruction:06X}",
             "token": {
                 "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8",
-                "duration_in_clock_cycles": (
-                    1 if source_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8" else 2
-                ),
-                "original_machine_code": opcode,
+                "duration_in_clock_cycles": 2,
+                "original_machine_code": full_instruction,
                 "byte_length": 2,
                 "params": {
                     "arithmatic_params": {
-                        "operation": full_instruction,
+                        "operation": operation,
                         "dest_or_first": a_register,
                         "source_or_second": {
                             "pointer": False,
