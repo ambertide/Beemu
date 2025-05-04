@@ -12,14 +12,15 @@ arithmatic8_subtype_if_arithmatic8(uint8_t opcode)
 		// Mainline check specifically looks at whether or not
 		// first nibble is 0x8, 0x9, 0xA or 0xB.
 		{ 0xC0, 0x80 },
-		{ 0xC6, 0x04 }
+		{ 0xC6, 0x04 },
+		{ 0xC7, 0xC6 },
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_ARITHMATIC8_INVALID_ARITHMATIC8,
-	    BEEMU_TOKENIZER_ARITHMATIC8_INC_DEC);
+	    BEEMU_TOKENIZER_ARITHMATIC8_DIRECT);
 }
 
 void determine_mainline_arithmatic8_params(
@@ -76,6 +77,40 @@ void determine_arithmatic8_inc_dec_params(
 	instruction->params.arithmatic_params.operation = suboperations[operation_selector];
 }
 
+/**
+ * @brief Used to parse arithmatic operations done directly with n8.
+ *
+ * @param instruction Instruction token belonging to the isntructino.
+ * @param opcode Opcode of the instruction.
+ */
+void determine_arithmatic8_direct_params(
+    BeemuInstruction* instruction,
+    const uint8_t opcode)
+{
+	static const BeemuOperation operations[] = {
+		BEEMU_OP_ADD,
+		BEEMU_OP_ADC,
+		BEEMU_OP_SUB,
+		BEEMU_OP_SBC,
+		BEEMU_OP_AND,
+		BEEMU_OP_XOR,
+		BEEMU_OP_OR,
+		BEEMU_OP_CP
+	};
+	const uint8_t suboperation_selector = (opcode & 0b00111000) >> 3;
+	BeemuOperation operation = operations[suboperation_selector];
+	instruction->params.arithmatic_params.operation = operation;
+	tokenize_register_param_with_index(
+	    &instruction->params.arithmatic_params.dest_or_first,
+	    7);
+	BeemuParam direct_param = {
+		.pointer = false,
+		.type = BEEMU_PARAM_TYPE_UINT_8,
+		.value = instruction->original_machine_code & 0xFF
+	};
+	instruction->params.arithmatic_params.source_or_second = direct_param;
+}
+
 // Array used to dispatch to the determine_load8_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
 // values
@@ -83,7 +118,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
     = {
 	      0,
 	      &determine_mainline_arithmatic8_params,
-	      &determine_arithmatic8_inc_dec_params
+	      &determine_arithmatic8_inc_dec_params,
+	      &determine_arithmatic8_direct_params
       };
 
 void determine_arithmatic8_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE arithmatic8_params)
@@ -102,6 +138,9 @@ void determine_arithmatic8_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKE
 		// For INC/DEC a pointer causes a read AND a write.
 		// so, extra time spent.
 		instruction->duration_in_clock_cycles = 3;
+	}
+	if (instruction->byte_length == 2) {
+		instruction->duration_in_clock_cycles++;
 	}
 }
 
