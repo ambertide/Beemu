@@ -118,7 +118,7 @@ for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
 
 
 # "Weird" arithmatics block.
-weird_operations = ["BEEMU_OP_DAA", "BEEMU_OP_SCF", "BEEMU_OP_CPL", "BEEMU_OP_CCF"]
+weird_operations = ["BEEMU_OP_DAA", "BEEMU_OP_CPL", "BEEMU_OP_SCF", "BEEMU_OP_CCF"]
 for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
     tokens.append(
         {
