@@ -1,6 +1,7 @@
 # Generate every single load instruction
 from json import load, dump
-from utils import get_tokens_except, sort_instructions, gen_register
+from utils import get_tokens_except, sort_instructions, gen_register, gen_register_16
+from itertools import repeat
 
 registers = ["B", "C", "D", "E", "H", "L", "HL", "A"]
 
@@ -29,6 +30,8 @@ tokens = get_tokens_except(
         0xF0,
         0xF2,
         0xFA,
+        *range(0xC1, 0xF2, 16),
+        *range(0xC5, 0xF6, 16),
     ]
 )
 
@@ -324,6 +327,56 @@ tokens.append(
     }
 )
 
+# Let's also add PUSH/POP series.
+
+registers = [*map(lambda r: gen_register_16(r, False), ["BC", "DE", "HL", "AF"])]
+stack_pointer = gen_register_16("SP", True)
+
+pop_opcodes = [*range(0xC1, 0xF2, 16)]
+push_opcodes = [*range(0xC5, 0xF6, 16)]
+
+pushes = [
+    {
+        "instruction": f"{opcode:06X}",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+            "duration_in_clock_cycles": 3,
+            "original_machine_code": opcode,
+            "byte_length": 1,
+            "params": {
+                "load_params": {
+                    "source": src,
+                    "dest": dest,
+                    "postLoadOperation": "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION",
+                }
+            },
+        },
+    }
+    for opcode, src, dest in zip(push_opcodes, registers, repeat(stack_pointer, 4))
+]
+
+pops = [
+    {
+        "instruction": f"{opcode:06X}",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+            "duration_in_clock_cycles": 3,
+            "original_machine_code": opcode,
+            "byte_length": 1,
+            "params": {
+                "load_params": {
+                    "source": src,
+                    "dest": dest,
+                    "postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION",
+                }
+            },
+        },
+    }
+    for opcode, dest, src in zip(pop_opcodes, registers, repeat(stack_pointer, 4))
+]
+
+
+tokens.extend([*pushes, *pops])
 
 sort_instructions(tokens)
 

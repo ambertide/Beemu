@@ -41,7 +41,8 @@ def sort_instructions(instruction: list[dict]) -> None:
     """
     instruction.sort(key=lambda i: get_opcode(int(i["instruction"], base=16)))
 
-def get_tokens_except(except_ = []) -> list[dict]:
+
+def get_tokens_except(except_=[]) -> list[dict]:
     """Get all tokens except those whose opcodes are listed.
 
     Args:
@@ -49,13 +50,17 @@ def get_tokens_except(except_ = []) -> list[dict]:
 
     Returns:
         list[dict]: A list of all tokens besides those listed.
-    """        
+    """
     with open("tokens.json") as file:
         data = load(file)
         tokens: list[dict] = data["tokens"]
-    before = len(tokens);
-    tokens = [token for token in tokens if get_opcode(token['token']['original_machine_code']) not in except_]
-    after = len(tokens);
+    before = len(tokens)
+    tokens = [
+        token
+        for token in tokens
+        if get_opcode(token["token"]["original_machine_code"]) not in except_
+    ]
+    after = len(tokens)
     print(f"Removed {before - after} existing tokens.")
     return tokens
 
@@ -70,15 +75,32 @@ def gen_register(register_name: str) -> dict:
         dict: the BeemuParam as a dictionary.
     """
     return {
-            "pointer": register_name == "HL",
-            "type": (
-                "BEEMU_PARAM_TYPE_REGISTER_16"
-                if register_name == "HL"
-                else "BEEMU_PARAM_TYPE_REGISTER_8"
-            ),
-            "value": (
-                {"register_16": f"BEEMU_REGISTER_{register_name}"}
-                if register_name == "HL"
-                else {"register_8": f"BEEMU_REGISTER_{register_name}"}
-            ),
-        }
+        "pointer": register_name == "HL",
+        "type": (
+            "BEEMU_PARAM_TYPE_REGISTER_16"
+            if register_name == "HL"
+            else "BEEMU_PARAM_TYPE_REGISTER_8"
+        ),
+        "value": (
+            {"register_16": f"BEEMU_REGISTER_{register_name}"}
+            if register_name == "HL"
+            else {"register_8": f"BEEMU_REGISTER_{register_name}"}
+        ),
+    }
+
+
+def gen_register_16(register_name: str, pointer: bool = False) -> dict:
+    """Generate a 16 bit register parameter
+
+    Args:
+        register_name (str): Name of the register
+        pointer (bool, optional): If set to true, this is a pointer param.
+
+    Returns:
+        dict: BeemuParam encoded in json.
+    """
+    return {
+        "pointer": pointer,
+        "type": "BEEMU_PARAM_TYPE_REGISTER_16",
+        "value": {"register_16": f"BEEMU_REGISTER_{register_name}"},
+    }
