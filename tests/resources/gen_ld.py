@@ -340,7 +340,7 @@ pushes = [
         "instruction": f"{opcode:06X}",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
-            "duration_in_clock_cycles": 3,
+            "duration_in_clock_cycles": 4,
             "original_machine_code": opcode,
             "byte_length": 1,
             "params": {
@@ -367,7 +367,7 @@ pops = [
                 "load_params": {
                     "source": src,
                     "dest": dest,
-                    "postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION",
+                    "postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE",
                 }
             },
         },

@@ -1,4 +1,6 @@
 #include "tokenize_load.h"
+#include "libbeemu/device/primitives/instruction.h"
+#include "libbeemu/device/primitives/register.h"
 #include "tokenize_common.h"
 #include <assert.h>
 #include <stdbool.h>
@@ -8,8 +10,18 @@ BeemuPostLoadOperation tokenize_load_post_load_op(uint8_t opcode)
 	switch (opcode) {
 	case 0x22:
 		return BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
+	case 0xC5:
+	case 0xD5:
+	case 0xE5:
+	case 0xF5:
+	// These were the pushes
 	case 0x32:
 		return BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION;
+	case 0xC1:
+	case 0xD1:
+	case 0xE1:
+	case 0xF1:
+	// These were the pops
 	case 0x2A:
 		return BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE;
 	case 0x3A:
@@ -36,14 +48,16 @@ BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		// LDH
 		{ 0b11101101, 0b11100000 },
 		// ADDR16
-		{ 0b11101111, 0b11101010 }
+		{ 0b11101111, 0b11101010 },
+		// PUSH/POP r16
+		{ 0b11001011, 0b11000001 }
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_LOAD8_INVALID_LOAD,
-	    BEEMU_TOKENIZER_LOAD8_ADDR16);
+	    BEEMU_TOKENIZER_LOAD16_PUSH_POP);
 }
 
 /**
@@ -164,6 +178,25 @@ void determine_load_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
 	}
 }
 
+void determine_load_push_params(BeemuInstruction* instruction, uint8_t opcode)
+{
+	const uint8_t register_selector = (opcode & 0b110000) >> 4;
+	const uint8_t operation_selector = (opcode & 0b100) >> 2;
+	BeemuParam stack_pointer;
+	BeemuParam r16_target_or_source;
+	tokenize_register16_param_with_index(&stack_pointer, 3, true, BEEMU_REGISTER_SP);
+	tokenize_register16_param_with_index(&r16_target_or_source, register_selector, false, BEEMU_REGISTER_AF);
+	if (operation_selector) {
+		// PUSH
+		instruction->params.load_params.source = r16_target_or_source;
+		instruction->params.load_params.dest = stack_pointer;
+	} else {
+		// POP
+		instruction->params.load_params.source = stack_pointer;
+		instruction->params.load_params.dest = r16_target_or_source;
+	}
+}
+
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
@@ -173,7 +206,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
 	&determine_load_d8_params,
 	&determine_load_m16_params,
 	&determine_load_ldh_params,
-	&determine_load_addr16_params
+	&determine_load_addr16_params,
+	&determine_load_push_params
 };
 
 void determine_load_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype)
@@ -197,9 +231,20 @@ void determine_load_clock_cycles(BeemuInstruction* instruction)
 	} else if (instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_UINT16 || instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_UINT16) {
 		instruction->duration_in_clock_cycles += 2;
 	}
-	if (instruction->params.load_params.dest.pointer || instruction->params.load_params.source.pointer) {
-		// Memory destructuring due to HL immediately adds a +1 to the clock cycle.
+	if (instruction->params.load_params.dest.pointer) {
+		// Memory destructuring immediately adds a +1 to the clock cycle.
 		instruction->duration_in_clock_cycles++;
+	}
+	if (instruction->params.load_params.source.pointer) {
+		instruction->duration_in_clock_cycles++;
+	}
+
+	if (instruction->params.load_params.source.pointer && instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.postLoadOperation) {
+		// 16 bit loads from a register with a post load operation cause 2 mem loads and hence an additional 2 cycles.
+		instruction->duration_in_clock_cycles = 3;
+	} else if (instruction->params.load_params.dest.pointer && instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.postLoadOperation) {
+		// Likewise the reverse causes 3 extra memory accesses, although I am unsure why this is?
+		instruction->duration_in_clock_cycles = 4;
 	}
 }
 
