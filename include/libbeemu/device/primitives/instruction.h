@@ -11,8 +11,7 @@ extern "C" {
 
 	typedef enum beemuInstructionType {
 		// Categorization based on https://gbdev.io/pandocs/CPU_Instruction_Set.html
-		BEEMU_INSTRUCTION_TYPE_LOAD_8,
-		BEEMU_INSTRUCTION_TYPE_LOAD_16,
+		BEEMU_INSTRUCTION_TYPE_LOAD,
 		BEEMU_INSTRUCTION_TYPE_ARITHMATIC,
 		BEEMU_INSTRUCTION_TYPE_ROT_SHIFT,
 		BEEMU_INSTRUCTION_TYPE_BITWISE,

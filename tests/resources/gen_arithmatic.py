@@ -139,6 +139,9 @@ for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
         }
     )
 
+# Onto push and pops
+# these are 16 bit instructions and are encded using 18bit
+
 sort_instructions(tokens)
 with open("tokens.json", "w") as file:
     dump({"tokens": tokens}, file, indent="\t")

@@ -1,5 +1,5 @@
 /**
- * @file tokenize_load8.h
+ * @file tokenize_load.h
  * @author Ege Özkan (elsaambertide@gmail.com)
  * @brief Private header file that contains LD and LDH instruction tokenization
  * logic that affect values being passed around.
@@ -16,16 +16,14 @@
 #ifndef BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_LOAD_H
 #define BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_LOAD_H
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 	/**
 	 * @brief Differentiate the Load8 subtype during tokenization stage.
 	 *
 	 */
-	typedef enum BEEMU_TOKENIZER_LOAD8_SUBTYPE
-	{
+	typedef enum BEEMU_TOKENIZER_LOAD_SUBTYPE {
 		/** Emitted when not load. */
 		BEEMU_TOKENIZER_LOAD8_INVALID_LOAD,
 		/** Emitted when 0x40-0x7F mainline */
@@ -38,7 +36,7 @@ extern "C"
 		BEEMU_TOKENIZER_LOAD8_LDH,
 		/** Emitted for 0xEA and 0xFA, postmainline ld addr16 loads. */
 		BEEMU_TOKENIZER_LOAD8_ADDR16
-	} BEEMU_TOKENIZER_LOAD8_SUBTYPE;
+	} BEEMU_TOKENIZER_LOAD_SUBTYPE;
 
 	/**
 	 * @brief Given a partially initiated instruction tokenize it as a load instruction.
@@ -47,7 +45,7 @@ extern "C"
 	 * instruction space.
 	 * @param opcode Opcode portion of the instruction for faster checks for some operations.
 	 */
-	void tokenize_load8(BeemuInstruction *instruction, uint8_t opcode);
+	void tokenize_load(BeemuInstruction* instruction, uint8_t opcode);
 
 	/**
 	 * @brief Check if the given OPCODE is a load operation and if so determine its subtype.
@@ -55,7 +53,7 @@ extern "C"
 	 * @param opcode Opcode to check against, must not be a CBXX opcode.
 	 * @return subtype of the load operation if one exists.
 	 */
-	BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode);
+	BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode);
 
 #ifdef __cplusplus
 }

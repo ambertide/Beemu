@@ -119,7 +119,7 @@ void write_to_param(BeemuRegisters* registers, BeemuMemory* memory, BeemuParam p
 void execute_load(BeemuRegisters* registers, BeemuMemory* memory, BeemuInstruction instruction)
 {
 	const uint16_t load_value = resolve_param(registers, memory, instruction.params.load_params.source);
-	write_to_param(registers, memory, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD_8);
+	write_to_param(registers, memory, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD);
 }
 
 /**
@@ -296,8 +296,7 @@ void execute_jump(BeemuMemory* memory, BeemuRegisters* registers, BeemuInstructi
 uint8_t execute_instruction(BeemuMemory* memory, BeemuRegisters* file, BeemuInstruction instruction)
 {
 	switch (instruction.type) {
-	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
-	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
 		execute_load(file, memory, instruction);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:

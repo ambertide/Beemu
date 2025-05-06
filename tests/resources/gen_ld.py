@@ -4,7 +4,8 @@ from utils import get_tokens_except, sort_instructions, gen_register
 
 registers = ["B", "C", "D", "E", "H", "L", "HL", "A"]
 
-tokens = get_tokens_except([
+tokens = get_tokens_except(
+    [
         *range(0x40, 0x80),
         0x02,
         0x06,
@@ -28,7 +29,8 @@ tokens = get_tokens_except([
         0xF0,
         0xF2,
         0xFA,
-    ])
+    ]
+)
 
 print(
     f"Starting inserting load operations with existing instruction set of {len(tokens)}"
@@ -44,7 +46,7 @@ for dest_register in registers:
         instruction = {
             "instruction": f"0x{opcode:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
                 "duration_in_clock_cycles": (
                     2 if dest_register == "HL" or source_register == "HL" else 1
                 ),
@@ -104,7 +106,7 @@ for lsb in range(4):
         instruction = {
             "instruction": f"0x{instruction:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
                 "duration_in_clock_cycles": (
                     3 if dest_register == "HL" or source_register == "HL" else 2
                 ),
@@ -127,7 +129,7 @@ for lsb in range(4):
 # 0xX2 and 0x0A, and what loads indirectly form 16-bit registers or loads TO them from A
 
 
-A_REGISTER = gen_register('A')
+A_REGISTER = gen_register("A")
 
 registers = ["BC", "DE", "HL", "HL"]
 ops = [
@@ -155,7 +157,7 @@ for lsn in range(4):
         token = {
             "instruction": f"0x{instruction:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
                 "duration_in_clock_cycles": 2,
                 "original_machine_code": instruction,
                 "byte_length": 1,
@@ -202,7 +204,7 @@ tokens.append(
     {
         "instruction": f"0x00E0BC",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 3,
             "original_machine_code": 0x00E0BC,
             "byte_length": 2,
@@ -223,7 +225,7 @@ tokens.append(
     {
         "instruction": f"0x00F0BC",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 3,
             "original_machine_code": 0x00F0BC,
             "byte_length": 2,
@@ -244,7 +246,7 @@ tokens.append(
     {
         "instruction": f"0x0000E2",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 2,
             "original_machine_code": 0x0000E2,
             "byte_length": 1,
@@ -265,7 +267,7 @@ tokens.append(
     {
         "instruction": f"0x0000F2",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 2,
             "original_machine_code": 0x0000F2,
             "byte_length": 1,
@@ -286,7 +288,7 @@ tokens.append(
     {
         "instruction": f"0xEADEBC",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 4,
             "original_machine_code": 0xEADEBC,
             "byte_length": 3,
@@ -307,7 +309,7 @@ tokens.append(
     {
         "instruction": f"0xFADEBC",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_LOAD_8",
+            "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 4,
             "original_machine_code": 0xFADEBC,
             "byte_length": 3,

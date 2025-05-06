@@ -1,7 +1,7 @@
 #include "tokenize_arithmatic.h"
 #include "tokenize_cbxx.h"
 #include "tokenize_common.h"
-#include "tokenize_load8.h"
+#include "tokenize_load.h"
 #include <libbeemu/device/memory.h>
 #include <libbeemu/device/processor/processor.h>
 #include <libbeemu/device/processor/tokenizer.h>
@@ -17,7 +17,7 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 		// Parse cb prefix seperately..
 		tokenize_cbxx(inst);
 	} else if (load_subtype_if_load(opcode)) {
-		tokenize_load8(inst, opcode);
+		tokenize_load(inst, opcode);
 	} else if (arithmatic_subtype_if_arithmatic(opcode)) {
 		tokenize_arithmatic(inst, opcode);
 	}

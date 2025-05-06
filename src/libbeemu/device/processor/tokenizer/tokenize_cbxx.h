@@ -1,5 +1,5 @@
 /**
- * @file tokenize_load8.h
+ * @file tokenize_load.h
  * @author Ege Özkan (elsaambertide@gmail.com)
  * @brief Private header file that includes tokenization functions for
  * 8bit load instructions, namely LD s operating on 8 bit registers, indirect
@@ -15,8 +15,7 @@
 #ifndef BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_CBXX_H
 #define BEEMU_PROCESSOR_TOKENIZER_TOKENIZE_CBXX_H
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 	/**
@@ -26,7 +25,7 @@ extern "C"
 	 *
 	 * @param instruction Partially created instruction to tokenize.
 	 */
-	void tokenize_cbxx(BeemuInstruction *instruction);
+	void tokenize_cbxx(BeemuInstruction* instruction);
 
 #ifdef __cplusplus
 }

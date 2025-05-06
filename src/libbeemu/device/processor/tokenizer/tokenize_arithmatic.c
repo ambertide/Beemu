@@ -134,8 +134,8 @@ void determine_arithmatic_weird_params(
 	tokenize_register_param_with_index(&instruction->params.arithmatic_params.source_or_second, 7);
 }
 
-// Array used to dispatch to the determine_load8_SUBTYPE_params function
-// for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
+// Array used to dispatch to the determine_load_SUBTYPE_params function
+// for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
     = {

@@ -26,8 +26,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 					   {BEEMU_REGISTER_SP, "BEEMU_REGISTER_SP"}});
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
-	BeemuInstructionType, {{BEEMU_INSTRUCTION_TYPE_LOAD_8, "BEEMU_INSTRUCTION_TYPE_LOAD_8"},
-						   {BEEMU_INSTRUCTION_TYPE_LOAD_16, "BEEMU_INSTRUCTION_TYPE_LOAD_16"},
+	BeemuInstructionType, {{BEEMU_INSTRUCTION_TYPE_LOAD, "BEEMU_INSTRUCTION_TYPE_LOAD"},
 						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC"},
 						   {BEEMU_INSTRUCTION_TYPE_ROT_SHIFT, "BEEMU_INSTRUCTION_TYPE_ROT_SHIFT"},
 						   {BEEMU_INSTRUCTION_TYPE_BITWISE, "BEEMU_INSTRUCTION_TYPE_BITWISE"},
@@ -206,8 +205,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
 		json["params"]["jump_params"] = inst.params.jump_params;
 		break;
-	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
-	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
 		json["params"]["load_params"] = inst.params.load_params;
 		break;
 	case BEEMU_INSTRUCTION_TYPE_ROT_SHIFT:
@@ -236,8 +234,7 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
 		json.at("params").at("jump_params").get_to(inst.params.jump_params);
 		break;
-	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
-	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
 		json.at("params").at("load_params").get_to(inst.params.load_params);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_ROT_SHIFT:

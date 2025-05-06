@@ -99,7 +99,7 @@
     "stack": "cpp",
     "__availability": "cpp",
     "tokenize_common.h": "c",
-    "tokenize_load8.h": "c",
+    "tokenize_load.h": "c",
     "tokenize_arithmatic8.h": "c"
   },
   "cmake.configureOnOpen": true,

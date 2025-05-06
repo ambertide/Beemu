@@ -1,9 +1,9 @@
-#include "tokenize_load8.h"
+#include "tokenize_load.h"
 #include "tokenize_common.h"
 #include <assert.h>
 #include <stdbool.h>
 
-BeemuPostLoadOperation tokenize_load8_post_load_op(uint8_t opcode)
+BeemuPostLoadOperation tokenize_load_post_load_op(uint8_t opcode)
 {
 	switch (opcode) {
 	case 0x22:
@@ -19,9 +19,9 @@ BeemuPostLoadOperation tokenize_load8_post_load_op(uint8_t opcode)
 	}
 }
 
-BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
+BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode)
 {
-	// Paralel array to the enum values of BEEMU_TOKENIZER_LOAD8_SUBTYPE
+	// Paralel array to the enum values of BEEMU_TOKENIZER_LOAD_SUBTYPE
 	// if for a specific test in a specific index opcode & _operand == _expetcted_result
 	// then it is the load for that specific operand.
 	static const BeemuTokenizerSubtypeDifferentiator tests[] = {
@@ -51,7 +51,7 @@ BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype_if_load(uint8_t opcode)
  *
  * These always take two registers, sometimes (HL).
  */
-void determine_load8_mainspace_params(BeemuInstruction* instruction, uint8_t opcode)
+void determine_load_mainspace_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	// 4, 5 and 6th most significant bits together decide the destination register
 	// since they change once every 8 instructions.
@@ -66,7 +66,7 @@ void determine_load8_mainspace_params(BeemuInstruction* instruction, uint8_t opc
 /**
  * @brief Determine the direct 8bit load parameters.
  */
-void determine_load8_d8_params(BeemuInstruction* instruction, uint8_t opcode)
+void determine_load_d8_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	const uint8_t destination_differentiatior = (opcode >> 3) & 0b111;
 	tokenize_register_param_with_index(&instruction->params.load_params.dest, destination_differentiatior);
@@ -80,7 +80,7 @@ void determine_load8_d8_params(BeemuInstruction* instruction, uint8_t opcode)
 /**
  * @brief Determine the 16 bit memory address loads
  */
-void determine_load8_m16_params(BeemuInstruction* instruction, uint8_t opcode)
+void determine_load_m16_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	// For 0xn2 we go from r8 -> (r16)
 	BeemuParam* register16_param = &(instruction->params.load_params.dest);
@@ -99,7 +99,7 @@ void determine_load8_m16_params(BeemuInstruction* instruction, uint8_t opcode)
 	register8_param->value.register_8 = BEEMU_REGISTER_A;
 }
 
-void determine_load8_ldh_params(BeemuInstruction* instruction, uint8_t opcode)
+void determine_load_ldh_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	static const BeemuParam register_a = { .pointer = false,
 		.type = BEEMU_PARAM_TYPE_REGISTER_8,
@@ -141,7 +141,7 @@ void determine_load8_ldh_params(BeemuInstruction* instruction, uint8_t opcode)
 	instruction->params.load_params.source = source_array[differentiatior];
 }
 
-void determine_load8_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
+void determine_load_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	assert(opcode == 0xFA || opcode == 0xEA);
 	static const BeemuParam register_a = { .pointer = false,
@@ -164,21 +164,21 @@ void determine_load8_addr16_params(BeemuInstruction* instruction, uint8_t opcode
 	}
 }
 
-// Array used to dispatch to the determine_load8_SUBTYPE_params function
-// for a specific BEEMU_TOKENIZER_LOAD8_SUBTYPE, parallel array to the enum
+// Array used to dispatch to the determine_load_SUBTYPE_params function
+// for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
 	0,
-	&determine_load8_mainspace_params,
-	&determine_load8_d8_params,
-	&determine_load8_m16_params,
-	&determine_load8_ldh_params,
-	&determine_load8_addr16_params
+	&determine_load_mainspace_params,
+	&determine_load_d8_params,
+	&determine_load_m16_params,
+	&determine_load_ldh_params,
+	&determine_load_addr16_params
 };
 
-void determine_load8_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype)
+void determine_load_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype)
 {
-	instruction->params.load_params.postLoadOperation = tokenize_load8_post_load_op(opcode);
+	instruction->params.load_params.postLoadOperation = tokenize_load_post_load_op(opcode);
 	determine_param_function_ptr determine_params_func = DETERMINE_PARAM_DISPATCH[load_subtype];
 	determine_params_func(instruction, opcode);
 }
@@ -188,7 +188,7 @@ void determine_load8_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU
  *
  * @param instruction
  */
-void determine_load8_clock_cycles(BeemuInstruction* instruction)
+void determine_load_clock_cycles(BeemuInstruction* instruction)
 {
 	instruction->duration_in_clock_cycles = 1;
 	if (instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_UINT_8 || instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_UINT_8) {
@@ -203,11 +203,11 @@ void determine_load8_clock_cycles(BeemuInstruction* instruction)
 	}
 }
 
-void tokenize_load8(BeemuInstruction* instruction, uint8_t opcode)
+void tokenize_load(BeemuInstruction* instruction, uint8_t opcode)
 {
-	BEEMU_TOKENIZER_LOAD8_SUBTYPE load_subtype = load_subtype_if_load(opcode);
+	BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype = load_subtype_if_load(opcode);
 	assert(load_subtype != BEEMU_TOKENIZER_LOAD8_INVALID_LOAD);
-	instruction->type = BEEMU_INSTRUCTION_TYPE_LOAD_8;
-	determine_load8_params(instruction, opcode, load_subtype);
-	determine_load8_clock_cycles(instruction);
+	instruction->type = BEEMU_INSTRUCTION_TYPE_LOAD;
+	determine_load_params(instruction, opcode, load_subtype);
+	determine_load_clock_cycles(instruction);
 }
