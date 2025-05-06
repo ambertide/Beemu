@@ -34,7 +34,7 @@ for opcode, subop, source_register in zip(
         {
             "instruction": f"0x{opcode:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                 "duration_in_clock_cycles": (
                     1 if source_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8" else 2
                 ),
@@ -67,7 +67,7 @@ for operation, opcode_range in (
             {
                 "instruction": f"0x{opcode:06X}",
                 "token": {
-                    "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8",
+                    "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                     "duration_in_clock_cycles": (
                         1
                         if dest_register["type"] == "BEEMU_PARAM_TYPE_REGISTER_8"
@@ -97,7 +97,7 @@ for operation, opcode in zip(operations, range(0xC6, 0xFF, 8)):
         {
             "instruction": f"{full_instruction:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                 "duration_in_clock_cycles": 2,
                 "original_machine_code": full_instruction,
                 "byte_length": 2,
@@ -124,7 +124,7 @@ for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
         {
             "instruction": f"{opcode:06X}",
             "token": {
-                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8",
+                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                 "duration_in_clock_cycles": 1,
                 "original_machine_code": opcode,
                 "byte_length": 1,

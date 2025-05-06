@@ -1,4 +1,4 @@
-#include "tokenize_arithmatic8.h"
+#include "tokenize_arithmatic.h"
 #include "tokenize_cbxx.h"
 #include "tokenize_common.h"
 #include "tokenize_load8.h"
@@ -18,8 +18,8 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 		tokenize_cbxx(inst);
 	} else if (load_subtype_if_load(opcode)) {
 		tokenize_load8(inst, opcode);
-	} else if (arithmatic8_subtype_if_arithmatic8(opcode)) {
-		tokenize_arithmatic8(inst, opcode);
+	} else if (arithmatic_subtype_if_arithmatic(opcode)) {
+		tokenize_arithmatic(inst, opcode);
 	}
 
 	return inst;

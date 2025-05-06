@@ -28,8 +28,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuInstructionType, {{BEEMU_INSTRUCTION_TYPE_LOAD_8, "BEEMU_INSTRUCTION_TYPE_LOAD_8"},
 						   {BEEMU_INSTRUCTION_TYPE_LOAD_16, "BEEMU_INSTRUCTION_TYPE_LOAD_16"},
-						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8"},
-						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16"},
+						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC"},
 						   {BEEMU_INSTRUCTION_TYPE_ROT_SHIFT, "BEEMU_INSTRUCTION_TYPE_ROT_SHIFT"},
 						   {BEEMU_INSTRUCTION_TYPE_BITWISE, "BEEMU_INSTRUCTION_TYPE_BITWISE"},
 						   {BEEMU_INSTRUCTION_TYPE_CPU_CONTROL, "BEEMU_INSTRUCTION_TYPE_CPU_CONTROL"},
@@ -195,8 +194,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	json["byte_length"] = inst.byte_length;
 	switch (inst.type)
 	{
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:
 		json["params"]["arithmatic_params"] = inst.params.arithmatic_params;
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
@@ -226,8 +224,7 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	json.at("byte_length").get_to(inst.byte_length);
 	switch (inst.type)
 	{
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:
 		json.at("params").at("arithmatic_params").get_to(inst.params.arithmatic_params);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:

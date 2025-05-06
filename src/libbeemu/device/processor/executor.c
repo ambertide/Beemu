@@ -1,7 +1,7 @@
-#include <libbeemu/device/processor/executor.h>
 #include <libbeemu/device/primitives/register.h>
-#include <libbeemu/internals/utility.h>
+#include <libbeemu/device/processor/executor.h>
 #include <libbeemu/internals/logger.h>
+#include <libbeemu/internals/utility.h>
 
 /**
  * @brief Resolve a param's value.
@@ -21,12 +21,11 @@
  * @param param Parameter to be resolved.
  * @return int Integer value.
  */
-int resolve_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam param)
+int resolve_param(BeemuRegisters* registers, BeemuMemory* memory, BeemuParam param)
 {
 	BeemuRegister register_;
 	uint16_t param_value = 0;
-	switch (param.type)
-	{
+	switch (param.type) {
 	case BEEMU_PARAM_TYPE_REGISTER_8:
 		register_.type = BEEMU_EIGHT_BIT_REGISTER;
 		register_.name_of.eight_bit_register = param.value.register_8;
@@ -49,12 +48,9 @@ int resolve_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam par
 	}
 
 	// Dereference to memory if exists and if is a pointer.
-	if (param.pointer)
-	{
+	if (param.pointer) {
 		return beemu_memory_read(memory, param_value);
-	}
-	else
-	{
+	} else {
 		// Otherwise return value itself.
 		return param_value;
 	}
@@ -69,42 +65,33 @@ int resolve_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam par
  * @param value Value to write.
  * @param type Type of the location.
  */
-void write_to_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam param, uint16_t value, bool is_eight_bit_write)
+void write_to_param(BeemuRegisters* registers, BeemuMemory* memory, BeemuParam param, uint16_t value, bool is_eight_bit_write)
 {
 	BeemuRegister register_;
 	uint16_t write_location;
 	const bool is_register = beemu_util_is_one_of_two(param.type, BEEMU_PARAM_TYPE_REGISTER_8, BEEMU_PARAM_TYPE_REGISTER_16);
-	if (is_register)
-	{
+	if (is_register) {
 		// Set the register type regardless.
 		register_.type = param.type == BEEMU_PARAM_TYPE_REGISTER_8 ? BEEMU_EIGHT_BIT_REGISTER : BEEMU_SIXTEEN_BIT_REGISTER;
-		if (param.type == BEEMU_PARAM_TYPE_REGISTER_8)
-		{
+		if (param.type == BEEMU_PARAM_TYPE_REGISTER_8) {
 			register_.name_of.eight_bit_register = param.value.register_8;
-		}
-		else
-		{
+		} else {
 			register_.name_of.sixteen_bit_register = param.value.register_16;
 		}
 
 		// Now check if this is a pointer write.
 
-		if (param.pointer)
-		{
+		if (param.pointer) {
 			// Then we shall take the register's value and
 			// write the value to the THAT address at the memory
 			write_location = beemu_registers_read_register_value(registers, register_);
-		}
-		else
-		{
+		} else {
 			// By the way, the other variant is much easier anyhow,
 			// just go
 			beemu_registers_write_register_value(registers, register_, value);
 			return;
 		}
-	}
-	else
-	{
+	} else {
 		// Otherwise the type HAS to be
 		// BEEMU_PARAM_TYPE_UINT_8 or BEEMU_PARAM_TYPE_UINT_16
 		// and MUST indicate location... I think.
@@ -115,12 +102,9 @@ void write_to_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam p
 	// write location, or we are about to segfault. A logical person
 	// would try to do an error check, I am, however, not a logical person
 	// nor particularly intelligent, so...
-	if (is_eight_bit_write)
-	{
+	if (is_eight_bit_write) {
 		beemu_memory_write(memory, write_location, value);
-	}
-	else
-	{
+	} else {
 		beemu_memory_write_16(memory, write_location, value);
 	}
 }
@@ -132,7 +116,7 @@ void write_to_param(BeemuRegisters *registers, BeemuMemory *memory, BeemuParam p
  * @param memory Memory pointer.
  * @param instruction Instruction to execute.
  */
-void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+void execute_load(BeemuRegisters* registers, BeemuMemory* memory, BeemuInstruction instruction)
 {
 	const uint16_t load_value = resolve_param(registers, memory, instruction.params.load_params.source);
 	write_to_param(registers, memory, instruction.params.load_params.dest, load_value, instruction.type == BEEMU_INSTRUCTION_TYPE_LOAD_8);
@@ -148,8 +132,7 @@ void execute_load(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstructi
  */
 uint16_t resolve_flows(int value, BeemuParamType resolve_to)
 {
-	switch (resolve_to)
-	{
+	switch (resolve_to) {
 	case BEEMU_PARAM_TYPE_INT_8:
 	case BEEMU_PARAM_TYPE_UINT_8:
 	case BEEMU_PARAM_TYPE_REGISTER_8:
@@ -162,7 +145,7 @@ uint16_t resolve_flows(int value, BeemuParamType resolve_to)
 	}
 }
 
-void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuInstruction instruction)
+void execute_arithmatic(BeemuRegisters* registers, BeemuMemory* memory, BeemuInstruction instruction)
 {
 	// First we need to resolve the operands.
 	const int operand_one = resolve_param(registers, memory, instruction.params.arithmatic_params.dest_or_first);
@@ -171,8 +154,7 @@ void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuIns
 	// Do not assign the result.
 	bool silent = false;
 	// Then we need to take our operation upon it.
-	switch (instruction.params.arithmatic_params.operation)
-	{
+	switch (instruction.params.arithmatic_params.operation) {
 	case BEEMU_OP_ADD:
 		result += operand_two;
 		break;
@@ -199,26 +181,24 @@ void execute_arithmatic(BeemuRegisters *registers, BeemuMemory *memory, BeemuIns
 	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_Z, resolved_result == 0);
 	beemu_registers_flags_set_flag(registers, BEEMU_FLAG_C, resolved_result != result);
 	// Write the actual result.
-	if (!silent)
-	{
+	if (!silent) {
 		write_to_param(
-			registers,
-			memory,
-			instruction.params.arithmatic_params.dest_or_first,
-			resolved_result,
-			beemu_util_is_one_of_two(
-				instruction.params.arithmatic_params.dest_or_first.type,
-				BEEMU_PARAM_TYPE_REGISTER_8,
-				BEEMU_PARAM_TYPE_UINT_8));
+		    registers,
+		    memory,
+		    instruction.params.arithmatic_params.dest_or_first,
+		    resolved_result,
+		    beemu_util_is_one_of_two(
+		        instruction.params.arithmatic_params.dest_or_first.type,
+		        BEEMU_PARAM_TYPE_REGISTER_8,
+		        BEEMU_PARAM_TYPE_UINT_8));
 	}
 }
 
-bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
+bool test_condition(BeemuRegisters* registers, BeemuJumpCondition condition)
 {
 	const uint8_t zero = beemu_registers_flags_get_flag(registers, BEEMU_FLAG_Z);
 	const uint8_t carry = beemu_registers_flags_get_flag(registers, BEEMU_FLAG_C);
-	switch (condition)
-	{
+	switch (condition) {
 	case BEEMU_JUMP_IF_CARRY:
 		return carry == 1;
 	case BEEMU_JUMP_IF_NOT_CARRY:
@@ -239,10 +219,10 @@ bool test_condition(BeemuRegisters *registers, BeemuJumpCondition condition)
  * @param memory
  * @param value
  */
-void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
+void push_stack(BeemuRegisters* registers, BeemuMemory* memory, uint16_t value)
 {
 	beemu_log(BEEMU_LOG_INFO, "Pushing value 0x%X to stack.", value);
-	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
+	static const BeemuRegister sp = { .type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP };
 	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
 	beemu_memory_write_16(memory, current_sp, value);
 	beemu_log(BEEMU_LOG_INFO, "Value of stack pointer before push was 0x%X.", current_sp);
@@ -258,9 +238,9 @@ void push_stack(BeemuRegisters *registers, BeemuMemory *memory, uint16_t value)
  * @param memory
  * @return uint16_t
  */
-uint16_t pop_stack(BeemuRegisters *registers, BeemuMemory *memory)
+uint16_t pop_stack(BeemuRegisters* registers, BeemuMemory* memory)
 {
-	static const BeemuRegister sp = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP};
+	static const BeemuRegister sp = { .type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_SP };
 	const uint16_t current_sp = beemu_registers_read_register_value(registers, sp);
 	beemu_registers_write_register_value(registers, sp, current_sp + 2);
 	const uint16_t val = beemu_memory_read_16(memory, current_sp + 2);
@@ -276,39 +256,32 @@ uint16_t pop_stack(BeemuRegisters *registers, BeemuMemory *memory)
  * @param registers
  * @param instruction
  */
-void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstruction instruction)
+void execute_jump(BeemuMemory* memory, BeemuRegisters* registers, BeemuInstruction instruction)
 {
-	static const BeemuRegister pc = {.type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC};
+	static const BeemuRegister pc = { .type = BEEMU_SIXTEEN_BIT_REGISTER, .name_of.sixteen_bit_register = BEEMU_REGISTER_PC };
 	uint16_t current_address = registers->program_counter;
 	BeemuJumpParams params = instruction.params.jump_params;
 	// Could be a pointer, relative or direct addr.
 	const int addr_param = resolve_param(registers, memory, params.param);
-	if (params.is_conditional && !test_condition(registers, params.condition))
-	{
+	if (params.is_conditional && !test_condition(registers, params.condition)) {
 		// Conditional jumps that do not fit the conditions are not executed.
 		return;
 	}
 	// Either non-conditional or true cond.
 	uint16_t new_address = 0x0; // RST
-	if (params.type == BEEMU_JUMP_TYPE_RET)
-	{
+	if (params.type == BEEMU_JUMP_TYPE_RET) {
 		// First up, RET is a special case where
 		// the addr is determined by the stack.
 		new_address = pop_stack(registers, memory);
-	}
-	else if (params.is_relative)
-	{
+	} else if (params.is_relative) {
 		new_address = current_address + addr_param;
-	}
-	else
-	{
+	} else {
 		// Finally, it could be a direct jump.
 		// or a RST.
 		new_address = addr_param;
 	}
 
-	if (params.type == BEEMU_JUMP_TYPE_CALL)
-	{
+	if (params.type == BEEMU_JUMP_TYPE_CALL) {
 		// Though, if it is a call, some extra
 		// stuff is needed.
 		// Store current address.
@@ -320,17 +293,14 @@ void execute_jump(BeemuMemory *memory, BeemuRegisters *registers, BeemuInstructi
 	// TODO: Enable interrupts.
 }
 
-uint8_t execute_instruction(BeemuMemory *memory, BeemuRegisters *file, BeemuInstruction instruction)
+uint8_t execute_instruction(BeemuMemory* memory, BeemuRegisters* file, BeemuInstruction instruction)
 {
-	switch (instruction.type)
-	{
+	switch (instruction.type) {
 	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
 	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
 		execute_load(file, memory, instruction);
 		break;
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
-		execute_arithmatic(file, memory, instruction);
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:
 		break;
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
 		execute_jump(memory, file, instruction);

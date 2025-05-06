@@ -1,10 +1,10 @@
-#include "tokenize_arithmatic8.h"
+#include "tokenize_arithmatic.h"
 #include "libbeemu/device/primitives/instruction.h"
 #include "tokenize_common.h"
 #include <assert.h>
 
-BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE
-arithmatic8_subtype_if_arithmatic8(uint8_t opcode)
+BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE
+arithmatic_subtype_if_arithmatic(uint8_t opcode)
 {
 	static const BeemuTokenizerSubtypeDifferentiator tests[] = {
 		// _INVALID
@@ -20,11 +20,11 @@ arithmatic8_subtype_if_arithmatic8(uint8_t opcode)
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
-	    BEEMU_TOKENIZER_ARITHMATIC8_INVALID_ARITHMATIC8,
-	    BEEMU_TOKENIZER_ARITHMATIC8_WEIRD);
+	    BEEMU_TOKENIZER_ARITHMATIC_INVALID_ARITHMATIC,
+	    BEEMU_TOKENIZER_ARITHMATIC_WEIRD);
 }
 
-void determine_mainline_arithmatic8_params(
+void determine_mainline_arithmatic_params(
     BeemuInstruction* instruction,
     const uint8_t opcode)
 {
@@ -56,7 +56,7 @@ void determine_mainline_arithmatic8_params(
 	    7);
 }
 
-void determine_arithmatic8_inc_dec_params(
+void determine_arithmatic_inc_dec_params(
     BeemuInstruction* instruction,
     const uint8_t opcode)
 {
@@ -84,7 +84,7 @@ void determine_arithmatic8_inc_dec_params(
  * @param instruction Instruction token belonging to the isntructino.
  * @param opcode Opcode of the instruction.
  */
-void determine_arithmatic8_direct_params(
+void determine_arithmatic_direct_params(
     BeemuInstruction* instruction,
     const uint8_t opcode)
 {
@@ -118,7 +118,7 @@ void determine_arithmatic8_direct_params(
  * @param instruction Instruction partially tokenized
  * @param opcode Opcode
  */
-void determine_arithmatic8_weird_params(
+void determine_arithmatic_weird_params(
     BeemuInstruction* instruction,
     uint8_t opcode)
 {
@@ -140,25 +140,25 @@ void determine_arithmatic8_weird_params(
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
     = {
 	      0,
-	      &determine_mainline_arithmatic8_params,
-	      &determine_arithmatic8_inc_dec_params,
-	      &determine_arithmatic8_direct_params,
-	      &determine_arithmatic8_weird_params
+	      &determine_mainline_arithmatic_params,
+	      &determine_arithmatic_inc_dec_params,
+	      &determine_arithmatic_direct_params,
+	      &determine_arithmatic_weird_params
       };
 
-void determine_arithmatic8_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE arithmatic8_params)
+void determine_arithmatic_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE arithmatic_params)
 {
-	determine_param_function_ptr determine_params_func = DETERMINE_PARAM_DISPATCH[arithmatic8_params];
+	determine_param_function_ptr determine_params_func = DETERMINE_PARAM_DISPATCH[arithmatic_params];
 	determine_params_func(instruction, opcode);
 }
 
-void determine_arithmatic8_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE operation_subtype)
+void determine_arithmatic_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE operation_subtype)
 {
 	instruction->duration_in_clock_cycles = 1;
 	if (instruction->params.arithmatic_params.source_or_second.pointer) {
 		instruction->duration_in_clock_cycles++;
 	}
-	if (instruction->params.arithmatic_params.dest_or_first.pointer && operation_subtype == BEEMU_TOKENIZER_ARITHMATIC8_INC_DEC) {
+	if (instruction->params.arithmatic_params.dest_or_first.pointer && operation_subtype == BEEMU_TOKENIZER_ARITHMATIC_INC_DEC) {
 		// For INC/DEC a pointer causes a read AND a write.
 		// so, extra time spent.
 		instruction->duration_in_clock_cycles = 3;
@@ -168,11 +168,11 @@ void determine_arithmatic8_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKE
 	}
 }
 
-void tokenize_arithmatic8(BeemuInstruction* instruction, uint8_t opcode)
+void tokenize_arithmatic(BeemuInstruction* instruction, uint8_t opcode)
 {
-	const BEEMU_TOKENIZER_ARITHMATIC8_SUBTYPE arithmatic8_subtype = arithmatic8_subtype_if_arithmatic8(opcode);
-	assert(arithmatic8_subtype != BEEMU_TOKENIZER_ARITHMATIC8_INVALID_ARITHMATIC8);
-	instruction->type = BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8;
-	determine_arithmatic8_params(instruction, opcode, arithmatic8_subtype);
-	determine_arithmatic8_clock_cycle(instruction, arithmatic8_subtype);
+	const BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE arithmatic_subtype = arithmatic_subtype_if_arithmatic(opcode);
+	assert(arithmatic_subtype != BEEMU_TOKENIZER_ARITHMATIC_INVALID_ARITHMATIC);
+	instruction->type = BEEMU_INSTRUCTION_TYPE_ARITHMATIC;
+	determine_arithmatic_params(instruction, opcode, arithmatic_subtype);
+	determine_arithmatic_clock_cycle(instruction, arithmatic_subtype);
 }
