@@ -1,0 +1,5 @@
+---
+BasedOnStyle: Webkit
+TabWidth: 4
+UseTab: ForIndentation
+IndentExternBlock: Indent

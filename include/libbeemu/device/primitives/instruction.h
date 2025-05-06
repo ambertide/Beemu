@@ -2,21 +2,17 @@
 #define BEEMU_INSTRUCTION_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "register.h"
+#include <stdbool.h>
+#include <stdint.h>
 
-	typedef enum beemuInstructionType
-	{
+	typedef enum beemuInstructionType {
 		// Categorization based on https://gbdev.io/pandocs/CPU_Instruction_Set.html
-		BEEMU_INSTRUCTION_TYPE_LOAD_8,
-		BEEMU_INSTRUCTION_TYPE_LOAD_16,
-		BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8,
-		BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16,
+		BEEMU_INSTRUCTION_TYPE_LOAD,
+		BEEMU_INSTRUCTION_TYPE_ARITHMATIC,
 		BEEMU_INSTRUCTION_TYPE_ROT_SHIFT,
 		BEEMU_INSTRUCTION_TYPE_BITWISE,
 		BEEMU_INSTRUCTION_TYPE_CPU_CONTROL,
@@ -27,8 +23,7 @@ extern "C"
 	 * @brief Describes the type of a single param.
 	 *
 	 */
-	typedef enum BeemuParamType
-	{
+	typedef enum BeemuParamType {
 		BEEMU_PARAM_TYPE_REGISTER_8,
 		BEEMU_PARAM_TYPE_REGISTER_16,
 		BEEMU_PARAM_TYPE_UINT_8,
@@ -36,8 +31,7 @@ extern "C"
 		BEEMU_PARAM_TYPE_INT_8
 	} BeemuParamType;
 
-	typedef enum BeemuWriteLength
-	{
+	typedef enum BeemuWriteLength {
 		BEEMU_WRITE_LENGTH_8,
 		BEEMU_WRITE_LENGTH_16
 	} BeemuWriteLength;
@@ -48,17 +42,13 @@ extern "C"
 	 * Holds a single param, its type
 	 * and its value.
 	 */
-	typedef struct BeemuParam
-	{
+	typedef struct BeemuParam {
 		/** Identifies whether to dereference before usage. */
 		bool pointer;
 		/** Type of a the variable. */
 		BeemuParamType type;
-		/** This determines the write length, useful for write loads */
-		BeemuWriteLength write_length;
 		/** Actual value hold within. */
-		union
-		{
+		union {
 			uint16_t value;
 			int8_t signed_value;
 			BeemuRegister_8 register_8;
@@ -67,48 +57,67 @@ extern "C"
 	} BeemuParam;
 
 	/**
+	 * @brief Extra operation to perform immediately following a load operation.
+	 *
+	 */
+	typedef enum BeemuPostLoadOperation {
+		BEEMU_POST_LOAD_NOP,
+		BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE,
+		BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE,
+		BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION,
+		BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION
+	} BeemuPostLoadOperation;
+
+	/**
 	 * @brief Parameters for the LOAD instructions.
 	 *
 	 */
-	typedef struct BeemuLoadParams
-	{
+	typedef struct BeemuLoadParams {
 		/** Load from */
 		BeemuParam source;
 		/** Load to */
 		BeemuParam dest;
+		/**
+		 * @brief Certain instructions perform an additional op immediately
+		 * after loading.
+		 */
+		BeemuPostLoadOperation postLoadOperation;
 	} BeemuLoadParams;
 
 	/**
 	 * @brief Enums representing binary operations.
 	 *
 	 */
-	typedef enum BeemuOperation
-	{
+	typedef enum BeemuOperation {
 		BEEMU_OP_ADD,
+		BEEMU_OP_ADC,
 		BEEMU_OP_SUB,
+		BEEMU_OP_SBC,
 		BEEMU_OP_AND,
 		BEEMU_OP_OR,
 		BEEMU_OP_CP,
 		BEEMU_OP_XOR,
+		BEEMU_OP_DAA,
+		BEEMU_OP_CPL,
+		BEEMU_OP_SCF,
+		BEEMU_OP_CCF
 	} BeemuOperation;
 
 	/** Params for arithmatic and logic ops. */
-	typedef struct BeemuArithmaticParams
-	{
+	typedef struct BeemuArithmaticParams {
 		/** Specific arithmatic/logic operation to perform. */
 		BeemuOperation operation;
 		/** First operand as well as the destination register. */
-		BeemuParam dest;
-		/** Second operand, if exists. */
-		BeemuParam source;
+		BeemuParam dest_or_first;
+		/** Second operand and (possibly one of) the source register(s). */
+		BeemuParam source_or_second;
 	} BeemuArithmaticParams;
 
 	/**
 	 * @brief Specific operation subtype.
 	 *
 	 */
-	typedef enum BeemuRotShiftOp
-	{
+	typedef enum BeemuRotShiftOp {
 		BEEMU_ROTATE_OP,
 		BEEMU_SHIFT_ARITHMATIC_OP,
 		BEEMU_SWAP_OP,
@@ -119,14 +128,12 @@ extern "C"
 	 * @brief Shift to left or right.
 	 *
 	 */
-	typedef enum BeemuRotShiftDirection
-	{
+	typedef enum BeemuRotShiftDirection {
 		BEMU_LEFT_DIRECTION,
 		BEEMU_RIGHT_DIRECTION,
 	} BeemuRotShiftDirection;
 
-	typedef struct BeemuRotShiftParams
-	{
+	typedef struct BeemuRotShiftParams {
 		/** shift/rot through carry */
 		bool through_carry;
 		BeemuRotShiftOp operation;
@@ -138,15 +145,13 @@ extern "C"
 	/**
 	 * @brief Represents bit operations on a register.
 	 */
-	typedef enum BeemuBitOperation
-	{
+	typedef enum BeemuBitOperation {
 		BEEMU_BIT_OP_BIT,
 		BEEMU_BIT_OP_SET,
 		BEEMU_BIT_OP_RES
 	} BeemuBitOperation;
 
-	typedef struct BeemuBitwiseParams
-	{
+	typedef struct BeemuBitwiseParams {
 		BeemuBitOperation operation;
 		/** Nth bit to set. */
 		uint8_t bit_number;
@@ -157,8 +162,7 @@ extern "C"
 	/**
 	 * @brief Conditions that dictate when to jump.
 	 */
-	typedef enum BeemuJumpCondition
-	{
+	typedef enum BeemuJumpCondition {
 		BEEMU_JUMP_IF_NO_CONDITION,
 		BEEMU_JUMP_IF_CARRY,
 		BEEMU_JUMP_IF_NOT_CARRY,
@@ -166,8 +170,7 @@ extern "C"
 		BEEMU_JUMP_IF_NOT_ZERO
 	} BeemuJumpCondition;
 
-	typedef enum BeemuJumpType
-	{
+	typedef enum BeemuJumpType {
 		BEEMU_JUMP_TYPE_JUMP,
 		BEEMU_JUMP_TYPE_CALL,
 		BEEMU_JUMP_TYPE_RET,
@@ -175,8 +178,7 @@ extern "C"
 	} BeemuJumpType;
 
 	/** Params used by jump instructions */
-	typedef struct BeemuJumpParams
-	{
+	typedef struct BeemuJumpParams {
 		bool is_conditional;
 		bool is_relative;
 		bool enable_interrupts;
@@ -187,8 +189,7 @@ extern "C"
 
 	} BeemuJumpParams;
 
-	typedef enum BeemuSystemOperation
-	{
+	typedef enum BeemuSystemOperation {
 		BEEMU_CPU_OP_XOR_CARRY_FLAG,
 		BEEMU_CPU_OP_SET_CARRY_FLAG,
 		BEEMU_CPU_OP_NOP,
@@ -202,13 +203,12 @@ extern "C"
 	 * @brief Represents a single CPU instruction.
 	 *
 	 */
-	typedef struct BeemuInstruction
-	{
+	typedef struct BeemuInstruction {
 		BeemuInstructionType type;
 		uint8_t duration_in_clock_cycles;
-		uint8_t original_machine_code;
-		union
-		{
+		uint32_t original_machine_code;
+		uint8_t byte_length;
+		union {
 			BeemuLoadParams load_params;
 			BeemuArithmaticParams arithmatic_params;
 			BeemuRotShiftParams rot_shift_params;

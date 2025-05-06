@@ -3,6 +3,9 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuRegister_8, {{BEEMU_REGISTER_A, "BEEMU_REGISTER_A"},
@@ -23,10 +26,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 					   {BEEMU_REGISTER_SP, "BEEMU_REGISTER_SP"}});
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
-	BeemuInstructionType, {{BEEMU_INSTRUCTION_TYPE_LOAD_8, "BEEMU_INSTRUCTION_TYPE_LOAD_8"},
-						   {BEEMU_INSTRUCTION_TYPE_LOAD_16, "BEEMU_INSTRUCTION_TYPE_LOAD_16"},
-						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8"},
-						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16"},
+	BeemuInstructionType, {{BEEMU_INSTRUCTION_TYPE_LOAD, "BEEMU_INSTRUCTION_TYPE_LOAD"},
+						   {BEEMU_INSTRUCTION_TYPE_ARITHMATIC, "BEEMU_INSTRUCTION_TYPE_ARITHMATIC"},
 						   {BEEMU_INSTRUCTION_TYPE_ROT_SHIFT, "BEEMU_INSTRUCTION_TYPE_ROT_SHIFT"},
 						   {BEEMU_INSTRUCTION_TYPE_BITWISE, "BEEMU_INSTRUCTION_TYPE_BITWISE"},
 						   {BEEMU_INSTRUCTION_TYPE_CPU_CONTROL, "BEEMU_INSTRUCTION_TYPE_CPU_CONTROL"},
@@ -45,12 +46,20 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 					  });
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
-	BeemuOperation, {{BEEMU_OP_ADD, "BEEMU_OP_ADD"},
-					 {BEEMU_OP_SUB, "BEEMU_OP_SUB"},
-					 {BEEMU_OP_AND, "BEEMU_OP_AND"},
-					 {BEEMU_OP_OR, "BEEMU_OP_OR"},
-					 {BEEMU_OP_CP, "BEEMU_OP_CP"},
-					 {BEEMU_OP_XOR, "BEEMU_OP_XOR"}});
+	BeemuOperation, {
+						{BEEMU_OP_ADD, "BEEMU_OP_ADD"},
+						{BEEMU_OP_ADC, "BEEMU_OP_ADC"},
+						{BEEMU_OP_SUB, "BEEMU_OP_SUB"},
+						{BEEMU_OP_SBC, "BEEMU_OP_SBC"},
+						{BEEMU_OP_AND, "BEEMU_OP_AND"},
+						{BEEMU_OP_OR, "BEEMU_OP_OR"},
+						{BEEMU_OP_CP, "BEEMU_OP_CP"},
+						{BEEMU_OP_XOR, "BEEMU_OP_XOR"},
+						{BEEMU_OP_DAA, "BEEMU_OP_DAA"},
+						{BEEMU_OP_SCF, "BEEMU_OP_SCF"},
+						{BEEMU_OP_CPL, "BEEMU_OP_CPL"},
+						{BEEMU_OP_CCF, "BEEMU_OP_CCF"},
+					});
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuRotShiftOp, {{BEEMU_ROTATE_OP, "BEEMU_ROTATE_OP"},
@@ -89,11 +98,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 						   {BEEMU_CPU_OP_DISABLE_INTERRUPTS, "BEEMU_CPU_OP_DISABLE_INTERRUPTS"},
 						   {BEEMU_CPU_OP_ENABLE_INTERRUPTS, "BEEMU_CPU_OP_ENABLE_INTERRUPTS"}})
 
+NLOHMANN_JSON_SERIALIZE_ENUM(
+	BeemuPostLoadOperation, {{BEEMU_POST_LOAD_NOP, "BEEMU_POST_LOAD_NOP"},
+							 {BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE, "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"},
+							 {BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE, "BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE"},
+							 {BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION, "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"},
+							 {BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION, "BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION"}})
+
 /** SERIALIZE BEEMU PARAM */
 void to_json(nlohmann::json &json, const BeemuParam &param)
 {
 	json["pointer"] = param.pointer;
-	json["write_length"] = param.write_length;
 	json["type"] = param.type;
 
 	switch (param.type)
@@ -117,7 +132,6 @@ void to_json(nlohmann::json &json, const BeemuParam &param)
 void from_json(const nlohmann::json &json, BeemuParam &param)
 {
 	json.at("pointer").get_to(param.pointer);
-	json.at("write_length").get_to(param.write_length);
 	json.at("type").get_to(param.type);
 	switch (param.type)
 	{
@@ -140,13 +154,14 @@ void from_json(const nlohmann::json &json, BeemuParam &param)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuLoadParams,
 	source,
-	dest);
+	dest,
+	postLoadOperation);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuArithmaticParams,
 	operation,
-	dest,
-	source);
+	dest_or_first,
+	source_or_second);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuRotShiftParams,
@@ -175,11 +190,11 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	json["original_machine_code"] = inst.original_machine_code;
 	json["duration_in_clock_cycles"] = inst.duration_in_clock_cycles;
 	json["type"] = inst.type;
+	json["byte_length"] = inst.byte_length;
 	switch (inst.type)
 	{
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
-		json["params"]["aritmatic_params"] = inst.params.arithmatic_params;
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:
+		json["params"]["arithmatic_params"] = inst.params.arithmatic_params;
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
 		json["params"]["bitwise_params"] = inst.params.bitwise_params;
@@ -190,8 +205,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
 		json["params"]["jump_params"] = inst.params.jump_params;
 		break;
-	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
-	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
 		json["params"]["load_params"] = inst.params.load_params;
 		break;
 	case BEEMU_INSTRUCTION_TYPE_ROT_SHIFT:
@@ -205,11 +219,11 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	json.at("original_machine_code").get_to(inst.original_machine_code);
 	json.at("duration_in_clock_cycles").get_to(inst.duration_in_clock_cycles);
 	json.at("type").get_to(inst.type);
+	json.at("byte_length").get_to(inst.byte_length);
 	switch (inst.type)
 	{
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_8:
-	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC_16:
-		json.at("params").at("aritmatic_params").get_to(inst.params.arithmatic_params);
+	case BEEMU_INSTRUCTION_TYPE_ARITHMATIC:
+		json.at("params").at("arithmatic_params").get_to(inst.params.arithmatic_params);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
 		json.at("params").at("bitwise_params").get_to(inst.params.bitwise_params);
@@ -220,8 +234,7 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	case BEEMU_INSTRUCTION_TYPE_JUMP:
 		json.at("params").at("jump_params").get_to(inst.params.jump_params);
 		break;
-	case BEEMU_INSTRUCTION_TYPE_LOAD_8:
-	case BEEMU_INSTRUCTION_TYPE_LOAD_16:
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
 		json.at("params").at("load_params").get_to(inst.params.load_params);
 		break;
 	case BEEMU_INSTRUCTION_TYPE_ROT_SHIFT:
@@ -230,9 +243,85 @@ void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 	}
 }
 
+struct BeemuJSONEncodedPair
+{
+	std::string instruction;
+	BeemuInstruction token;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+	BeemuJSONEncodedPair,
+	instruction,
+	token);
+
+struct BeemuTestJSON
+{
+	std::vector<BeemuJSONEncodedPair> tokens;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+	BeemuTestJSON,
+	tokens);
+
+bool operator==(const BeemuInstruction &lhs, const BeemuInstruction &rhs)
+{
+	auto lhs_json = nlohmann::json{lhs};
+	auto rhs_json = nlohmann::json{rhs};
+	return lhs_json == rhs_json;
+}
+
+/**
+ * @brief Define how a beemu instruction behaves on a ostream.
+ *
+ * Apperantly overriding this will allow the GTest to correct
+ * output my values, allegedly.
+ *
+ * @param os
+ * @param obj
+ * @return std::ostream&
+ */
+std::ostream &operator<<(std::ostream &os, const BeemuInstruction &obj)
+{
+	nlohmann::json json_rep(obj);
+	// write obj to stream
+	return os << json_rep.dump();
+}
+
 namespace BeemuTests
 {
-	class BeemuTokenTest : public ::testing::Test
+	/**
+	 * @brief Get the tokens to be tested from the encoded test file
+	 *
+	 * @return std::vector<std::pair<uint16_t, BeemuInstruction>>
+	 */
+	std::vector<std::pair<uint32_t, BeemuInstruction>> getTokensFromTestFile()
+	{
+		std::string test_file_path = PATH_TO_TEST_RESOURCES;
+		test_file_path += "/tokens.json";
+		std::ifstream test_file(test_file_path);
+		auto parsed_test_data = nlohmann::json::parse(test_file);
+		BeemuTestJSON test_data;
+		::from_json(parsed_test_data, test_data);
+		std::vector<std::pair<uint32_t, BeemuInstruction>> new_vector;
+		for (const BeemuJSONEncodedPair &encoded_pair : test_data.tokens)
+		{
+			std::stringstream stream{encoded_pair.instruction};
+			uint32_t decoded_instruction = 0;
+			stream >> std::hex >> decoded_instruction;
+			if ((decoded_instruction & 0xFFFFFF00) == 0)
+			{
+				decoded_instruction <<= 16;
+			}
+			else if ((decoded_instruction & 0xFFFF0000) == 0)
+			{
+				decoded_instruction <<= 8;
+			}
+			auto pair = std::make_pair(decoded_instruction, encoded_pair.token);
+			new_vector.push_back(pair);
+		}
+		return new_vector;
+	}
+	class BeemuTokenParameterizedTestFixture : public ::testing::TestWithParam<std::pair<uint32_t, BeemuInstruction>>
 	{
 	protected:
 		void SetUp() override {}

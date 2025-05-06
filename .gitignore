@@ -56,3 +56,9 @@ build/
 
 # Created by vscode
 Testing/
+
+# Tests
+
+__pycache__/**
+*.pyc
+.cache/*
