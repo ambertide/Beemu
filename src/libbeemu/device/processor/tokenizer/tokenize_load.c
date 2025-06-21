@@ -26,6 +26,8 @@ BeemuPostLoadOperation tokenize_load_post_load_op(uint8_t opcode)
 		return BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE;
 	case 0x3A:
 		return BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE;
+	case 0xF8:
+		return BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM;
 	default:
 		return BEEMU_POST_LOAD_NOP;
 	}
@@ -50,14 +52,16 @@ BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		// ADDR16
 		{ 0b11101111, 0b11101010 },
 		// PUSH/POP r16
-		{ 0b11001011, 0b11000001 }
+		{ 0b11001011, 0b11000001 },
+		// HP/SL block
+		{0b11111110, 0b11111000}
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_LOAD8_INVALID_LOAD,
-	    BEEMU_TOKENIZER_LOAD16_PUSH_POP);
+	    BEEMU_TOKENIZER_LOAD16_SP_HL);
 }
 
 /**
@@ -197,6 +201,45 @@ void determine_load_push_params(BeemuInstruction* instruction, uint8_t opcode)
 	}
 }
 
+/**
+ * These two instructions handle loading from/to HL and SP.
+ * @param instruction Instruction to determine the params of.
+ * @param opcode Byte-long canonical opcode of the instruction
+ */
+void determine_load16_sp_hl_block_params(BeemuInstruction* instruction, uint8_t opcode)
+{
+	BeemuParam stack_pointer_raw;
+	BeemuParam hl_register;
+	tokenize_register16_param_with_index(&stack_pointer_raw, 3, false, BEEMU_REGISTER_SP);
+	tokenize_register16_param_with_index(&hl_register, 2, false, BEEMU_REGISTER_SP);
+	const uint8_t operation_selector = opcode & 0x01;
+	if (operation_selector) {
+		// LD SP, HL
+		instruction->params.load_params.source = hl_register;
+		instruction->params.load_params.dest = stack_pointer_raw;
+	} else {
+		// LD SP, HL + s8
+		instruction->params.load_params.source = stack_pointer_raw;
+		instruction->params.load_params.dest = hl_register;
+		instruction->params.load_params.auxPostLoadParameter.pointer = false;
+		instruction->params.load_params.auxPostLoadParameter.type = BEEMU_PARAM_TYPE_INT_8;
+
+		// There seems to be some undefined behaviour around the way uint32_t -> uint8_t -> int8_t
+		// so we will do it with hand, if this behaviour does not exist as I suspected
+		// I can always return and fix this. TODO.
+		uint8_t payload = instruction->original_machine_code & 0xFF;
+		const uint8_t sign_bit =  payload >> 8;
+		if (sign_bit) {
+			payload--;
+			payload = ~payload;
+			instruction->params.load_params.auxPostLoadParameter.value.signed_value = (((int8_t) 0) - payload);
+		} else {
+			// Otherwise the two's complement is itself so we can just.
+			instruction->params.load_params.auxPostLoadParameter.value.signed_value = (int8_t) 0 + payload;
+		}
+	}
+}
+
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
@@ -207,7 +250,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
 	&determine_load_m16_params,
 	&determine_load_ldh_params,
 	&determine_load_addr16_params,
-	&determine_load_push_params
+	&determine_load_push_params,
+	&determine_load16_sp_hl_block_params
 };
 
 void determine_load_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype)
@@ -245,6 +289,16 @@ void determine_load_clock_cycles(BeemuInstruction* instruction)
 	} else if (instruction->params.load_params.dest.pointer && instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.postLoadOperation) {
 		// Likewise the reverse causes 3 extra memory accesses, although I am unsure why this is?
 		instruction->duration_in_clock_cycles = 4;
+	}
+
+	if ((instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.dest.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.dest.pointer) ||
+		(instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.source.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.source.pointer)) {
+		// When performing non-pointer SP lookups or writes, this also adds an aditional clock cycle.
+		instruction->duration_in_clock_cycles++;
+	}
+	if (instruction->params.load_params.postLoadOperation == BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM) {
+		// s8 from payload causes additional clock cycle.
+		instruction->duration_in_clock_cycles++;
 	}
 }
 
