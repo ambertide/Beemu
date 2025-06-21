@@ -104,7 +104,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 							 {BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE, "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"},
 							 {BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE, "BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE"},
 							 {BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION, "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"},
-							 {BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION, "BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION"}})
+							 {BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION, "BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION"},
+							 {BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM, "BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM"}})
 
 /** SERIALIZE BEEMU PARAM */
 void to_json(nlohmann::json &json, const BeemuParam &param)
@@ -152,11 +153,25 @@ void from_json(const nlohmann::json &json, BeemuParam &param)
 	}
 }
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
-	BeemuLoadParams,
-	source,
-	dest,
-	postLoadOperation);
+void to_json(nlohmann::json &json, const BeemuLoadParams &param)
+{
+	json["source"] = param.source;
+	json["dest"] = param.dest;
+	json["postLoadOperation"] = param.postLoadOperation;
+	if (param.postLoadOperation == BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM) {
+		json["auxPostLoadParameter"] = param.auxPostLoadParameter;
+	}
+}
+
+void from_json(const nlohmann::json &json, BeemuLoadParams &param)
+{
+	json.at("source").get_to(param.source);
+	json.at("dest").get_to(param.dest);
+	json.at("postLoadOperation").get_to(param.postLoadOperation);
+	if (param.postLoadOperation == BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM) {
+		json.at("auxPostLoadParameter").get_to(param.auxPostLoadParameter);
+	}
+}
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuArithmaticParams,

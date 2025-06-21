@@ -65,7 +65,10 @@ extern "C" {
 		BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE,
 		BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE,
 		BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION,
-		BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION
+		BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION,
+		/** Parse a signed payload from the instruction and add
+		 * it on top of the newly loaded destination. */
+		BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM
 	} BeemuPostLoadOperation;
 
 	/**
@@ -82,6 +85,11 @@ extern "C" {
 		 * after loading.
 		 */
 		BeemuPostLoadOperation postLoadOperation;
+		/**
+		 * Possibly used when the post load operation is BEEMU_POST_LOAD_SIGNED_PAYLOAD
+		 * or some other value that requires a third value.
+		 */
+		BeemuParam auxPostLoadParameter;
 	} BeemuLoadParams;
 
 	/**
