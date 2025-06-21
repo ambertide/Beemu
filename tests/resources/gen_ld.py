@@ -381,11 +381,11 @@ pops = [
 ]
 
 adjusted_sp_load = {
-    "instruction": f"0x00F88F",
+    "instruction": f"0x00F8F0",
     "token": {
         "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
         "duration_in_clock_cycles": 3,
-        "original_machine_code": 0x00F88F,
+        "original_machine_code": 0x00F8F0,
         "byte_length": 2,
         "params": {
             "load_params": {
@@ -395,7 +395,7 @@ adjusted_sp_load = {
                 "auxPostLoadParameter": {
                     "pointer": False,
                     "type": "BEEMU_PARAM_TYPE_INT_8",
-                    "value": {"signed_value": -15},
+                    "value": {"signed_value": -16},
                 }
             }
         },
