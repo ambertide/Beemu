@@ -34,7 +34,8 @@ tokens = get_tokens_except(
         *range(0xC5, 0xF6, 16),
         0xF8,
         0xF9,
-        *range(0x01, 0x32, 16)
+        *range(0x01, 0x32, 16),
+        0x08
     ]
 )
 
@@ -450,11 +451,34 @@ for opcode, register in zip(opcodes, registers):
     })
 
 
+save_sp = {
+    "instruction": f"0x08ABCD",
+    "token": {
+        "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+        "duration_in_clock_cycles": 5,
+        "original_machine_code":0x08ABCD,
+        "byte_length": 3,
+        "params": {
+            "load_params": {
+                "source": stack_pointer_raw,
+                "dest": {
+                    "pointer": True,
+                    "type": "BEEMU_PARAM_TYPE_UINT16",
+                    "value": {"value": 0xABCD}
+                },
+                "postLoadOperation": "BEEMU_POST_LOAD_NOP"
+            }
+        },
+    }
+}
+
 tokens.extend([*pushes, *pops])
 
 tokens.extend([load_to_sp, adjusted_sp_load])
 
 tokens.extend(load_immediates)
+
+tokens.append(save_sp)
 
 sort_instructions(tokens)
 
