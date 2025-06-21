@@ -32,6 +32,8 @@ tokens = get_tokens_except(
         0xFA,
         *range(0xC1, 0xF2, 16),
         *range(0xC5, 0xF6, 16),
+        0xF8,
+        0xF9
     ]
 )
 
@@ -378,8 +380,49 @@ pops = [
     for opcode, dest, src in zip(pop_opcodes, registers, repeat(stack_pointer, 4))
 ]
 
+adjusted_sp_load = {
+    "instruction": f"0x00F88F",
+    "token": {
+        "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+        "duration_in_clock_cycles": 3,
+        "original_machine_code": 0x00F88F,
+        "byte_length": 2,
+        "params": {
+            "load_params": {
+                "source": stack_pointer_raw,
+                "dest": hl_register,
+                "postLoadOperation": "BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM",
+                "auxPostLoadParameter": {
+                    "pointer": False,
+                    "type": "BEEMU_PARAM_TYPE_INT_8",
+                    "value": {"signed_value": -15},
+                }
+            }
+        },
+    },
+}
+
+load_to_sp = {
+    "instruction": f"0x0000F9",
+    "token": {
+        "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+        "duration_in_clock_cycles": 2,
+        "original_machine_code": 0x0000F9,
+        "byte_length": 1,
+        "params": {
+            "load_params": {
+                "source": hl_register,
+                "dest": stack_pointer_raw,
+                "postLoadOperation": "BEEMU_POST_LOAD_NOP"
+            }
+        },
+    },
+}
+
 
 tokens.extend([*pushes, *pops])
+
+tokens.extend([load_to_sp, adjusted_sp_load])
 
 sort_instructions(tokens)
 
