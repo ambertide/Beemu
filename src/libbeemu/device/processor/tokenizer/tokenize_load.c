@@ -51,6 +51,8 @@ BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		{ 0b11101101, 0b11100000 },
 		// ADDR16
 		{ 0b11101111, 0b11101010 },
+		// IMM16
+		{0b11001111, 0b00000001},
 		// PUSH/POP r16
 		{ 0b11001011, 0b11000001 },
 		// HP/SL block
@@ -182,6 +184,27 @@ void determine_load_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
 	}
 }
 
+/**
+ * Determine parameters for the immediate load16 instructions
+ * which load an uint16_t in the instruction payload directly
+ * to the relevant registers.
+ */
+void determine_load16_imm16_params(BeemuInstruction* instruction, uint8_t opcode)
+{
+	assert(opcode == 0x01 || opcode == 0x11 || opcode == 0x21 || opcode == 0x31);
+	// 5th and 6th MSBs are the register index.
+	const uint8_t register_differentiator = (opcode & 0x30) >> 4;
+	tokenize_register16_param_with_index(
+		&instruction->params.load_params.dest,
+		register_differentiator,
+		false,
+		BEEMU_REGISTER_SP
+		);
+	instruction->params.load_params.source.type = BEEMU_PARAM_TYPE_UINT16;
+	instruction->params.load_params.source.pointer = false;
+	instruction->params.load_params.source.value.value = instruction->original_machine_code & 0xFFFF;
+}
+
 void determine_load_push_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	const uint8_t register_selector = (opcode & 0b110000) >> 4;
@@ -250,6 +273,7 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[] = {
 	&determine_load_m16_params,
 	&determine_load_ldh_params,
 	&determine_load_addr16_params,
+	&determine_load16_imm16_params,
 	&determine_load_push_params,
 	&determine_load16_sp_hl_block_params
 };
@@ -294,7 +318,10 @@ void determine_load_clock_cycles(BeemuInstruction* instruction)
 	if ((instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.dest.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.dest.pointer) ||
 		(instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.source.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.source.pointer)) {
 		// When performing non-pointer SP lookups or writes, this also adds an aditional clock cycle.
-		instruction->duration_in_clock_cycles++;
+		// unless if the source is a uint16_t
+		if (instruction->params.load_params.source.type != BEEMU_PARAM_TYPE_UINT16) {
+			instruction->duration_in_clock_cycles++;
+		}
 	}
 	if (instruction->params.load_params.postLoadOperation == BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM) {
 		// s8 from payload causes additional clock cycle.

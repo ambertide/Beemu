@@ -36,6 +36,8 @@ extern "C" {
 		BEEMU_TOKENIZER_LOAD8_LDH,
 		/** Emitted for 0xEA and 0xFA, postmainline ld addr16 loads. */
 		BEEMU_TOKENIZER_LOAD8_ADDR16,
+		/** Emitted for premainline immediate load operations */
+		BEEMU_TOKENIZER_LOAD16_IMM16,
 		/** Emitted for the push pop 16 postmainline instructions encoded as LD [SP] */
 		BEEMU_TOKENIZER_LOAD16_PUSH_POP,
 		/** Emitted for postmainline SP/HL transfer instruction */
