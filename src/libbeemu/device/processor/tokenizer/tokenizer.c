@@ -2,6 +2,8 @@
 #include "tokenize_cbxx.h"
 #include "tokenize_common.h"
 #include "tokenize_load.h"
+#include "tokenize_system.h"
+
 #include <libbeemu/device/memory.h>
 #include <libbeemu/device/processor/processor.h>
 #include <libbeemu/device/processor/tokenizer.h>
@@ -13,6 +15,10 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 	BeemuInstruction* inst = calloc(1, sizeof(BeemuInstruction));
 	inst->original_machine_code = instruction;
 	uint8_t opcode = determine_byte_length_and_cleanup(inst);
+	if (tokenize_system(inst, opcode)) {
+		return inst;
+	}
+
 	if (inst->byte_length == 2 && opcode == 0xCB) {
 		// Parse cb prefix seperately..
 		tokenize_cbxx(inst);
