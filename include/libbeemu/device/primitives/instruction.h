@@ -198,8 +198,6 @@ extern "C" {
 	} BeemuJumpParams;
 
 	typedef enum BeemuSystemOperation {
-		BEEMU_CPU_OP_XOR_CARRY_FLAG,
-		BEEMU_CPU_OP_SET_CARRY_FLAG,
 		BEEMU_CPU_OP_NOP,
 		BEEMU_CPU_OP_HALT,
 		BEEMU_CPU_OP_STOP,
