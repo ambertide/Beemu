@@ -331,13 +331,16 @@ tokens.append(
 
 registers = [*map(lambda r: gen_register_16(r, False), ["BC", "DE", "HL", "AF"])]
 stack_pointer = gen_register_16("SP", True)
+stack_pointer_raw = gen_register_16("SP", False)
+hl_register = gen_register_16("HL", False)
+
 
 pop_opcodes = [*range(0xC1, 0xF2, 16)]
 push_opcodes = [*range(0xC5, 0xF6, 16)]
 
 pushes = [
     {
-        "instruction": f"{opcode:06X}",
+        "instruction": f"0x{opcode:06X}",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 4,
@@ -357,7 +360,7 @@ pushes = [
 
 pops = [
     {
-        "instruction": f"{opcode:06X}",
+        "instruction": f"0x{opcode:06X}",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 3,
