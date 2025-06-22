@@ -15,6 +15,8 @@ arithmatic_subtype_if_arithmatic(uint8_t opcode)
 		{ 0xC6, 0x04 },
 		{ 0xC7, 0xC6 },
 		{ 0xC7, 0x07 },
+		// ADD16 block.
+		{0xCF, 0x09},
 		// INC/DEC16 block.
 		{0xC7, 0x03}
 	};
@@ -136,6 +138,30 @@ void determine_arithmatic_weird_params(
 	tokenize_register_param_with_index(&instruction->params.arithmatic_params.source_or_second, 7);
 }
 
+void determine_arithmatic16_add16_params(
+	BeemuInstruction *instruction,
+	uint8_t opcode)
+{
+	const uint8_t register_selector = (opcode & 0x30) >> 4;
+	// the 5th and 6th MSBs determine source registers since, 0x0n, 0x1n, 0x2n and 0x3n's
+	// 0, 1, 2, 3 can be used to index a register array.
+	tokenize_register16_param_with_index(
+		&instruction->params.arithmatic_params.source_or_second,
+		register_selector,
+		false,
+		BEEMU_REGISTER_SP
+		);
+	// But all the registers write to the HL register.
+	tokenize_register16_param_with_index(
+		&instruction->params.arithmatic_params.dest_or_first,
+		2,
+		false,
+		BEEMU_REGISTER_SP);
+	// And all of them do add.
+	// TODO: Check if ADC is possibly a better fit here.
+	instruction->params.arithmatic_params.operation = BEEMU_OP_ADD;
+}
+
 void determine_arithmatic16_inc_dec_params(
 	BeemuInstruction *instruction,
 	uint8_t opcode)
@@ -173,6 +199,7 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	      &determine_arithmatic_inc_dec_params,
 	      &determine_arithmatic_direct_params,
 	      &determine_arithmatic_weird_params,
+		  &determine_arithmatic16_add16_params,
 		  &determine_arithmatic16_inc_dec_params
       };
 
@@ -198,6 +225,10 @@ void determine_arithmatic_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKEN
 	}
 
 	if (operation_subtype == BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC) {
+		instruction->duration_in_clock_cycles++;
+	}
+
+	if (operation_subtype == BEEMU_TOKENIZER_ARITHMATIC16_ADD16) {
 		instruction->duration_in_clock_cycles++;
 	}
 }

@@ -34,6 +34,8 @@ extern "C" {
 		BEEMU_TOKENIZER_ARITHMATIC_DIRECT,
 		/** Emitted for "weird" instructions of DAA, CPL, SCF and CCF*/
 		BEEMU_TOKENIZER_ARITHMATIC_WEIRD,
+		/** Emitted for 16 bit ADD HL, Reg16 instructions */
+		BEEMU_TOKENIZER_ARITHMATIC16_ADD16,
 		/** Emitted for 16 bit increment decrement operations */
 		BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC
 	} BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE;
