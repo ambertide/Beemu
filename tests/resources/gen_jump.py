@@ -13,7 +13,7 @@ for opcode, mem_address in zip(rst_instructions, mem_addresses):
     tokens.append({
         "instruction": f"{opcode:06X}",
         "token": {
-            "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
+            "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 4,
             "original_machine_code": opcode,
             "byte_length": 1,
@@ -40,4 +40,4 @@ if __name__ == '__main__':
     with open("tokens.json", "w") as file:
         dump({"tokens": tokens}, file, indent="\t")
 
-    print(f"Inserted all calls, reaching a total of {len(tokens)}.")
+    print(f"Inserted all jumps, reaching a total of {len(tokens)}.")
