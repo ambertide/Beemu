@@ -8,9 +8,9 @@ inc_dec = [*range(0x04, 0x3D, 8), *range(0x05, 0x3F, 8)]
 arithmatic_direct = [*range(0xC6, 0xFF, 8)]
 weird = [*range(0x27, 0x40, 8)]
 inc_dec16 = [*range(0x03, 0x3C, 8)]
+add16 = [*range(0x09, 0x3A, 16)]
 
-
-tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird, *inc_dec16])
+tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird, *inc_dec16, *add16])
 
 
 a_register = gen_register("A")
@@ -125,7 +125,7 @@ weird_operations = ["BEEMU_OP_DAA", "BEEMU_OP_CPL", "BEEMU_OP_SCF", "BEEMU_OP_CC
 for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
     tokens.append(
         {
-            "instruction": f"{opcode:06X}",
+            "instruction": f"0x{opcode:06X}",
             "token": {
                 "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                 "duration_in_clock_cycles": 1,
@@ -161,7 +161,7 @@ registers = [
 for opcode, operation, register in  zip(range(0x03, 0x3C, 8), cycle(['BEEMU_OP_ADD', 'BEEMU_OP_SUB']), registers):
     tokens.append(
         {
-            "instruction": f"{opcode:06X}",
+            "instruction": f"0x{opcode:06X}",
             "token": {
                 "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
                 "duration_in_clock_cycles": 2,
@@ -176,6 +176,37 @@ for opcode, operation, register in  zip(range(0x03, 0x3C, 8), cycle(['BEEMU_OP_A
                             "type": "BEEMU_PARAM_TYPE_UINT_8",
                             "value": {"value": 1},
                         },
+                    }
+                },
+            },
+        }
+    )
+
+
+# ADD HL, Reg16 block
+registers = [
+    bc_register,
+    de_register,
+    hl_register,
+    sp_register,
+]
+
+opcodes = range(0x09, 0x3A, 16)
+
+for opcode, register in zip(opcodes, registers):
+    tokens.append(
+        {
+            "instruction": f"0x{opcode:06X}",
+            "token": {
+                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
+                "duration_in_clock_cycles": 2,
+                "original_machine_code": opcode,
+                "byte_length": 1,
+                "params": {
+                    "arithmatic_params": {
+                        "operation": "BEEMU_OP_ADD",
+                        "dest_or_first": hl_register,
+                        "source_or_second": register
                     }
                 },
             },
