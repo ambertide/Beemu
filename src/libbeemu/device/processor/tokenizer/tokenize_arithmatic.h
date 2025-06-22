@@ -33,7 +33,9 @@ extern "C" {
 		/** Emitted for direct arithmatic loads post mainline. */
 		BEEMU_TOKENIZER_ARITHMATIC_DIRECT,
 		/** Emitted for "weird" instructions of DAA, CPL, SCF and CCF*/
-		BEEMU_TOKENIZER_ARITHMATIC_WEIRD
+		BEEMU_TOKENIZER_ARITHMATIC_WEIRD,
+		/** Emitted for 16 bit increment decrement operations */
+		BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC
 	} BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE;
 
 	/**

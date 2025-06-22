@@ -14,14 +14,16 @@ arithmatic_subtype_if_arithmatic(uint8_t opcode)
 		{ 0xC0, 0x80 },
 		{ 0xC6, 0x04 },
 		{ 0xC7, 0xC6 },
-		{ 0xC7, 0x07 }
+		{ 0xC7, 0x07 },
+		// INC/DEC16 block.
+		{0xC7, 0x03}
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_ARITHMATIC_INVALID_ARITHMATIC,
-	    BEEMU_TOKENIZER_ARITHMATIC_WEIRD);
+	    BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC);
 }
 
 void determine_mainline_arithmatic_params(
@@ -134,6 +136,33 @@ void determine_arithmatic_weird_params(
 	tokenize_register_param_with_index(&instruction->params.arithmatic_params.source_or_second, 7);
 }
 
+void determine_arithmatic16_inc_dec_params(
+	BeemuInstruction *instruction,
+	uint8_t opcode)
+{
+	static const BeemuOperation operations[] = {
+		BEEMU_OP_ADD,
+		BEEMU_OP_SUB
+	};
+	const uint8_t operation_selector = (opcode & 0x08) >> 3;
+	const uint8_t register_selector = (opcode & 0x30) >> 4;
+	// 4th MSB, if one, implies this is a DEC operation, becuause all dec operations in this
+	// block is 0xnB vs 0xn3 and so can be differentiated by their fourth bit. (1011 vs 0011)
+	instruction->params.arithmatic_params.operation = operations[operation_selector];
+	// Meanwhile the 5th and 6th MSBs determine registers since, 0x0n, 0x1n, 0x2n and 0x3n's
+	// 0, 1, 2, 3 can be used to index a register array.
+	tokenize_register16_param_with_index(
+		&instruction->params.arithmatic_params.dest_or_first,
+		register_selector,
+		false,
+		BEEMU_REGISTER_SP
+		);
+	// Finally whether decrement or increment we use uint8_t value 1 as the second operand.
+	instruction->params.arithmatic_params.source_or_second.value.value = 1;
+	instruction->params.arithmatic_params.source_or_second.type = BEEMU_PARAM_TYPE_UINT_8;
+	instruction->params.arithmatic_params.source_or_second.pointer = false;
+}
+
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
@@ -143,7 +172,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	      &determine_mainline_arithmatic_params,
 	      &determine_arithmatic_inc_dec_params,
 	      &determine_arithmatic_direct_params,
-	      &determine_arithmatic_weird_params
+	      &determine_arithmatic_weird_params,
+		  &determine_arithmatic16_inc_dec_params
       };
 
 void determine_arithmatic_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE arithmatic_params)
@@ -164,6 +194,10 @@ void determine_arithmatic_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKEN
 		instruction->duration_in_clock_cycles = 3;
 	}
 	if (instruction->byte_length == 2) {
+		instruction->duration_in_clock_cycles++;
+	}
+
+	if (operation_subtype == BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC) {
 		instruction->duration_in_clock_cycles++;
 	}
 }
