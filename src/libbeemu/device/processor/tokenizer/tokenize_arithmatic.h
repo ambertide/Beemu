@@ -37,7 +37,9 @@ extern "C" {
 		/** Emitted for 16 bit ADD HL, Reg16 instructions */
 		BEEMU_TOKENIZER_ARITHMATIC16_ADD16,
 		/** Emitted for 16 bit increment decrement operations */
-		BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC
+		BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC,
+		/** Emitted for very specific SP add operation. */
+		BEEMU_TOKENIZER_ARITHMATIC16_SP_SIGNED_SUM
 	} BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE;
 
 	/**

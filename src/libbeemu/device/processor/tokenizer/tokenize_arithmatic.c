@@ -18,14 +18,16 @@ arithmatic_subtype_if_arithmatic(uint8_t opcode)
 		// ADD16 block.
 		{0xCF, 0x09},
 		// INC/DEC16 block.
-		{0xC7, 0x03}
+		{0xC7, 0x03},
+		// ADD SP, s8
+		{0xFF, 0xE8}
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 	    opcode,
 	    tests,
 	    BEEMU_TOKENIZER_ARITHMATIC_INVALID_ARITHMATIC,
-	    BEEMU_TOKENIZER_ARITHMATIC16_INC_DEC);
+	    BEEMU_TOKENIZER_ARITHMATIC16_SP_SIGNED_SUM);
 }
 
 void determine_mainline_arithmatic_params(
@@ -189,6 +191,38 @@ void determine_arithmatic16_inc_dec_params(
 	instruction->params.arithmatic_params.source_or_second.pointer = false;
 }
 
+/**
+ * Used to parse arithmatic instruction that adds a signed integer to the stack pointer.
+ */
+void determine_arithmatic16_sp_signed_sum_params(
+	BeemuInstruction *instruction,
+	uint8_t opcode)
+{
+	assert(opcode == 0xE8);
+	// This is a very specific instruction.
+	instruction->params.arithmatic_params.operation = BEEMU_OP_ADD;
+	tokenize_register16_param_with_index(
+		&instruction->params.arithmatic_params.dest_or_first,
+		3,
+		false,
+		BEEMU_REGISTER_SP);
+	// For the payload we need to extract the signed component.
+	// Yes I am aware there is a memcpy trick in POSIX to do this
+	// but I am unsure if that's portable and frankly lowkey tired.
+	instruction->params.arithmatic_params.source_or_second.type = BEEMU_PARAM_TYPE_INT_8;
+	instruction->params.arithmatic_params.source_or_second.pointer = false;
+	uint8_t payload = instruction->original_machine_code & 0xFF;
+	const uint8_t sign_bit =  payload >> 8;
+	if (sign_bit) {
+		payload--;
+		payload = ~payload;
+		instruction->params.arithmatic_params.source_or_second.value.signed_value = (((int8_t) 0) - payload);
+	} else {
+		// Otherwise the two's complement is itself so we can just.
+		instruction->params.arithmatic_params.source_or_second.value.signed_value = (int8_t) 0 + payload;
+	}
+}
+
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
@@ -200,7 +234,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	      &determine_arithmatic_direct_params,
 	      &determine_arithmatic_weird_params,
 		  &determine_arithmatic16_add16_params,
-		  &determine_arithmatic16_inc_dec_params
+		  &determine_arithmatic16_inc_dec_params,
+		  &determine_arithmatic16_sp_signed_sum_params
       };
 
 void determine_arithmatic_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE arithmatic_params)
@@ -230,6 +265,10 @@ void determine_arithmatic_clock_cycle(BeemuInstruction* instruction, BEEMU_TOKEN
 
 	if (operation_subtype == BEEMU_TOKENIZER_ARITHMATIC16_ADD16) {
 		instruction->duration_in_clock_cycles++;
+	}
+
+	if (operation_subtype == BEEMU_TOKENIZER_ARITHMATIC16_SP_SIGNED_SUM) {
+		instruction->duration_in_clock_cycles = 4;
 	}
 }
 
