@@ -223,7 +223,7 @@ tokens.append({
         "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
         "duration_in_clock_cycles": 4,
         "original_machine_code": 0xD8FE,
-        "byte_length": 1,
+        "byte_length": 2,
         "params": {
             "arithmatic_params": {
                 "operation": "BEEMU_OP_ADD",
