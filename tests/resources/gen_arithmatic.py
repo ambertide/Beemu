@@ -9,7 +9,7 @@ arithmatic_direct = [*range(0xC6, 0xFF, 8)]
 weird = [*range(0x27, 0x40, 8)]
 inc_dec16 = [*range(0x03, 0x3C, 8)]
 add16 = [*range(0x09, 0x3A, 16)]
-sp_adjust = [0xD8]
+sp_adjust = [0xE8]
 
 
 tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird, *inc_dec16, *add16, *sp_adjust])
@@ -218,11 +218,11 @@ for opcode, register in zip(opcodes, registers):
 # SP Adjust
 
 tokens.append({
-    "instruction": f"0x00D8FE",
+    "instruction": f"0x00E8FE",
     "token": {
         "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
         "duration_in_clock_cycles": 4,
-        "original_machine_code": 0xD8FE,
+        "original_machine_code": 0xE8FE,
         "byte_length": 2,
         "params": {
             "arithmatic_params": {
