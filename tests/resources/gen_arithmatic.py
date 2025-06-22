@@ -1,13 +1,16 @@
 from json import dump
-from utils import get_tokens_except, gen_register, sort_instructions
+
+from utils import get_tokens_except, gen_register, sort_instructions, gen_register_16
 from itertools import cycle, repeat
 
 arithmatics = [*range(0x80, 0xC0)]
 inc_dec = [*range(0x04, 0x3D, 8), *range(0x05, 0x3F, 8)]
 arithmatic_direct = [*range(0xC6, 0xFF, 8)]
 weird = [*range(0x27, 0x40, 8)]
+inc_dec16 = [*range(0x03, 0x3C, 8)]
 
-tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird])
+
+tokens = get_tokens_except([*arithmatics, *inc_dec, *arithmatic_direct, *weird, *inc_dec16])
 
 
 a_register = gen_register("A")
@@ -139,11 +142,48 @@ for operation, opcode in zip(weird_operations, range(0x27, 0x40, 8)):
         }
     )
 
-# Onto push and pops
-# these are 16 bit instructions and are encded using 18bit
+bc_register = gen_register_16('BC')
+de_register = gen_register_16('DE')
+hl_register = gen_register_16('HL')
+sp_register = gen_register_16('SP')
+
+registers = [
+    bc_register,
+    bc_register,
+    de_register,
+    de_register,
+    hl_register,
+    hl_register,
+    sp_register,
+    sp_register
+]
+
+for opcode, operation, register in  zip(range(0x03, 0x3C, 8), cycle(['BEEMU_OP_ADD', 'BEEMU_OP_SUB']), registers):
+    tokens.append(
+        {
+            "instruction": f"{opcode:06X}",
+            "token": {
+                "type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
+                "duration_in_clock_cycles": 2,
+                "original_machine_code": opcode,
+                "byte_length": 1,
+                "params": {
+                    "arithmatic_params": {
+                        "operation": operation,
+                        "dest_or_first": register,
+                        "source_or_second": {
+                            "pointer": False,
+                            "type": "BEEMU_PARAM_TYPE_UINT_8",
+                            "value": {"value": 1},
+                        },
+                    }
+                },
+            },
+        }
+    )
 
 sort_instructions(tokens)
 with open("tokens.json", "w") as file:
     dump({"tokens": tokens}, file, indent="\t")
 
-print(f"Inserted all 8 bit arithmatics, reaching a total of {len(tokens)}.")
+print(f"Inserted all bit arithmatics, reaching a total of {len(tokens)}.")
