@@ -231,7 +231,7 @@ tokens.append({
                 "source_or_second": {
                     "pointer": False,
                     "type": "BEEMU_PARAM_TYPE_INT_8",
-                    "value": -2
+                    "value": {"signed_value": -2}
                 }
             }
         },
