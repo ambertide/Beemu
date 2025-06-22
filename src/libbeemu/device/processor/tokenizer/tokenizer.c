@@ -3,6 +3,7 @@
 #include "tokenize_common.h"
 #include "tokenize_load.h"
 #include "tokenize_system.h"
+#include "tokenize_jump.h"
 
 #include <libbeemu/device/memory.h>
 #include <libbeemu/device/processor/processor.h>
@@ -26,6 +27,8 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 		tokenize_load(inst, opcode);
 	} else if (arithmatic_subtype_if_arithmatic(opcode)) {
 		tokenize_arithmatic(inst, opcode);
+	} else if (jump_subtype_if_jump(opcode)) {
+		tokenize_jump(inst, opcode);
 	}
 
 	return inst;

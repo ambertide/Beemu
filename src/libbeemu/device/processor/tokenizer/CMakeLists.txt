@@ -10,4 +10,6 @@ target_sources( libbeemu PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/tokenize_arithmatic.c
 	${CMAKE_CURRENT_SOURCE_DIR}/tokenize_system.h
 	${CMAKE_CURRENT_SOURCE_DIR}/tokenize_system.c
+	${CMAKE_CURRENT_SOURCE_DIR}/tokenize_jump.h
+	${CMAKE_CURRENT_SOURCE_DIR}/tokenize_jump.c
 )
