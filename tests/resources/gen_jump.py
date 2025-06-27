@@ -58,7 +58,7 @@ for opcode, condition in zip(conditional_jp_instructions, conditions):
                     "is_conditional": True,
                     "is_relative": False,
                     "enable_interrupts": False,
-                    "type": "BEEMU_JUMP_TYPE_RST",
+                    "type": "BEEMU_JUMP_TYPE_JUMP",
                     "condition": condition,
                     "param": {
                         "pointer": True,
