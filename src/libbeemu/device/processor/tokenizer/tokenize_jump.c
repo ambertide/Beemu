@@ -12,6 +12,8 @@ jump_subtype_if_jump(uint8_t opcode)
 	static const BeemuTokenizerSubtypeDifferentiator tests[] = {
 		// _INVALID
 		{ 0xFF, 0xFF },
+		// Unconditional JP
+		{0xFF, 0xC3},
 		// Conditional JP
 		{0xE7, 0xC2},
 		// RST Instructions
@@ -23,6 +25,28 @@ jump_subtype_if_jump(uint8_t opcode)
 		tests,
 		BEEMU_TOKENIZER_JUMP_INVALID_JUMP,
 		BEEMU_TOKENIZER_JUMP_RST);
+}
+
+/**
+ *  Used to parse direct jump instructions
+ */
+void determine_jump_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xC3);
+	instruction->duration_in_clock_cycles = 4;
+	BeemuJumpParams params;
+	params.type = BEEMU_JUMP_TYPE_JUMP;
+	// Parse the jump conditions and params.
+	params.condition = BEEMU_JUMP_IF_NO_CONDITION;
+	params.enable_interrupts = false;
+	params.is_conditional = false;
+	params.is_relative = false;
+	// Now the jump address.
+	const uint16_t jump_address = instruction->original_machine_code & 0xFFFF;
+	params.param.pointer = true;
+	params.param.type = BEEMU_PARAM_TYPE_UINT16;
+	params.param.value.value = jump_address;
+	instruction->params.jump_params = params;
 }
 
 void determine_jump_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
@@ -84,6 +108,7 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	= {
 	0,
+	&determine_jump_unconditional_params,
 	&determine_jump_conditional_params,
 	&determine_jump_rst_params
 };
