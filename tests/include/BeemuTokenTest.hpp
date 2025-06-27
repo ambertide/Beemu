@@ -195,6 +195,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	is_conditional,
 	is_relative,
 	enable_interrupts,
+	type,
 	condition,
 	param);
 
