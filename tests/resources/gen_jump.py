@@ -15,7 +15,7 @@ mem_addresses = range(0x00, 0x39, 8)
 
 for opcode, mem_address in zip(rst_instructions, mem_addresses):
     tokens.append({
-        "instruction": f"{opcode:06X}",
+        "instruction": f"0x{opcode:06X}",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 4,
