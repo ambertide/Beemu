@@ -26,6 +26,8 @@ extern "C" {
 	typedef enum BEEMU_TOKENIZER_JUMP_SUBTYPE {
 		/** Emitted when not jump. */
 		BEEMU_TOKENIZER_JUMP_INVALID_JUMP,
+		/** Emitted for conditional jumps */
+		BEEMU_TOKENUZER_JUMP_CONDITIONAL,
 		/** Emitted for RST instructions */
 		BEEMU_TOKENIZER_JUMP_RST
 	} BEEMU_TOKENIZER_JUMP_SUBTYPE;
