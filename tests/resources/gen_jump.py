@@ -51,7 +51,7 @@ for opcode, condition in zip(conditional_jp_instructions, conditions):
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 4,
-            "original_machine_code": opcode,
+            "original_machine_code": (opcode << 16) + 0xABCD,
             "byte_length": 3,
             "params": {
                 "jump_params": {
