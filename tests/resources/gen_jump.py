@@ -7,7 +7,8 @@ conditional_jp_instructions = [*range(0xC2, 0xDB, 8)]
 
 tokens = get_tokens_except([
     *rst_instructions,
-    *conditional_jp_instructions
+    *conditional_jp_instructions,
+    0xC3
 ])
 
 # RST INSTRUCTIONS START
@@ -69,6 +70,32 @@ for opcode, condition in zip(conditional_jp_instructions, conditions):
             },
         }
     })
+
+# Unconditional variant of jump
+
+tokens.append({
+    "instruction": f"0xC3ABCD",
+    "token": {
+        "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
+        "duration_in_clock_cycles": 4,
+        "original_machine_code": (0xC3 << 16) + 0xABCD,
+        "byte_length": 3,
+        "params": {
+            "jump_params": {
+                "is_conditional": False,
+                "is_relative": False,
+                "enable_interrupts": False,
+                "type": "BEEMU_JUMP_TYPE_JUMP",
+                "condition": "BEEMU_JUMP_IF_NO_CONDITION",
+                "param": {
+                    "pointer": True,
+                    "type": "BEEMU_PARAM_TYPE_UINT16",
+                    "value": { "value": 0xABCD }
+                }
+            }
+        },
+    }
+})
 
 
 if __name__ == '__main__':
