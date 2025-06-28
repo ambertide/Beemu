@@ -28,24 +28,24 @@ jump_subtype_if_jump(uint8_t opcode)
 }
 
 /**
- * Parse jump params for object
- * @param params Params pointer
- * @param instruction_machine_code 32 bit machine code repr. of instr.
+ * Parse jump params for instruction
+ * @param instruction Partially constructed instruction
+ * @param opcode opcode for the instruction for easier parsing.
  * @param subtype jump subtype.
- * @param condition_index Selector for jump condition, if -1, no condition.
+ * @param is_conditional Whether if is relative.
  * @param is_relative Whether if it is relative.
  * @param mem_addr_override If set (not -1), override the memory address calculation with it.
  */
 void parse_jump_params(
-	BeemuJumpParams *params,
-	const uint32_t instruction_machine_code,
+	BeemuInstruction *instruction,
+	const uint8_t opcode,
 	const BeemuJumpType subtype,
-	const int8_t condition_index,
+	const bool is_conditional,
 	const bool is_relative,
 	const int32_t mem_addr_override
 	)
 {
-	assert(condition_index < 4 && condition_index >= -1);
+	BeemuJumpParams *params = &instruction->params.jump_params;
 	params->type = subtype;
 	const BeemuJumpCondition conditions[] = {
 		BEEMU_JUMP_IF_NOT_ZERO,
@@ -53,9 +53,11 @@ void parse_jump_params(
 		BEEMU_JUMP_IF_NOT_CARRY,
 		BEEMU_JUMP_IF_CARRY
 	};
-	params->is_conditional = condition_index != -1;
+	params->is_conditional = is_conditional;
 	if (params->is_conditional) {
-		params->condition = conditions[condition_index];
+		// 4th and 5th MSB is used to determine the condition selectors.
+		const uint8_t condition_selector = (opcode & 0x18) >> 3;
+		params->condition = conditions[condition_selector];
 	} else {
 		params->condition = BEEMU_JUMP_IF_NO_CONDITION;
 	}
@@ -69,7 +71,7 @@ void parse_jump_params(
 		// Parse as signed offset
 	} else {
 		// Parse as absolute mem addr.
-		const uint16_t jump_address = instruction_machine_code & 0xFFFF;
+		const uint16_t jump_address = instruction->original_machine_code & 0xFFFF;
 		params->param.pointer = true;
 		params->param.type = BEEMU_PARAM_TYPE_UINT16;
 		params->param.value.value = jump_address;
@@ -84,10 +86,10 @@ void determine_jump_unconditional_params(BeemuInstruction *instruction, const ui
 	assert(opcode == 0xC3);
 	instruction->duration_in_clock_cycles = 4;
 	parse_jump_params(
-		&instruction->params.jump_params,
-		instruction->original_machine_code,
+		instruction,
+		opcode,
 		BEEMU_JUMP_TYPE_JUMP,
-		-1,
+		false,
 		false,
 		-1);
 }
@@ -96,13 +98,11 @@ void determine_jump_conditional_params(BeemuInstruction *instruction, const uint
 {
 	assert(opcode == 0xC2 || opcode == 0xD2 || opcode == 0xCA || opcode == 0xDA);
 	instruction->duration_in_clock_cycles = 4;
-	// 5th and 4th MSB can be used to ascertein the conditions.
-	const uint8_t condition_selector = (opcode & 0x18) >> 3;
 	parse_jump_params(
-		&instruction->params.jump_params,
-		instruction->original_machine_code,
+		instruction,
+		opcode,
 		BEEMU_JUMP_TYPE_JUMP,
-		condition_selector,
+		true,
 		false,
 		-1);
 }
@@ -120,10 +120,10 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 	const uint16_t jump_address = jump_addresses_selector * 0x08;
 	// Finally set all the parameters.
 	parse_jump_params(
-		&instruction->params.jump_params,
-		instruction->original_machine_code,
+		instruction,
+		opcode,
 		BEEMU_JUMP_TYPE_RST,
-		-1,
+		false,
 		false,
 		jump_address);
 }
