@@ -6,6 +6,7 @@ jr_conditional = [*range(0x20, 0x39, 8)]
 rst_instructions = [*range(0xC7, 0x100, 8)]
 conditional_jp_instructions = [*range(0xC2, 0xDB, 8)]
 ret_conditional = [*range(0xC0, 0xD9, 8)]
+call_conditional = [*range(0xC4, 0xDD, 8)]
 
 tokens = get_tokens_except([
     0x18,
@@ -16,7 +17,9 @@ tokens = get_tokens_except([
     0xE9,
     *ret_conditional,
     0xC9,
-    0xD9
+    0xD9,
+    *call_conditional,
+    0xCD
 ])
 
 conditions = [
@@ -228,6 +231,35 @@ for opcode, enable_interrupts in zip(opcodes, enable_interruptses):
             },
         }
     })
+
+# CALLs
+
+for opcode, condition in zip([*call_conditional, 0xCD], [*conditions, "BEEMU_JUMP_IF_NO_CONDITION"]):
+    tokens.append({
+        "instruction": f"0x{opcode:02X}ABCD",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
+            "duration_in_clock_cycles": 6,
+            "original_machine_code": (opcode << 16) + 0xABCD,
+            "byte_length": 3,
+            "params": {
+                "jump_params": {
+                    "is_conditional": opcode != 0xCD,
+                    "is_relative": False,
+                    "enable_interrupts": False,
+                    "type": "BEEMU_JUMP_TYPE_CALL",
+                    "condition": condition,
+                    "param": {
+                        "pointer": False,
+                        "type": "BEEMU_PARAM_TYPE_UINT16",
+                        "value": { "value": 0xABCD }
+                    }
+                }
+            },
+        }
+    })
+
+
 
 if __name__ == '__main__':
     sort_instructions(tokens)
