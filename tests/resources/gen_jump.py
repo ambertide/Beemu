@@ -43,7 +43,7 @@ tokens.append({
                 "param": {
                     "pointer": True,
                     "type": "BEEMU_PARAM_TYPE_INT_8",
-                    "value": { "signed_value": 0xF0 }
+                    "value": { "signed_value": -16 }
                 }
             }
         },
@@ -68,7 +68,7 @@ for opcode, condition in zip(jr_conditional, conditions):
                     "param": {
                         "pointer": True,
                         "type": "BEEMU_PARAM_TYPE_INT_8",
-                        "value": { "signed_value": 0xF0 }
+                        "value": { "signed_value": -16 }
                     }
                 }
             },
