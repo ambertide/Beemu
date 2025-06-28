@@ -41,7 +41,7 @@ tokens.append({
                 "type": "BEEMU_JUMP_TYPE_JUMP",
                 "condition": "BEEMU_JUMP_IF_NO_CONDITION",
                 "param": {
-                    "pointer": True,
+                    "pointer": False,
                     "type": "BEEMU_PARAM_TYPE_INT_8",
                     "value": { "signed_value": -16 }
                 }
@@ -66,7 +66,7 @@ for opcode, condition in zip(jr_conditional, conditions):
                     "type": "BEEMU_JUMP_TYPE_JUMP",
                     "condition": condition,
                     "param": {
-                        "pointer": True,
+                        "pointer": False,
                         "type": "BEEMU_PARAM_TYPE_INT_8",
                         "value": { "signed_value": -16 }
                     }
