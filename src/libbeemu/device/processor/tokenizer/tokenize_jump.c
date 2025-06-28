@@ -12,6 +12,10 @@ jump_subtype_if_jump(uint8_t opcode)
 	static const BeemuTokenizerSubtypeDifferentiator tests[] = {
 		// _INVALID
 		{ 0xFF, 0xFF },
+		// Unconditional JR
+		{0xFF, 0x18},
+		// Conditional JRs
+		{0xE7, 0x20},
 		// Unconditional JP
 		{0xFF, 0xC3},
 		// Conditional JP
@@ -64,18 +68,47 @@ void parse_jump_params(
 	params->enable_interrupts = false;
 	params->is_relative = is_relative;
 	if (mem_addr_override != -1) {
-		params->param.pointer = true;
+		params->param.pointer = false;
 		params->param.type = BEEMU_PARAM_TYPE_UINT16;
 		params->param.value.value = mem_addr_override;
 	} else if (params->is_relative) {
-		// Parse as signed offset
+		parse_signed8_param_from_instruction(
+			&params->param,
+			instruction->original_machine_code);
 	} else {
 		// Parse as absolute mem addr.
 		const uint16_t jump_address = instruction->original_machine_code & 0xFFFF;
-		params->param.pointer = true;
+		params->param.pointer = false;
 		params->param.type = BEEMU_PARAM_TYPE_UINT16;
 		params->param.value.value = jump_address;
 	}
+}
+
+void determine_jump_relative_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0x18);
+	instruction->duration_in_clock_cycles = 3;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_JUMP,
+		false,
+		true,
+		-1);
+}
+
+void determine_jump_relative_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0x20 || opcode == 0x28 || opcode == 0x30 || opcode == 0x38);
+	instruction->duration_in_clock_cycles = 3;
+	// 5th and 4th MSB can be used to ascertein the conditions.
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_JUMP,
+		true,
+		true,
+		-1);
 }
 
 /**
@@ -134,6 +167,8 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	= {
 	0,
+	&determine_jump_relative_unconditional_params,
+	&determine_jump_relative_conditional_params,
 	&determine_jump_unconditional_params,
 	&determine_jump_conditional_params,
 	&determine_jump_rst_params

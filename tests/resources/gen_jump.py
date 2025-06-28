@@ -94,7 +94,7 @@ for opcode, mem_address in zip(rst_instructions, mem_addresses):
                     "type": "BEEMU_JUMP_TYPE_RST",
                     "condition": "BEEMU_JUMP_IF_NO_CONDITION",
                     "param": {
-                       "pointer": True,
+                       "pointer": False,
                         "type": "BEEMU_PARAM_TYPE_UINT16",
                         "value": { "value": mem_address }
                     }
@@ -119,7 +119,7 @@ for opcode, condition in zip(conditional_jp_instructions, conditions):
                     "type": "BEEMU_JUMP_TYPE_JUMP",
                     "condition": condition,
                     "param": {
-                        "pointer": True,
+                        "pointer": False,
                         "type": "BEEMU_PARAM_TYPE_UINT16",
                         "value": { "value": 0xABCD }
                     }
@@ -145,7 +145,7 @@ tokens.append({
                 "type": "BEEMU_JUMP_TYPE_JUMP",
                 "condition": "BEEMU_JUMP_IF_NO_CONDITION",
                 "param": {
-                    "pointer": True,
+                    "pointer": False,
                     "type": "BEEMU_PARAM_TYPE_UINT16",
                     "value": { "value": 0xABCD }
                 }
