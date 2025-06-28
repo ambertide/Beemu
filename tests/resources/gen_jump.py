@@ -1,6 +1,6 @@
 from json import dump
 
-from tests.resources.utils import get_tokens_except, sort_instructions
+from tests.resources.utils import get_tokens_except, sort_instructions, gen_register_16
 
 jr_conditional = [*range(0x20, 0x39, 8)]
 rst_instructions = [*range(0xC7, 0x100, 8)]
@@ -11,7 +11,8 @@ tokens = get_tokens_except([
     *jr_conditional,
     *rst_instructions,
     *conditional_jp_instructions,
-    0xC3
+    0xC3,
+    0xE9
 ])
 
 conditions = [
@@ -154,6 +155,28 @@ tokens.append({
     }
 })
 
+
+# JP HL
+
+tokens.append({
+    "instruction": f"0xE9",
+    "token": {
+        "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
+        "duration_in_clock_cycles": 1,
+        "original_machine_code": 0xE9,
+        "byte_length": 1,
+        "params": {
+            "jump_params": {
+                "is_conditional": False,
+                "is_relative": False,
+                "enable_interrupts": False,
+                "type": "BEEMU_JUMP_TYPE_JUMP",
+                "condition": "BEEMU_JUMP_IF_NO_CONDITION",
+                "param": gen_register_16("HL", False)
+            }
+        },
+    }
+})
 
 if __name__ == '__main__':
     sort_instructions(tokens)
