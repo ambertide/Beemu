@@ -206,21 +206,9 @@ void determine_arithmatic16_sp_signed_sum_params(
 		3,
 		false,
 		BEEMU_REGISTER_SP);
-	// For the payload we need to extract the signed component.
-	// Yes I am aware there is a memcpy trick in POSIX to do this
-	// but I am unsure if that's portable and frankly lowkey tired.
-	instruction->params.arithmatic_params.source_or_second.type = BEEMU_PARAM_TYPE_INT_8;
-	instruction->params.arithmatic_params.source_or_second.pointer = false;
-	uint8_t payload = instruction->original_machine_code & 0xFF;
-	const uint8_t sign_bit =  payload >> 8;
-	if (sign_bit) {
-		payload--;
-		payload = ~payload;
-		instruction->params.arithmatic_params.source_or_second.value.signed_value = (((int8_t) 0) - payload);
-	} else {
-		// Otherwise the two's complement is itself so we can just.
-		instruction->params.arithmatic_params.source_or_second.value.signed_value = (int8_t) 0 + payload;
-	}
+	parse_signed8_param_from_instruction(
+		&instruction->params.arithmatic_params.source_or_second,
+		instruction->original_machine_code);
 }
 
 // Array used to dispatch to the determine_load_SUBTYPE_params function

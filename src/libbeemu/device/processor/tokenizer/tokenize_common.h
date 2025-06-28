@@ -100,6 +100,17 @@ extern "C" {
 	    INSTRUCTION_SUBTYPE zeroth_instruction_subtype,
 	    INSTRUCTION_SUBTYPE terminal_instruction_subtype);
 
+	/**
+	 * Given a parameter pointer and machine code for an instruction,
+	 * parse a signed 8 bit param for that instruction, assuming the
+	 * last 8 bits of the instruction to hold the param.
+	 * @param param Param to fill.
+	 * @param original_machine_code Original machine code for the instruction.
+	 */
+	void parse_signed8_param_from_instruction(
+		BeemuParam *param,
+		uint32_t original_machine_code);
+
 #ifdef __cplusplus
 }
 #endif

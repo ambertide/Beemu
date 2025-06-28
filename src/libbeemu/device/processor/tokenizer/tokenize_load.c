@@ -265,21 +265,10 @@ void determine_load16_sp_hl_block_params(BeemuInstruction* instruction, uint8_t 
 		instruction->params.load_params.source = stack_pointer_raw;
 		instruction->params.load_params.dest = hl_register;
 		instruction->params.load_params.auxPostLoadParameter.pointer = false;
-		instruction->params.load_params.auxPostLoadParameter.type = BEEMU_PARAM_TYPE_INT_8;
-
-		// There seems to be some undefined behaviour around the way uint32_t -> uint8_t -> int8_t
-		// so we will do it with hand, if this behaviour does not exist as I suspected
-		// I can always return and fix this. TODO.
-		uint8_t payload = instruction->original_machine_code & 0xFF;
-		const uint8_t sign_bit =  payload >> 8;
-		if (sign_bit) {
-			payload--;
-			payload = ~payload;
-			instruction->params.load_params.auxPostLoadParameter.value.signed_value = (((int8_t) 0) - payload);
-		} else {
-			// Otherwise the two's complement is itself so we can just.
-			instruction->params.load_params.auxPostLoadParameter.value.signed_value = (int8_t) 0 + payload;
-		}
+		parse_signed8_param_from_instruction(
+			&instruction->params.load_params.auxPostLoadParameter,
+			instruction->original_machine_code
+		);
 	}
 }
 
