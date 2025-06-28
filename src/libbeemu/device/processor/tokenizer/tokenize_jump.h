@@ -40,6 +40,10 @@ extern "C" {
 		BEEMU_TOKENIZER_JUMP_RET_CONDITIONAL,
 		/** Emitted for RST instructions */
 		BEEMU_TOKENIZER_JUMP_RST,
+		/** Emitted for CALL a16 (0xCD) */
+		BEEMU_TOKENIZER_JUMP_CALL_UNCONDITIONAL,
+		/** Emitted for conditional CALL a16 instructions */
+		BEEMU_TOKENIZER_JUMP_CALL_CONDITIONAL,
 		/** Emitted for JP HL */
 		BEEMU_TOKENIZER_JUMP_HL
 	} BEEMU_TOKENIZER_JUMP_SUBTYPE;

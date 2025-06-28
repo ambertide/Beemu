@@ -26,6 +26,10 @@ jump_subtype_if_jump(uint8_t opcode)
 		{0xE7, 0xC0},
 		// RST Instructions
 		{0xC7, 0xC7},
+		// Unconditional CALL
+		{0xFF, 0xCD},
+		// Conditional CALL
+		{0xE7, 0xC4},
 		// JP HL
 		{0xFF, 0xE9}
 	};
@@ -216,6 +220,38 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 }
 
 /**
+ * Parse 0xCD CALL a16
+ */
+void determine_jump_call_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xCD);
+	instruction->duration_in_clock_cycles = 6;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_CALL,
+		false,
+		false,
+		-1);
+}
+
+/**
+ * Parse conditional variants of CALL.
+ */
+void determine_jump_call_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xC4 || opcode == 0xCC || opcode == 0xD4 || opcode == 0xDC);
+	instruction->duration_in_clock_cycles = 6;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_CALL,
+		true,
+		false,
+		-1);
+}
+
+/**
  * Determine parameters for 0xE9, JP HL which sets PC=HL.
  * @param instruction Partially constructed instruction.
  * @param opcode Opcode of the instruction, should be 0xE9.
@@ -252,6 +288,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	&determine_jump_ret_unconditional_params,
 	&determine_jump_ret_conditional_params,
 	&determine_jump_rst_params,
+	&determine_jump_call_unconditional_params,
+	&determine_jump_call_conditional_params,
 	&determine_jump_hl_params
 };
 
