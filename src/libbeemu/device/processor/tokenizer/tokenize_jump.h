@@ -35,7 +35,9 @@ extern "C" {
 		/** Emitted for conditional jumps */
 		BEEMU_TOKENIZER_JUMP_CONDITIONAL,
 		/** Emitted for RST instructions */
-		BEEMU_TOKENIZER_JUMP_RST
+		BEEMU_TOKENIZER_JUMP_RST,
+		/** Emitted for JP HL */
+		BEEMU_TOKENIZER_JUMP_HL
 	} BEEMU_TOKENIZER_JUMP_SUBTYPE;
 
 	/**

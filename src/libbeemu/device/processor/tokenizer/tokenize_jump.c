@@ -21,14 +21,16 @@ jump_subtype_if_jump(uint8_t opcode)
 		// Conditional JP
 		{0xE7, 0xC2},
 		// RST Instructions
-		{0xC7, 0xC7}
+		{0xC7, 0xC7},
+		// JP HL
+		{0xFF, 0xE9}
 	};
 
 	return instruction_subtype_if_of_instruction_type(
 		opcode,
 		tests,
 		BEEMU_TOKENIZER_JUMP_INVALID_JUMP,
-		BEEMU_TOKENIZER_JUMP_RST);
+		BEEMU_TOKENIZER_JUMP_HL);
 }
 
 /**
@@ -161,6 +163,30 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 		jump_address);
 }
 
+/**
+ * Determine parameters for 0xE9, JP HL which sets PC=HL.
+ * @param instruction Partially constructed instruction.
+ * @param opcode Opcode of the instruction, should be 0xE9.
+ */
+void determine_jump_hl_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xE9);
+	instruction->duration_in_clock_cycles = 1;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_JUMP,
+		false,
+		false,
+		0);
+	// Now we will toss away the mem addr.
+	tokenize_register16_param_with_index(
+		&instruction->params.jump_params.param,
+		2,
+		false,
+		BEEMU_REGISTER_SP);
+}
+
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
@@ -171,7 +197,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	&determine_jump_relative_conditional_params,
 	&determine_jump_unconditional_params,
 	&determine_jump_conditional_params,
-	&determine_jump_rst_params
+	&determine_jump_rst_params,
+	&determine_jump_hl_params
 };
 
 
