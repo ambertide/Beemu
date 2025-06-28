@@ -5,6 +5,7 @@ from tests.resources.utils import get_tokens_except, sort_instructions, gen_regi
 jr_conditional = [*range(0x20, 0x39, 8)]
 rst_instructions = [*range(0xC7, 0x100, 8)]
 conditional_jp_instructions = [*range(0xC2, 0xDB, 8)]
+ret_conditional = [*range(0xC0, 0xD9, 8)]
 
 tokens = get_tokens_except([
     0x18,
@@ -12,7 +13,10 @@ tokens = get_tokens_except([
     *rst_instructions,
     *conditional_jp_instructions,
     0xC3,
-    0xE9
+    0xE9,
+    *ret_conditional,
+    0xC9,
+    0xD9
 ])
 
 conditions = [
@@ -177,6 +181,53 @@ tokens.append({
         },
     }
 })
+
+
+#Conditional RETs.
+for opcode, condition in zip(ret_conditional, conditions):
+    tokens.append({
+        "instruction": f"0x{opcode:06X}",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
+            "duration_in_clock_cycles": 5,
+            "original_machine_code": opcode,
+            "byte_length": 1,
+            "params": {
+                "jump_params": {
+                    "is_conditional": False,
+                    "is_relative": False,
+                    "enable_interrupts": False,
+                    "type": "BEEMU_JUMP_TYPE_RET",
+                    "condition": condition,
+                    "param": gen_register_16("SP", True)
+                }
+            },
+        }
+    })
+
+# Unconditional RETs.
+opcodes = [0xC9, 0xD9]
+enable_interruptses = [False, True]
+for opcode, enable_interrupts in zip(opcodes, enable_interruptses):
+    tokens.append({
+        "instruction": f"0x{opcode:06X}",
+        "token": {
+            "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
+            "duration_in_clock_cycles": 4,
+            "original_machine_code": opcode,
+            "byte_length": 1,
+            "params": {
+                "jump_params": {
+                    "is_conditional": False,
+                    "is_relative": False,
+                    "enable_interrupts": enable_interrupts,
+                    "type": "BEEMU_JUMP_TYPE_RET",
+                    "condition": "BEEMU_JUMP_IF_NO_CONDITION",
+                    "param": gen_register_16("SP", True)
+                }
+            },
+        }
+    })
 
 if __name__ == '__main__':
     sort_instructions(tokens)
