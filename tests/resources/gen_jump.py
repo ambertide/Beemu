@@ -31,7 +31,7 @@ tokens.append({
     "token": {
         "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
         "duration_in_clock_cycles": 3,
-        "original_machine_code": (0x18 << 8) + 0xCD,
+        "original_machine_code": (0x18 << 8) + 0xF0,
         "byte_length": 2,
         "params": {
             "jump_params": {
@@ -56,7 +56,7 @@ for opcode, condition in zip(jr_conditional, conditions):
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 3,
-            "original_machine_code": (opcode << 8) + 0xCD,
+            "original_machine_code": (opcode << 8) + 0xF0,
             "byte_length": 2,
             "params": {
                 "jump_params": {
