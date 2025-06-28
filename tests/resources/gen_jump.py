@@ -194,7 +194,7 @@ for opcode, condition in zip(ret_conditional, conditions):
             "byte_length": 1,
             "params": {
                 "jump_params": {
-                    "is_conditional": False,
+                    "is_conditional": True,
                     "is_relative": False,
                     "enable_interrupts": False,
                     "type": "BEEMU_JUMP_TYPE_RET",
