@@ -20,6 +20,10 @@ jump_subtype_if_jump(uint8_t opcode)
 		{0xFF, 0xC3},
 		// Conditional JP
 		{0xE7, 0xC2},
+		// Unconditional RET
+		{0xEF, 0xC9},
+		// Conditional RET
+		{0xE7, 0xC0},
 		// RST Instructions
 		{0xC7, 0xC7},
 		// JP HL
@@ -143,6 +147,54 @@ void determine_jump_conditional_params(BeemuInstruction *instruction, const uint
 }
 
 /**
+ * Parse params for RET and RETI
+ * @param instruction partially constructed instruction
+ * @param opcode Opcode of the instruction
+ */
+void determine_jump_ret_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xC9 || opcode == 0xD9);
+	instruction->duration_in_clock_cycles = 4;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_RET,
+		false,
+		false,
+		0);
+	tokenize_register16_param_with_index(
+		&instruction->params.jump_params.param,
+		3,
+		true,
+		BEEMU_REGISTER_SP);
+	// RETI enables interrupts.
+	instruction->params.jump_params.enable_interrupts = opcode == 0xD9;
+}
+
+/**
+ * Parse params for conditional RETs.
+ * @param instruction Partially constructed instruction.
+ * @param opcode Opcode of the instruction.
+ */
+void determine_jump_ret_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+{
+	assert(opcode == 0xC0 || opcode == 0xD0 || opcode == 0xC8 ||opcode == 0xD8);
+	instruction->duration_in_clock_cycles = 5;
+	parse_jump_params(
+		instruction,
+		opcode,
+		BEEMU_JUMP_TYPE_RET,
+		true,
+		false,
+		0);
+	tokenize_register16_param_with_index(
+		&instruction->params.jump_params.param,
+		3,
+		true,
+		BEEMU_REGISTER_SP);
+}
+
+/**
  * Used to determine the parameters of the RST calls.
  */
 void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
@@ -197,6 +249,8 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	&determine_jump_relative_conditional_params,
 	&determine_jump_unconditional_params,
 	&determine_jump_conditional_params,
+	&determine_jump_ret_unconditional_params,
+	&determine_jump_ret_conditional_params,
 	&determine_jump_rst_params,
 	&determine_jump_hl_params
 };
