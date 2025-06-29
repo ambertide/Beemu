@@ -6,6 +6,7 @@ add_executable(
 #	memory/test_memory.cpp
 	tokenizer/test_tokens.cpp
 #	test_registers.cpp
+	interpreter/test_command_queue.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
 )
 
