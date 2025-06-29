@@ -137,7 +137,7 @@ extern "C" {
 	 *
 	 */
 	typedef enum BeemuRotShiftDirection {
-		BEMU_LEFT_DIRECTION,
+		BEEMU_LEFT_DIRECTION,
 		BEEMU_RIGHT_DIRECTION,
 	} BeemuRotShiftDirection;
 

@@ -24,7 +24,7 @@ for opcode in insts:
                 "rot_shift_params": {
                     "through_carry": opcode < 0x10,
                     "operation": "BEEMU_ROTATE_OP",
-                    "direction": "BEMU_LEFT_DIRECTION" if opcode in [0x07, 0x17]  else "BEEMU_RIGHT_DIRECTION",
+                    "direction": "BEEMU_LEFT_DIRECTION" if opcode in [0x07, 0x17]  else "BEEMU_RIGHT_DIRECTION",
                     "target": {
                         "pointer": False,
                         "type": "BEEMU_PARAM_TYPE_REGISTER_8",

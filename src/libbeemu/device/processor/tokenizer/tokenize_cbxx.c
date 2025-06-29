@@ -64,9 +64,9 @@ void cb_rot_shift_determine_params(BeemuInstruction *instruction)
 	uint8_t rotshift_differentiator = arithmatic_differentiator >> 4;
 	// C flag affects are true for the 0xCB00-CB10 RLA/RRA bloc, 0xCB20-CB30 SLA/SRA bloc and the 0xCB38-CB40 SRL bloc.
 	instruction->params.rot_shift_params.through_carry = rotshift_differentiator == 0x0 || rotshift_differentiator == 0x2 || arithmatic_differentiator >= 0x38;
-	// Theoratically the below is false since SWAP should not have a direction, but BEMU_LEFT_DIRECTION is 0 in memory
+	// Theoratically the below is false since SWAP should not have a direction, but BEEMU_LEFT_DIRECTION is 0 in memory
 	// so it *should* be fine.
-	instruction->params.rot_shift_params.direction = rotshift_differentiator <= 0x8 ? BEMU_LEFT_DIRECTION : BEEMU_RIGHT_DIRECTION;
+	instruction->params.rot_shift_params.direction = rotshift_differentiator <= 0x8 ? BEEMU_LEFT_DIRECTION : BEEMU_RIGHT_DIRECTION;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
 	instruction->params.rot_shift_params.target = cb_tokenize_target(instruction);
 	// This is only used for special rot shifts in the main space.
