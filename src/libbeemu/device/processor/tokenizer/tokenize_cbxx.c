@@ -195,11 +195,30 @@ void cb_determine_clock_cycles(BeemuInstruction *instruction)
 	}
 }
 
+void tokenize_single_byte_rotates(BeemuInstruction *instruction)
+{
+	instruction->type = BEEMU_INSTRUCTION_TYPE_ROT_SHIFT;
+	instruction->duration_in_clock_cycles = 1;
+	instruction->params.rot_shift_params.set_flags_to_zero = true;
+	instruction->params.rot_shift_params.direction = (instruction->original_machine_code & 0xF) == 0xF ? BEEMU_RIGHT_DIRECTION : BEEMU_LEFT_DIRECTION;
+	instruction->params.rot_shift_params.operation = BEEMU_ROTATE_OP;
+	instruction->params.rot_shift_params.through_carry = (instruction->original_machine_code & 0xF0) == 0x00;
+	tokenize_register_param_with_index(
+		&instruction->params.rot_shift_params.target,
+		7
+	);
+}
+
 void tokenize_cbxx(BeemuInstruction *instruction)
 {
-	// now, a very cool fact of life is that we can actually lowkey
-	// determine the instruction parameters seperately.
-	cb_determine_type(instruction);
-	cb_determine_params(instruction);
-	cb_determine_clock_cycles(instruction);
+	if (instruction->byte_length == 1) {
+		// RRA, RLA, RRCA, RLCA
+		tokenize_single_byte_rotates(instruction);
+	} else {
+		// now, a very cool fact of life is that we can actually lowkey
+		// determine the instruction parameters seperately.
+		cb_determine_type(instruction);
+		cb_determine_params(instruction);
+		cb_determine_clock_cycles(instruction);
+	}
 }

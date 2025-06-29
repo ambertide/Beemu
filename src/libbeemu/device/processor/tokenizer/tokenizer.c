@@ -20,8 +20,9 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 		return inst;
 	}
 
-	if (inst->byte_length == 2 && opcode == 0xCB) {
-		// Parse cb prefix seperately..
+	if ((inst->byte_length == 2 && opcode == 0xCB) || ((opcode & 0xE7) == 0x07) ) {
+		// Parse cb prefix seperately
+		// as well as the RLA, RRA, RLCA and RRCA special instructions.
 		tokenize_cbxx(inst);
 	} else if (load_subtype_if_load(opcode)) {
 		tokenize_load(inst, opcode);
