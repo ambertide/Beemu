@@ -180,6 +180,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuRotShiftParams,
 	through_carry,
+	set_flags_to_zero,
 	operation,
 	direction,
 	target);

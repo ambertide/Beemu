@@ -144,6 +144,7 @@ extern "C" {
 	typedef struct BeemuRotShiftParams {
 		/** shift/rot through carry */
 		bool through_carry;
+		bool set_flags_to_zero;
 		BeemuRotShiftOp operation;
 		BeemuRotShiftDirection direction;
 		/** either HL or 8 bit register. if HL, should be dereffed. */

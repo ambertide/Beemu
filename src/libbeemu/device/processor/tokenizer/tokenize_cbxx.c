@@ -69,6 +69,8 @@ void cb_rot_shift_determine_params(BeemuInstruction *instruction)
 	instruction->params.rot_shift_params.direction = rotshift_differentiator <= 0x8 ? BEMU_LEFT_DIRECTION : BEEMU_RIGHT_DIRECTION;
 	uint8_t register_differentiator = arithmatic_differentiator & 0x07;
 	instruction->params.rot_shift_params.target = cb_tokenize_target(instruction);
+	// This is only used for special rot shifts in the main space.
+	instruction->params.rot_shift_params.set_flags_to_zero = instruction->byte_length == 1;
 }
 
 /** CB-PREFIXED BITWISE OPERATIONS */
