@@ -3,7 +3,7 @@ add_executable(
 #	executor/test_arithmatic.cpp
 #	executor/test_load.cpp
 #	executor/test_jump.cpp
-#	memory/test_memory.cpp
+	processor/memory/test_memory.cpp
 	tokenizer/test_tokens.cpp
 #	test_registers.cpp
 	interpreter/test_command_queue.cpp
