@@ -2,6 +2,9 @@
 #include <libbeemu/device/memory.h>
 #include <gtest/gtest.h>
 
+#ifndef BEEMU_BEEMU_TEST_HPP
+#define BEEMU_BEEMU_TEST_HPP
+
 namespace BeemuTests
 {
 	class BeemuTestFixture : public ::testing::Test
@@ -40,3 +43,5 @@ namespace BeemuTests
 		void TearDown() override;
 	};
 };
+
+#endif // BEEMU_BEEMU_TEST_HPP
