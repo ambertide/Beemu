@@ -1,27 +1,8 @@
-#include <libbeemu/device/memory.h>
-#include <BeemuTest.hpp>
 #include <stdbool.h>
 #include <gtest/gtest.h>
-
+#include "BeemuMemoryTest.hpp"
 namespace BeemuTests
 {
-
-	class BeemuMemoryTest : public ::testing::Test
-	{
-	protected:
-		BeemuMemory *memory;
-
-		void SetUp() override
-		{
-			this->memory = beemu_memory_new(65536);
-		}
-
-		void TearDown() override
-		{
-			beemu_memory_free(this->memory);
-		}
-	};
-
 	/**
 	 * @brief Check if we can initialize memory properly.
 	 */
