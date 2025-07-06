@@ -1,6 +1,6 @@
+#include "../include/BeemuTest.hpp"
 #include <gtest/gtest.h>
 #include <libbeemu/device/primitives/register.h>
-#include "include/BeemuTest.hpp"
 
 namespace BeemuTests
 {
