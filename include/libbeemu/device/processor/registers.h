@@ -30,11 +30,6 @@ extern "C"
 		uint8_t flags;
 		uint16_t stack_pointer;
 		uint16_t program_counter;
-		/**
-		 * Special pseudoregister holding the
-		 * HL dereferenced.
-		 */
-		uint8_t m_register;
 	} BeemuRegisters;
 
 	/**

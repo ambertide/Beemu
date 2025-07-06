@@ -10,7 +10,6 @@ BeemuRegisters *beemu_registers_new(void)
 	// Normally these values are set by the boot room
 	// but since getting a boot rom has... "questionable"
 	// legality, by default we set them ourselves.
-	registers->m_register = 0x0;
 	registers->program_counter = 0x0;
 	registers->stack_pointer = 0x0;
 	registers->flags = 0x0;
@@ -19,7 +18,6 @@ BeemuRegisters *beemu_registers_new(void)
 		registers->registers[i] = 0x0;
 	}
 #else
-	registers->m_register = 0x00;
 	registers->program_counter = 0x0100;
 	registers->stack_pointer = 0xfffe;
 	registers->flags = 0x0;
@@ -143,9 +141,6 @@ beemu_get_special_register_16(BeemuRegisters *registers, BeemuRegister_16 regist
 {
 	switch (register_)
 	{
-	case BEEMU_REGISTER_M:
-		// Pseudo register m.
-		return registers->m_register;
 	case BEEMU_REGISTER_AF:
 		// This one combines the A with flags.
 		return beemu_util_combine_8_to_16(beemu_read_basic_register(registers, BEEMU_REGISTER_A), registers->flags);
@@ -167,11 +162,6 @@ void beemu_set_special_register_16(BeemuRegisters *registers, BeemuRegister_16 r
 {
 	switch (register_)
 	{
-	case BEEMU_REGISTER_M:
-		// Pseudo register m.
-		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to M");
-		registers->m_register = value;
-		break;
 	case BEEMU_REGISTER_AF:
 		// This one combines the A with flags.
 		beemu_log(BEEMU_LOG_INFO, "Writing 0x%X to AF", value);
