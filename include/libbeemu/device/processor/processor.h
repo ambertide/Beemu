@@ -64,20 +64,6 @@ extern "C"
 		BeemuMemory *memory;
 		BeemuProcessorState processor_state;
 		bool interrupts_enabled;
-		/**
-		 * @brief The currently executed instruction.
-		 */
-		struct
-		{
-			uint8_t instruction;
-			uint8_t first_nibble;
-			uint8_t second_nibble;
-		} current_instruction;
-		union data
-		{
-			uint8_t data_8;
-			uint16_t data_16;
-		} data;
 		uint8_t elapsed_clock_cycle;
 	} BeemuProcessor;
 
