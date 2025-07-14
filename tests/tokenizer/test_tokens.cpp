@@ -1,3 +1,5 @@
+#include "libbeemu/device/processor/processor.h"
+
 #include <BeemuTokenTest.hpp>
 #include <libbeemu/device/processor/tokenizer.h>
 

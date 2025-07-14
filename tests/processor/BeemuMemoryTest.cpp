@@ -1,6 +1,8 @@
-#include <stdbool.h>
-#include <gtest/gtest.h>
 #include "BeemuMemoryTest.hpp"
+#include <gtest/gtest.h>
+#include <stdbool.h>
+
+#include "../utilities/BeemuProcessorPreset.hpp"
 namespace BeemuTests
 {
 	/**
@@ -19,6 +21,8 @@ namespace BeemuTests
 
 	TEST_F(BeemuMemoryTest, BlockGetSize)
 	{
+		BeemuTest::BeemuProcessorPreset preset("default");
+		ASSERT_EQ(preset.processor().memory->memory_size, 12);
 		BeemuMemoryBlock new_memory_block{0, 5};
 		uint16_t expected_size = 5;
 		ASSERT_EQ(expected_size, beemu_memory_block_get_size(new_memory_block));
