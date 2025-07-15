@@ -12,18 +12,18 @@
 #include "BeemuProcessorPreset.hpp"
 #include <fstream>
 
-BeemuTest::BeemuProcessorPreset::BeemuProcessorPreset(const std::string& name)
+BeemuTests::BeemuProcessorPreset::BeemuProcessorPreset(const std::string& name)
 {
 	this->name = name;
  	this->_processor = getPreset(name);
 }
 
-const BeemuProcessor& BeemuTest::BeemuProcessorPreset::processor() const
+const BeemuProcessor& BeemuTests::BeemuProcessorPreset::processor() const
 {
 	return this->_processor;
 }
 
-BeemuProcessor BeemuTest::BeemuProcessorPreset::getPreset(std::string preset_name)
+BeemuProcessor BeemuTests::BeemuProcessorPreset::getPreset(std::string preset_name)
 {
 	std::string test_file_path = PATH_TO_TEST_RESOURCES;
 	test_file_path += "/processors.json";

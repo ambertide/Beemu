@@ -33,7 +33,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	);
 
 
-namespace BeemuTest {
+namespace BeemuTests {
 	class ProcessorPresetNotFoundException final : public std::exception {
 	private:
 		std::string error_message;

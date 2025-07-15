@@ -5,9 +5,10 @@ add_executable(
 #	executor/test_jump.cpp
 	processor/BeemuMemoryTest.cpp
 	processor/BeemuRegisterTest.cpp
-		tokenizer/test_tokens.cpp
+	tokenizer/test_tokens.cpp
 	utilities/BeemuProcessorPreset.cpp
 	interpreter/test_command_queue.cpp
+		interpreter/BeemuParserTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
 )
 

@@ -111,7 +111,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 							 {BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM, "BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM"}})
 
 /** SERIALIZE BEEMU PARAM */
-void to_json(nlohmann::json &json, const BeemuParam &param)
+inline void to_json(nlohmann::json &json, const BeemuParam &param)
 {
 	json["pointer"] = param.pointer;
 	json["type"] = param.type;
@@ -134,7 +134,7 @@ void to_json(nlohmann::json &json, const BeemuParam &param)
 	}
 }
 
-void from_json(const nlohmann::json &json, BeemuParam &param)
+inline void from_json(const nlohmann::json &json, BeemuParam &param)
 {
 	json.at("pointer").get_to(param.pointer);
 	json.at("type").get_to(param.type);
@@ -156,7 +156,7 @@ void from_json(const nlohmann::json &json, BeemuParam &param)
 	}
 }
 
-void to_json(nlohmann::json &json, const BeemuLoadParams &param)
+inline void to_json(nlohmann::json &json, const BeemuLoadParams &param)
 {
 	json["source"] = param.source;
 	json["dest"] = param.dest;
@@ -166,7 +166,7 @@ void to_json(nlohmann::json &json, const BeemuLoadParams &param)
 	}
 }
 
-void from_json(const nlohmann::json &json, BeemuLoadParams &param)
+inline void from_json(const nlohmann::json &json, BeemuLoadParams &param)
 {
 	json.at("source").get_to(param.source);
 	json.at("dest").get_to(param.dest);
@@ -206,7 +206,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	param);
 
 // Serialize BeemuInstruction
-void to_json(nlohmann::json &json, const BeemuInstruction &inst)
+inline void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 {
 	json["original_machine_code"] = inst.original_machine_code;
 	json["duration_in_clock_cycles"] = inst.duration_in_clock_cycles;
@@ -235,7 +235,7 @@ void to_json(nlohmann::json &json, const BeemuInstruction &inst)
 	}
 }
 
-void from_json(const nlohmann::json &json, BeemuInstruction &inst)
+inline void from_json(const nlohmann::json &json, BeemuInstruction &inst)
 {
 	json.at("original_machine_code").get_to(inst.original_machine_code);
 	json.at("duration_in_clock_cycles").get_to(inst.duration_in_clock_cycles);
