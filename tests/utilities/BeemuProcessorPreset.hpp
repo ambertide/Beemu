@@ -14,13 +14,13 @@
 #include "../include/BeemuMachineSerializers.hpp"
 
 struct BeemuMachineTestPreset {
-	std::string machine_state_name;
+	std::string preset;
 	BeemuProcessor processor;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	BeemuMachineTestPreset,
-	machine_state_name,
+	preset,
 	processor);
 
 struct BeemuMachineTestFile {

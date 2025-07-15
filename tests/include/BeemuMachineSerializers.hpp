@@ -26,14 +26,14 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	stack_pointer,
 	program_counter);
 
-void to_json(nlohmann::json &json, const BeemuMemory &param)
+inline void to_json(nlohmann::json &json, const BeemuMemory &param)
 {
 	json["memory_size"] = param.memory_size;
 	std::vector<uint8_t> mem_vector(param.memory, param.memory + param.memory_size);
 	json["memory"] = mem_vector;
 }
 
-void from_json(const nlohmann::json &json, BeemuMemory &param)
+inline void from_json(const nlohmann::json &json, BeemuMemory &param)
 {
 	json.at("memory_size").get_to(param.memory_size);
 	std::vector<uint8_t> memory_vector;

@@ -34,7 +34,7 @@ BeemuProcessor BeemuTest::BeemuProcessorPreset::getPreset(std::string preset_nam
 	std::vector<std::pair<uint32_t, BeemuInstruction>> new_vector;
 	for (const BeemuMachineTestPreset &preset : test_data.machine_states)
 	{
-		if (preset.machine_state_name == preset_name) {
+		if (preset.preset == preset_name) {
 			return preset.processor;
 		}
 	}
