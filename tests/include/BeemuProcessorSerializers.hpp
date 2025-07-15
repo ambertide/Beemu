@@ -1,5 +1,5 @@
 /**
- * @file BeemuMachineSerializers.hpp
+ * @file BeemuProcessorSerializers.hpp
  * @author Ege Özkan (elsaambertide@gmail.com)
  * @brief Serialization declarations for BeemuProcessor struct using nlohmann::json
  * @version 0.1
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef BEEMU_BEEMU_MACHINE_SERIALIZERS_HPP
-#define BEEMU_BEEMU_MACHINE_SERIALIZERS_HPP
+#ifndef BEEMU_BEEMU_PROCESSOR_SERIALIZERS_HPP
+#define BEEMU_BEEMU_PROCESSOR_SERIALIZERS_HPP
 #include "libbeemu/device/processor/processor.h"
 
 #include <libbeemu/device/memory.h>
@@ -40,7 +40,11 @@ inline void from_json(const nlohmann::json &json, BeemuMemory &param)
 	json.at("memory").get_to(memory_vector);
 	// After we copy to vector we are actually supposed to
 	// convert it to an array so BeemuMemory can receive it.
-	auto *memory = static_cast<uint8_t*>(std::malloc(sizeof(uint8_t) * param.memory_size));
+	const auto memory = static_cast<uint8_t*>(std::malloc(sizeof(uint8_t) * param.memory_size));
+	int memaddr = 0;
+	for (auto cell : memory_vector ) {
+		memory[memaddr++] = cell;
+	}
 	param.memory = memory;
 }
 
@@ -67,11 +71,13 @@ inline void from_json(const nlohmann::json &json, BeemuProcessor &param)
 	json.at("processor_state").get_to(param.processor_state);
 	json.at("interrupts_enabled").get_to(param.interrupts_enabled);
 	json.at("elapsed_clock_cycle").get_to(param.elapsed_clock_cycle);
-	const auto beemu_memory = static_cast<BeemuMemory*>(std::malloc(sizeof(BeemuMemory)));
-	json.at("memory").get_to(*beemu_memory);
+	auto memory = static_cast<BeemuMemory*>(std::malloc(sizeof(BeemuMemory)));
+	json.at("memory").get_to(*memory);
+	param.memory = memory;
 	const auto beemu_registers = static_cast<BeemuRegisters*>(std::malloc(sizeof(BeemuRegisters)));
 	json.at("registers").get_to(*beemu_registers);
+	param.registers = beemu_registers;
 }
 
 
-#endif //BEEMU_BEEMU_MACHINE_SERIALIZERS_HPP
+#endif //BEEMU_BEEMU_PROCESSOR_SERIALIZERS_HPP

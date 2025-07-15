@@ -29,10 +29,10 @@ BeemuProcessor BeemuTest::BeemuProcessorPreset::getPreset(std::string preset_nam
 	test_file_path += "/processors.json";
 	std::ifstream test_file(test_file_path);
 	auto parsed_test_data = nlohmann::json::parse(test_file);
-	BeemuMachineTestFile test_data;
+	BeemuProcessorPresetFile test_data;
 	::from_json(parsed_test_data, test_data);
 	std::vector<std::pair<uint32_t, BeemuInstruction>> new_vector;
-	for (const BeemuMachineTestPreset &preset : test_data.machine_states)
+	for (const BeemuProcessorPresetRecord &preset : test_data.processors)
 	{
 		if (preset.preset == preset_name) {
 			return preset.processor;

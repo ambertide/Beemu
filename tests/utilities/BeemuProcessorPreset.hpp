@@ -11,25 +11,25 @@
 
 #ifndef BEEMU_BEEMU_PROCESSOR_PRESET_HPP
 #define BEEMU_BEEMU_PROCESSOR_PRESET_HPP
-#include "../include/BeemuMachineSerializers.hpp"
+#include "../include/BeemuProcessorSerializers.hpp"
 
-struct BeemuMachineTestPreset {
+struct BeemuProcessorPresetRecord {
 	std::string preset;
 	BeemuProcessor processor;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
-	BeemuMachineTestPreset,
+	BeemuProcessorPresetRecord,
 	preset,
 	processor);
 
-struct BeemuMachineTestFile {
-	std::vector<BeemuMachineTestPreset> machine_states;
+struct BeemuProcessorPresetFile {
+	std::vector<BeemuProcessorPresetRecord> processors;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
-	BeemuMachineTestFile,
-	machine_states
+	BeemuProcessorPresetFile,
+	processors
 	);
 
 
