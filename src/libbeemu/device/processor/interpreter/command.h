@@ -31,8 +31,16 @@ extern "C" {
 		BEEMU_WRITE_TARGET_REGISTER_8,
 		BEEMU_WRITE_TARGET_MEMORY_ADDRESS,
 		BEEMU_WRITE_TARGET_FLAG,
-		BEEMU_WRITE_TARGET_IME
+		BEEMU_WRITE_TARGET_IME,
+		// Reserved for internal gameboy features we do not use
+		// but want to emulate because why not.
+		BEEMU_WRITE_TARGET_INTERNAL
 	} BeemuWriteTargetType;
+
+	typedef enum BeemuInternalTargetType {
+		BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS,
+		BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS
+	} BeemuInternalTargetType;
 
 	/**
 	 * Used to desribe where to write in the machine state.
@@ -44,6 +52,7 @@ extern "C" {
 			BeemuRegister_8 register_8;
 			uint16_t mem_addr;
 			BeemuFlag flag;
+			BeemuInternalTargetType internal_target;
 		} target;
 	} BeemuWriteTarget;
 
