@@ -1,6 +1,8 @@
-#include <stdbool.h>
-#include <gtest/gtest.h>
 #include "BeemuMemoryTest.hpp"
+#include <gtest/gtest.h>
+#include <stdbool.h>
+
+#include "../utilities/BeemuProcessorPreset.hpp"
 namespace BeemuTests
 {
 	/**

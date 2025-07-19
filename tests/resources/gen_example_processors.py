@@ -15,7 +15,7 @@ machine_states = {
             "program_counter": 0x00
         },
         "memory": {
-            "memory_size": 2*16 - 1,
+            "memory_size": 2**16 - 1,
             # Fill with numbers repeating from 0x00 to 0xFF until addressable space (0xFFFF) is over.
             "memory": [mem_value for mem_value in islice(cycle(range(0x00, 0xFF + 1)), 0xFFFF + 1)]
         },
@@ -27,11 +27,11 @@ machine_states = {
 
 if __name__ == '__main__':
     output = {
-        "machine_states": []
+        "processors": []
     }
 
     for machine_state_name, machine_state in machine_states.items():
-        output['machine_states'].append({
+        output['processors'].append({
             "preset": machine_state_name,
             "processor": machine_state
         })

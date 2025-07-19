@@ -43,7 +43,7 @@ extern "C"
 	/**
 	 * @brief Location of the ROM in the main memory.
 	 */
-	static const int BEEMU_DEVICE_MEMORY_ROM_LOCATION;
+	static const int BEEMU_DEVICE_MEMORY_ROM_LOCATION = 200;
 
 	/**
 	 * @brief Describes the processor state.
