@@ -44,15 +44,19 @@ class FlagStates:
 
             yield {
                 "type": "BEEMU_COMMAND_WRITE",
-                "target": {
-                    "type": "BEEMU_WRITE_TARGET_FLAG",
+                "write": {
                     "target": {
-                        "flag": f"BEEMU_FLAG_{flag_name}"
+                        "type": "BEEMU_WRITE_TARGET_FLAG",
+                        "target": {
+                            "flag": f"BEEMU_FLAG_{flag_name}"
+                        }
+                    },
+                    "value": {
+                        "is_16": False,
+                        "value": {
+                            "byte_value": flag_value
+                        }
                     }
-                },
-                "value": {
-                    "is_16": False,
-                    "byte_value": flag_value
                 }
             }
 
@@ -170,16 +174,18 @@ for token in tokens:
                 },
                 {
                     "type": "BEEMU_COMMAND_WRITE",
-                    "target": {
-                        "type": "BEEMU_WRITE_TARGET_REGISTER_8",
+                    "write": {
                         "target": {
-                            "register_8": "BEEMU_REGISTER_8"
-                        }
-                    },
-                    "value": {
-                        "is_16": False,
+                            "type": "BEEMU_WRITE_TARGET_REGISTER_8",
+                            "target": {
+                                "register_8": "BEEMU_REGISTER_8"
+                            }
+                        },
                         "value": {
-                            "byte_value": operation_result
+                            "is_16": False,
+                            "value": {
+                                "byte_value": operation_result
+                            }
                         }
                     }
                 },

@@ -27,6 +27,22 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	InterpreterCommandTestFile,
 	commands);
 
+inline bool operator==(const BeemuMachineCommand &lhs, const BeemuMachineCommand &rhs)
+{
+	const auto lhs_json = nlohmann::json{lhs};
+	const auto rhs_json = nlohmann::json{rhs};
+	return lhs_json == rhs_json;
+}
+/**
+ * @brief Define how a beemu machine command behaves on an ostream.
+ */
+std::ostream &operator<<(std::ostream &os, const BeemuMachineCommand &obj)
+{
+	nlohmann::json json_rep(obj);
+	// write obj to stream
+	return os << json_rep.dump();
+}
+
 namespace BeemuTests {
 
 	/**

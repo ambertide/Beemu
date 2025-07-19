@@ -70,69 +70,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 12
+							"is_16": false,
+							"value": {
+								"byte_value": 12
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -207,69 +225,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 13
+							"is_16": false,
+							"value": {
+								"byte_value": 13
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -344,69 +380,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 8
+							"is_16": false,
+							"value": {
+								"byte_value": 8
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 1
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -481,69 +535,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 8
+							"is_16": false,
+							"value": {
+								"byte_value": 8
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 1
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -618,69 +690,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 2
+							"is_16": false,
+							"value": {
+								"byte_value": 2
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 1
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -755,69 +845,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 8
+							"is_16": false,
+							"value": {
+								"byte_value": 8
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -892,69 +1000,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 10
+							"is_16": false,
+							"value": {
+								"byte_value": 10
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
@@ -1029,69 +1155,87 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+					"write": {
 						"target": {
-							"register_8": "BEEMU_REGISTER_8"
-						}
-					},
-					"value": {
-						"is_16": false,
+							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
+							"target": {
+								"register_8": "BEEMU_REGISTER_8"
+							}
+						},
 						"value": {
-							"byte_value": 10
+							"is_16": false,
+							"value": {
+								"byte_value": 10
+							}
 						}
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_Z"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_N"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 1
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_H"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
-					"target": {
-						"type": "BEEMU_WRITE_TARGET_FLAG",
+					"write": {
 						"target": {
-							"flag": "BEEMU_FLAG_C"
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
 						}
-					},
-					"value": {
-						"is_16": false,
-						"byte_value": 0
 					}
 				}
 			]
