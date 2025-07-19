@@ -74,7 +74,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -229,7 +229,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -384,7 +384,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -539,7 +539,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -694,7 +694,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -849,7 +849,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -1004,7 +1004,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {
@@ -1159,7 +1159,7 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_8"
+								"register_8": "BEEMU_REGISTER_A"
 							}
 						},
 						"value": {

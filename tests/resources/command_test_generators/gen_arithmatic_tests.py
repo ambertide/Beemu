@@ -1,6 +1,6 @@
 from json import load, dumps
 
-from tests.resources.command_test_generators.utils import get_tokens_in_range
+from tests.resources.command_test_generators.utils import get_tokens_in_range, WriteTo, Halt
 from dataclasses import dataclass
 from json import dump
 
@@ -42,23 +42,7 @@ class FlagStates:
                 # Normalize flag values.
                 flag_value = 1 if flag_value else 0
 
-            yield {
-                "type": "BEEMU_COMMAND_WRITE",
-                "write": {
-                    "target": {
-                        "type": "BEEMU_WRITE_TARGET_FLAG",
-                        "target": {
-                            "flag": f"BEEMU_FLAG_{flag_name}"
-                        }
-                    },
-                    "value": {
-                        "is_16": False,
-                        "value": {
-                            "byte_value": flag_value
-                        }
-                    }
-                }
-            }
+            yield WriteTo.flag(flag_name, flag_value)
 
 flag_functions = {
     "ADD": lambda a, b: FlagStates(
@@ -130,65 +114,11 @@ for token in tokens:
             "token": token,
             "processor": "default",
             "command_queue": [
-                {
-                    "type": "BEEMU_COMMAND_WRITE",
-                    "write": {
-                        "target": {
-                            "type": "BEEMU_WRITE_TARGET_INTERNAL",
-                            "target": {
-                                "internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-                            }
-                        },
-                        "value": {
-                            "is_16": True,
-                            "value": {
-                                "double_value": 0x0102
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "BEEMU_COMMAND_WRITE",
-                    "write": {
-                        "target": {
-                            "type": "BEEMU_WRITE_TARGET_INTERNAL",
-                            "target": {
-                                "internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-                            }
-                        },
-                        "value": {
-                            "is_16": False,
-                            "value": {
-                                "byte_value": 0x02
-                            }
-                        }
-                    }
-
-                },
+                WriteTo.address_bus(0x0102),
+                WriteTo.data_bus(0x02),
                 # M2 ends M3/M1 begins
-                {
-                    "type": "BEEMU_COMMAND_HALT",
-                    "halt": {
-                       "is_cycle_terminator": True
-                    }
-                },
-                {
-                    "type": "BEEMU_COMMAND_WRITE",
-                    "write": {
-                        "target": {
-                            "type": "BEEMU_WRITE_TARGET_REGISTER_8",
-                            "target": {
-                                "register_8": "BEEMU_REGISTER_8"
-                            }
-                        },
-                        "value": {
-                            "is_16": False,
-                            "value": {
-                                "byte_value": operation_result
-                            }
-                        }
-                    }
-                },
+                Halt.cycle(),
+                WriteTo.register('A', operation_result),
                 # Add the flag writes
                 *flag_values.generate_flag_write_commands()
             ]
