@@ -123,6 +123,18 @@ for token in tokens:
                 *flag_values.generate_flag_write_commands()
             ]
         })
+    else:
+        # Otherwise we just from register to register.
+        tests.append({
+            "token": token,
+            "processor": "default",
+            "command_queue": [
+                # M2/M1 begins
+                WriteTo.register('A', operation_result),
+                *flag_values.generate_flag_write_commands()
+
+            ]
+        })
 
 if __name__ == '__main__':
     with open('../command_tests.json', 'w') as f:
