@@ -15,7 +15,7 @@
 extern "C"
 {
 #endif
-#include "command.h"
+#include "../command.h"
 #include "libbeemu/device/processor/processor.h"
 
 /**
