@@ -17,7 +17,7 @@ val_functions = {
     "ADC": lambda a, b: (a + b + 1) % 256,
     "SUB": lambda a, b: (a - b) % 256,
     # In default processor the C flag is set to 1
-    "SBC": lambda a, b: (a - b) % 256,
+    "SBC": lambda a, b: (a - b - 1) % 256,
     "AND": lambda a, b: a & b,
     "OR": lambda a, b: a | b,
     "CP": lambda a, _: a,
