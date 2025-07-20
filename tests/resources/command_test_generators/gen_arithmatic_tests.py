@@ -87,7 +87,7 @@ flag_functions = {
         z=a - b == 0,
         n=1,
         h=((a & 0xF) - (b & 0x0F)) & 0x10 == 0x10,
-        c=(a - b - 1) < 0x00),
+        c=(a - b) < 0x00),
 }
 
 tests = []
