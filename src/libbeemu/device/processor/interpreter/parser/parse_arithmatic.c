@@ -73,7 +73,7 @@ void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_resul
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC);
-	beemu_cq_write_flag(queue, BEEMU_FLAG_H,  would_be_result != actual_result || actual_result > 0xFF);
+	beemu_cq_write_flag(queue, BEEMU_FLAG_H,  would_be_result != actual_result || actual_result > 0x0F);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_C, would_be_result != actual_result);
 }
 
