@@ -69,7 +69,7 @@ int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t se
  * Insert flag write orders to the queue given the projected and actual result
  * and the executed operation.
  */
-void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_result, const uint32_t actual_result, BeemuOperation operation)
+void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_result, const uint32_t actual_result, const BeemuOperation operation)
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC);
