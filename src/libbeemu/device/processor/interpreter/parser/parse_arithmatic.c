@@ -65,11 +65,38 @@ int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t se
 	}
 }
 
+uint8_t resolve_half_carry_for_arithmatic(
+	const uint16_t first_value,
+	const uint16_t second_value,
+	const uint8_t carry_flag,
+	const BeemuOperation operation)
+{
+	switch (operation) {
+	case BEEMU_OP_ADD:
+		return ((first_value & 0x0F) + (second_value & 0x0F) & 0x10) == 0x10;
+	case BEEMU_OP_ADC:
+		return (((first_value & 0x0F) + (second_value & 0x0F) + carry_flag) & 0x10 ) == 0x10;;
+	case BEEMU_OP_SUB:
+	case BEEMU_OP_CP:
+		return (((first_value & 0x0F) - (second_value & 0x0F)) & 0x10) == 0x10;
+	case BEEMU_OP_SBC:
+		return (((first_value & 0x0F) - (second_value & 0x0F)  - carry_flag) & 0x10) == 0x10;
+	default:
+		return 0;
+	}
+}
+
 /**
  * Insert flag write orders to the queue given the projected and actual result
  * and the executed operation.
  */
-void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_result, const uint32_t actual_result, const BeemuOperation operation)
+void beemu_cq_write_flags(
+	BeemuCommandQueue *queue,
+	const int32_t would_be_result,
+	const uint32_t actual_result,
+	const BeemuOperation operation,
+	const uint8_t half_carry_flag_value
+	)
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC);
@@ -85,7 +112,7 @@ void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_resul
 		// For normal arithmatic operations, we just check if the actual flow overflowed 0x0F for half-carry
 		// and 0xFF for carry, or alternativelly for SBC, we check if it underflowed.
 		// TODO: Unsure about the behaviour of H Flag for SUB and SBC operations.
-		beemu_cq_write_flag(queue, BEEMU_FLAG_H,  would_be_result != actual_result || actual_result > 0x0F);
+		beemu_cq_write_flag(queue, BEEMU_FLAG_H,  half_carry_flag_value);
 		beemu_cq_write_flag(queue, BEEMU_FLAG_C, would_be_result != actual_result);
 	}
 }
@@ -105,6 +132,13 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		second_value,
 		params.operation,
 		beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C));
+	// Half carry is better calculated from the raw params.
+	const uint8_t half_carry_result = resolve_half_carry_for_arithmatic(
+		first_value,
+		second_value,
+		beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C),
+		params.operation
+	);
 	uint32_t actual_result = 0;
 	if (params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_8) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
@@ -116,5 +150,5 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		actual_result = actual_result_size_corrected;
 	}
 	// Finally generate write orders for the flag values.
-	beemu_cq_write_flags(queue, operation_result, actual_result, params.operation);
+	beemu_cq_write_flags(queue, operation_result, actual_result, params.operation, half_carry_result);
 }
