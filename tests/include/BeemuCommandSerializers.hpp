@@ -58,7 +58,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 
 
 // Tagged unions require special care.
-inline void to_json(nlohmann::json &json, const BeemuWriteTarget param)
+inline void to_json(nlohmann::json &json, const BeemuWriteTarget &param)
 {
 	json["type"] = param.type;
 	switch (param.type) {
@@ -100,7 +100,7 @@ inline void from_json(const nlohmann::json &json, BeemuWriteTarget &target)
 	}
 }
 
-inline void to_json(nlohmann::json &json, const BeemuWriteValue param)
+inline void to_json(nlohmann::json &json, const BeemuWriteValue &param)
 {
 	json["is_16"] = param.is_16;
 	if (!param.is_16) {
@@ -110,7 +110,7 @@ inline void to_json(nlohmann::json &json, const BeemuWriteValue param)
 	}
 }
 
-inline void from_json(const nlohmann::json &json, BeemuWriteValue target)
+inline void from_json(const nlohmann::json &json, BeemuWriteValue &target)
 {
 	json.at("is_16").get_to(target.is_16);
 	if (!target.is_16) {

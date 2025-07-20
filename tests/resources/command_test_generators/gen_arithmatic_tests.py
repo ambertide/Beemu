@@ -17,7 +17,7 @@ val_functions = {
     "ADC": lambda a, b: (a + b + 1) % 256,
     "SUB": lambda a, b: (a - b) % 256,
     # In default processor the C flag is set to 1
-    "SBC": lambda a, b: (a - b) % 256,
+    "SBC": lambda a, b: (a - b - 1) % 256,
     "AND": lambda a, b: a & b,
     "OR": lambda a, b: a | b,
     "CP": lambda a, _: a,
@@ -48,22 +48,25 @@ flag_functions = {
     "ADD": lambda a, b: FlagStates(
         z=((a + b) % 256) == 0,
         n=0,
-        h=((a + b) % 256) > 0x0F,
-        c=(a + b) > 0xFF),
+        # Mask the lower bits and add them.
+        h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
+        c=(a + b) > 0xFF
+    ),
     "ADC": lambda a, b: FlagStates(
         z=((a + b + 1) % 256) == 0,
         n=0,
-        h=((a + b + 1) % 256) > 0x0F,
+        h=((a & 0x0F) + (b & 0x0F) + 1) & 0x10 == 0x10,
         c=(a + b + 1) > 0xFF),
     "SUB": lambda a, b: FlagStates(
         z=((a - b) % 256) == 0,
         n=1,
-        h=((a - b) % 256) > 0x0F,
+        # Likewise for borrows this occurs for sub 0 underflow
+        h=(((a & 0xF) - (b & 0x0F)) % 256) & 0x10 == 0x10,
         c=(a - b) < 0x00),
     "SBC": lambda a, b: FlagStates(
         z=((a - b - 1) % 256) == 0,
         n=1,
-        h=((a - b - 1) % 256) > 0x0F,
+        h=(((a & 0xF) - (b & 0x0F)) - 1) & 0x10 == 0x10,
         c=(a - b - 1) < 0x00),
     "AND": lambda a, b: FlagStates(
         z=a & b == 0,
@@ -83,8 +86,8 @@ flag_functions = {
     "CP": lambda a, b: FlagStates(
         z=a - b == 0,
         n=1,
-        h=((a - b - 1) % 256) > 0x0F,
-        c=(a - b - 1) < 0x00),
+        h=((a & 0xF) - (b & 0x0F)) & 0x10 == 0x10,
+        c=(a - b) < 0x00),
 }
 
 tests = []
@@ -118,7 +121,7 @@ for token in tokens:
                 WriteTo.data_bus(0x02),
                 # M2 ends M3/M1 begins
                 Halt.cycle(),
-                WriteTo.register('A', operation_result),
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                 # Add the flag writes
                 *flag_values.generate_flag_write_commands()
             ]
@@ -130,7 +133,7 @@ for token in tokens:
             "processor": "default",
             "command_queue": [
                 # M2/M1 begins
-                WriteTo.register('A', operation_result),
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                 *flag_values.generate_flag_write_commands()
 
             ]
