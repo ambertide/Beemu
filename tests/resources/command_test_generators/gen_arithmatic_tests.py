@@ -86,7 +86,7 @@ flag_functions = {
     "CP": lambda a, b: FlagStates(
         z=a - b == 0,
         n=1,
-        h=((a - b - 1) % 256) > 0x0F,
+        h=((a & 0xF) - (b & 0x0F)) & 0x10 == 0x10,
         c=(a - b - 1) < 0x00),
 }
 
