@@ -36,7 +36,7 @@ inline bool operator==(const BeemuMachineCommand &lhs, const BeemuMachineCommand
 /**
  * @brief Define how a beemu machine command behaves on an ostream.
  */
-std::ostream &operator<<(std::ostream &os, const BeemuMachineCommand &obj)
+inline std::ostream &operator<<(std::ostream &os, const BeemuMachineCommand &obj)
 {
 	nlohmann::json json_rep(obj);
 	// write obj to stream
