@@ -48,22 +48,25 @@ flag_functions = {
     "ADD": lambda a, b: FlagStates(
         z=((a + b) % 256) == 0,
         n=0,
-        h=((a + b) % 256) > 0x0F,
-        c=(a + b) > 0xFF),
+        # Mask the lower bits and add them.
+        h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
+        c=(a + b) > 0xFF
+    ),
     "ADC": lambda a, b: FlagStates(
         z=((a + b + 1) % 256) == 0,
         n=0,
-        h=((a + b + 1) % 256) > 0x0F,
+        h=((a & 0x0F) + (b & 0x0F) + 1) & 0x10 == 0x10,
         c=(a + b + 1) > 0xFF),
     "SUB": lambda a, b: FlagStates(
         z=((a - b) % 256) == 0,
         n=1,
-        h=((a - b) % 256) > 0x0F,
+        # Likewise for borrows this occurs for sub 0 underflow
+        h=(((a & 0xF) - (b & 0x0F)) % 256) & 0x10 == 0x10,
         c=(a - b) < 0x00),
     "SBC": lambda a, b: FlagStates(
         z=((a - b - 1) % 256) == 0,
         n=1,
-        h=((a - b - 1) % 256) > 0x0F,
+        h=(((a & 0xF) - (b & 0x0F)) - 1) & 0x10 == 0x10,
         c=(a - b - 1) < 0x00),
     "AND": lambda a, b: FlagStates(
         z=a & b == 0,
