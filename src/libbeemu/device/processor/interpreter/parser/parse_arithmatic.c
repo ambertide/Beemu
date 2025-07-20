@@ -73,8 +73,21 @@ void beemu_cq_write_flags(BeemuCommandQueue *queue, const int32_t would_be_resul
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC);
-	beemu_cq_write_flag(queue, BEEMU_FLAG_H,  would_be_result != actual_result || actual_result > 0x0F);
-	beemu_cq_write_flag(queue, BEEMU_FLAG_C, would_be_result != actual_result);
+	if (operation == BEEMU_OP_XOR || operation == BEEMU_OP_OR) {
+		// XOR and OR specifically set H and C to 0
+		beemu_cq_write_flag(queue, BEEMU_FLAG_H, 0);
+		beemu_cq_write_flag(queue, BEEMU_FLAG_C,  0);
+	} else if (operation == BEEMU_OP_AND) {
+		// AND is a bit different and set half-carry to 1 but carry to 0
+		beemu_cq_write_flag(queue, BEEMU_FLAG_H, 1);
+		beemu_cq_write_flag(queue, BEEMU_FLAG_C,  0);
+	} else {
+		// For normal arithmatic operations, we just check if the actual flow overflowed 0x0F for half-carry
+		// and 0xFF for carry, or alternativelly for SBC, we check if it underflowed.
+		// TODO: Unsure about the behaviour of H Flag for SUB and SBC operations.
+		beemu_cq_write_flag(queue, BEEMU_FLAG_H,  would_be_result != actual_result || actual_result > 0x0F);
+		beemu_cq_write_flag(queue, BEEMU_FLAG_C, would_be_result != actual_result);
+	}
 }
 
 void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction)
