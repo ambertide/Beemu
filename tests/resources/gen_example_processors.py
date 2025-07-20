@@ -8,9 +8,9 @@ machine_states = {
         "registers": {
             # A, B, C, D, E, H and L respectively.
             "registers": [0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x01, 0x02],
-            # Flags, the first four bits are useless, if I am able to
+            # Flags, the last four bits are useless, if I am able to
             # read what I wrote.
-            "flags": 0b00001111,
+            "flags": 0b11110000,
             "stack_pointer": 0xFF,
             "program_counter": 0x00
         },
