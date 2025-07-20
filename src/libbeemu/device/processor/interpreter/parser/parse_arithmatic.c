@@ -59,7 +59,7 @@ int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t se
 	case BEEMU_OP_AND:
 		return first_value & second_value;
 	case BEEMU_OP_CP:
-		return first_value;
+		return first_value - second_value;
 	default:
 		return -1;
 	}
@@ -109,7 +109,10 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 	if (params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_8) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
 		const uint8_t actual_result_size_corrected = operation_result;
-		beemu_cq_write_reg_8(queue, params.dest_or_first.value.register_8, actual_result_size_corrected);
+		if (params.operation != BEEMU_OP_CP) {
+			// Compare operation does not actually modify the contents of the register.
+			beemu_cq_write_reg_8(queue, params.dest_or_first.value.register_8, actual_result_size_corrected);
+		}
 		actual_result = actual_result_size_corrected;
 	}
 	// Finally generate write orders for the flag values.
