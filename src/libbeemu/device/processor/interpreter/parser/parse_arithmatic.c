@@ -41,7 +41,7 @@ uint8_t dereference_hl_and_set_data_address_busses(BeemuCommandQueue *queue, con
  * Calculate the result of an operation as int32_t so that overflow/underflow won't occur.
  * @return
  */
-int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t second_value, const BeemuOperation operation, uint8_t carry_flag)
+int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t second_value, const BeemuOperation operation, const uint8_t carry_flag)
 {
 	switch (operation) {
 	case BEEMU_OP_ADD:
