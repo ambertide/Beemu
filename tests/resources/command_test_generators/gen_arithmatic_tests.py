@@ -118,7 +118,7 @@ for token in tokens:
                 WriteTo.data_bus(0x02),
                 # M2 ends M3/M1 begins
                 Halt.cycle(),
-                WriteTo.register('A', operation_result),
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                 # Add the flag writes
                 *flag_values.generate_flag_write_commands()
             ]
@@ -130,7 +130,7 @@ for token in tokens:
             "processor": "default",
             "command_queue": [
                 # M2/M1 begins
-                WriteTo.register('A', operation_result),
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                 *flag_values.generate_flag_write_commands()
 
             ]
