@@ -52,8 +52,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuInternalTargetType,
-	{{BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS, "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"},
-	{BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS, "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"}}
+	{
+		{BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS, "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"},
+		{BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS, "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"},
+		{BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER, "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"},
+		{BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER, "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"}
+	}
 );
 
 
@@ -73,6 +77,11 @@ inline void to_json(nlohmann::json &json, const BeemuWriteTarget &param)
 		break;
 	case BEEMU_WRITE_TARGET_INTERNAL:
 		json["target"]["internal_target"] = param.target.internal_target;
+		break;
+	case BEEMU_WRITE_TARGET_MEMORY_ADDRESS:
+		json["target"]["mem_addr"] = param.target.mem_addr;
+		break;
+	case BEEMU_WRITE_TARGET_IME:
 		break;
 	default:
 		throw std::runtime_error("Unknown type encountered for write target.");
@@ -94,6 +103,11 @@ inline void from_json(const nlohmann::json &json, BeemuWriteTarget &target)
 		break;
 	case BEEMU_WRITE_TARGET_INTERNAL:
 		json.at("target").at("internal_target").get_to(target.target.internal_target);
+		break;
+	case  BEEMU_WRITE_TARGET_MEMORY_ADDRESS:
+		json.at("target").at("mem_addr").get_to(target.target.mem_addr);
+		break;
+	case BEEMU_WRITE_TARGET_IME:
 		break;
 	default:
 		throw std::runtime_error("Unknown type encountered for write target.");
