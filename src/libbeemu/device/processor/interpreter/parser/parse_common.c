@@ -65,6 +65,30 @@ void beemu_cq_write_flag(BeemuCommandQueue *queue, const BeemuFlag flag, const u
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcode)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_INTERNAL;
+	command.write.target.target.internal_target = BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER;
+	command.write.value.is_16 = false;
+	command.write.value.value.byte_value = instruction_opcode;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
+{
+
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_INTERNAL;
+	command.write.target.target.internal_target = BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER;
+	command.write.value.is_16 = true;
+	command.write.value.value.double_value = program_counter_value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+
 
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor)
 {

@@ -41,6 +41,16 @@ void beemu_cq_write_address_bus(BeemuCommandQueue *queue, uint16_t value);
 void beemu_cq_write_flag(BeemuCommandQueue *queue, BeemuFlag flag, uint8_t value);
 
 /**
+ * Write an instruction opcode to the instruction register.
+ */
+void beemu_cq_write_ir(BeemuCommandQueue *queue, uint8_t instruction_opcode);
+
+/**
+ * Write a instruction's location to the program counter
+ */
+void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value);
+
+/**
  * Parse a parameter holding an 8 or 16 bit unsigned value.
  */
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor);
