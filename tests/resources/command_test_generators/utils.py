@@ -100,6 +100,26 @@ class WriteTo:
             }
         }
 
+    @classmethod
+    def memory(cls, addr: int, value: int) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_WRITE",
+            "write": {
+                "target": {
+                    "type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+                    "target": {
+                        "mem_addr": addr
+                    }
+                },
+                "value": {
+                    "is_16": False,
+                    "value": {
+                        "byte_value": value
+                    }
+                }
+            }
+        }
+
 class Halt:
     @classmethod
     def cycle(cls) -> dict:
