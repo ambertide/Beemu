@@ -12,6 +12,7 @@
 #ifndef BEEMU_BEEMU_PROCESSOR_PRESET_HPP
 #define BEEMU_BEEMU_PROCESSOR_PRESET_HPP
 #include "../include/BeemuProcessorSerializers.hpp"
+#include <optional>
 
 struct BeemuProcessorPresetRecord {
 	std::string preset;
@@ -56,8 +57,22 @@ namespace BeemuTests {
 		const BeemuProcessor &processor() const;
 	private:
 		BeemuProcessor _processor{};
+		static std::unordered_map<std::string, BeemuProcessor> processor_cache;
 		std::string name;
-		static BeemuProcessor getPreset(std::string preset_name);
+	    /**
+	     * Cache a preset in the test-wide cache
+	     * @param preset_name Name of the preset.
+	     * @param processor Processor to cache.
+	     */
+		static void cache_preset(const std::string &preset_name, BeemuProcessor processor);
+
+	    /**
+	     * Attempt to get the preset if cached.
+	     * @param preset_name Preset name to check the cache for.
+	     * @return the preset if it exists
+	     */
+		static std::optional<BeemuProcessor> get_from_cache(const std::string &preset_name);
+		static BeemuProcessor getPreset(const std::string &preset_name);
 	};
 }
 

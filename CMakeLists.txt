@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(Beemu VERSION 0.1 LANGUAGES C CXX)
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+# std::optional requires C++17
+set(CMAKE_CXX_STANDARD 17)
 
 add_library(libbeemu)
 add_executable(Beemu src/beemu.c)
