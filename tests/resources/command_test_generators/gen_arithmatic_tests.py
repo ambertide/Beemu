@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from itertools import chain, islice
 from json import dump
 
+from tests.resources.token_test_generators.utils import get_opcode
+
 # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
 tokens = get_tokens_in_range(chain(range(0x80, 0xC0), range(0x04, 0x3D, 8), range(0x05, 0x3F, 8)))
 
@@ -24,6 +26,15 @@ val_functions = {
     "CP": lambda a, _: a,
     "XOR": lambda a, b: a ^ b,
 }
+
+def emit_m1_cycle(token: dict) -> list[dict]:
+    return [
+        WriteTo.address_bus(0x01),
+        WriteTo.pc(0x01),
+        WriteTo.data_bus(get_opcode(token['original_machine_code'])),
+        WriteTo.ir(get_opcode(token['original_machine_code'])),
+        Halt.cycle(),
+    ]
 
 
 @dataclass()
@@ -121,13 +132,18 @@ for token in tokens:
                 "token": token,
                 "processor": "default",
                 "command_queue": [
+                    # M1 Begins
+                    *emit_m1_cycle(token),
+                    # M2 begins
                     WriteTo.address_bus(0x0102),
                     WriteTo.data_bus(0x02),
                     # M2 ends M3/M1 begins
                     Halt.cycle(),
                     *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                     # Add the flag writes
-                    *flag_values.generate_flag_write_commands()
+                    *flag_values.generate_flag_write_commands(),
+                    WriteTo.address_bus(0x01),
+                    WriteTo.data_bus(get_opcode(token['original_machine_code']))
                 ]
             })
         else:
@@ -136,6 +152,8 @@ for token in tokens:
                 "token": token,
                 "processor": "default",
                 "command_queue": [
+                    # M1 begins
+                    *emit_m1_cycle(token),
                     # M2/M1 begins
                     *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                     *flag_values.generate_flag_write_commands()
@@ -159,6 +177,8 @@ for token in tokens:
                 "token": token,
                 "processor": "default",
                 "command_queue": [
+                    # M1 begins
+                    *emit_m1_cycle(token),
                     # M2/M1 Begins
                     WriteTo.address_bus(0x0102),
                     WriteTo.data_bus(0x02),
@@ -169,7 +189,8 @@ for token in tokens:
                     *islice(flag_values.generate_flag_write_commands(), 3),
                     Halt.cycle(),
                     # M4/M1 begins
-                    Halt.cycle(),
+                    WriteTo.address_bus(0x00),
+                    WriteTo.data_bus(get_opcode(token['original_machine_code']))
                 ]
             })
         else:
@@ -177,6 +198,8 @@ for token in tokens:
                 "token": token,
                 "processor": "default",
                 "command_queue": [
+                    # M1 Begins
+                    *emit_m1_cycle(token),
                     # M2/M1 Begins
                     WriteTo.register(inc_dec_register, operation_result),
                     # Toss away the C write because we do not set the Cy.

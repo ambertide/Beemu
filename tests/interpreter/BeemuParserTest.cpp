@@ -12,7 +12,17 @@ TEST_P(BeemuParserParameterizedTestFixture, TokenParsedCorrectly)
 	// Get the actual parsed commands.
 	auto actual_commands = beemu_parser_parse(&processor, &instruction);
 	// Check if, you know, they match at all.
+
+	if (beemu_command_queue_is_empty(&expected_commands)) {
+		ASSERT_FALSE(true) << "Instruction did not emit any commands";
+	} else if (beemu_command_queue_is_empty(actual_commands)) {
+		ASSERT_FALSE(true) << "Test case did not have any commands";
+	}
+
 	while (!beemu_command_queue_is_empty(actual_commands)) {
+		if (beemu_command_queue_is_empty(&expected_commands)) {
+			ASSERT_FALSE(true) << "Parser emitted more commands than expected";
+		}
 		auto expected_command = beemu_command_queue_dequeue(&expected_commands);
 		auto actual_command = beemu_command_queue_dequeue(actual_commands);
 		ASSERT_EQ(*expected_command, *actual_command);
@@ -21,7 +31,7 @@ TEST_P(BeemuParserParameterizedTestFixture, TokenParsedCorrectly)
 	}
 
 	if (!beemu_command_queue_is_empty(&expected_commands)) {
-		ASSERT_FALSE(true);
+		ASSERT_FALSE(true) << "Parser emitted less commands than expected";
 	}
 	beemu_command_queue_free(actual_commands);
 

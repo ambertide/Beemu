@@ -10,8 +10,10 @@
  */
 
 #include "parse_common.h"
+
 #include <libbeemu/device/primitives/instruction.h>
 #include <libbeemu/device/processor/registers.h>
+#include <stddef.h>
 
 void beemu_cq_halt_cycle(BeemuCommandQueue *queue)
 {
@@ -65,6 +67,30 @@ void beemu_cq_write_flag(BeemuCommandQueue *queue, const BeemuFlag flag, const u
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcode)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_INTERNAL;
+	command.write.target.target.internal_target = BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER;
+	command.write.value.is_16 = false;
+	command.write.value.value.byte_value = instruction_opcode;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
+{
+
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_INTERNAL;
+	command.write.target.target.internal_target = BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER;
+	command.write.value.is_16 = true;
+	command.write.value.value.double_value = program_counter_value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+
 
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor)
 {
@@ -106,4 +132,87 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 		return 0;
 	}
 	}
+}
+
+/**
+ * Check if the node whose pointer is passed is a Data Bus write order.
+ * @param node Node to check.
+ * @return true if a write order to the db.
+ */
+bool is_command_node_db_modification(const BeemuCommandQueueNode* node)
+{
+	return node->current->type == BEEMU_COMMAND_WRITE && node->current->write.target.type == BEEMU_WRITE_TARGET_INTERNAL && node->current->write.target.target.internal_target == BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS;
+}
+
+/**
+ * Check if the node whose pointer is passed is a Address Bus write order.
+ */
+bool is_command_node_ab_modification(const BeemuCommandQueueNode* node)
+{
+	return node->current->type == BEEMU_COMMAND_WRITE && node->current->write.target.type == BEEMU_WRITE_TARGET_INTERNAL && node->current->write.target.target.internal_target == BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS;
+}
+
+/**
+ * Check if the node is a write order for instruction register
+ */
+bool is_command_node_ir_modificaiton(const BeemuCommandQueueNode* node)
+{
+	return node->current->type == BEEMU_COMMAND_WRITE && node->current->write.target.type == BEEMU_WRITE_TARGET_INTERNAL && node->current->write.target.target.internal_target == BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER;
+}
+
+/**
+ * Check if the node is a write order for program counter
+ */
+bool is_command_node_pc_modificaiton(const BeemuCommandQueueNode* node)
+{
+	return node->current->type == BEEMU_COMMAND_WRITE && node->current->write.target.type == BEEMU_WRITE_TARGET_INTERNAL && node->current->write.target.target.internal_target == BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER;
+}
+
+bool beemu_cq_has_non_ir_data_bus_modification(const BeemuCommandQueue *queue)
+{
+	bool was_previous_db_modification = false;
+	BeemuCommandQueueNode *node = queue->first;
+	while (node != NULL) {
+		if (is_command_node_db_modification(node)) {
+			was_previous_db_modification = true;
+			node = node->next;
+			continue;
+		}
+
+		if (was_previous_db_modification) {
+			if (!is_command_node_ir_modificaiton(node)) {
+				// Essentially means there is a non-ir db modification.
+				return true;
+			}
+			// Otherwise there isn't and we continue seeking.
+			was_previous_db_modification = false;
+		}
+		node = node->next;
+	}
+	return was_previous_db_modification;
+}
+
+bool beemu_cq_has_non_pc_addr_bus_modification(const BeemuCommandQueue *queue)
+{
+	// Mirror of above but with PC and Address Bus
+	bool was_previous_ab_modification = false;
+	BeemuCommandQueueNode *node = queue->first;
+	while (node != NULL) {
+		if (is_command_node_ab_modification(node)) {
+			was_previous_ab_modification = true;
+			node = node->next;
+			continue;
+		}
+
+		if (was_previous_ab_modification) {
+			if (!is_command_node_pc_modificaiton(node)) {
+				// Essentially means there is a non-pc ab modification.
+				return true;
+			}
+			// Otherwise there isn't and we continue seeking.
+			was_previous_ab_modification = false;
+		}
+		node = node->next;
+	}
+	return was_previous_ab_modification;
 }

@@ -13,6 +13,7 @@
 #define BEEMU_PARSE_COMMON_H
 #include "../command.h"
 #include <stdint.h>
+#include <stdbool.h>
 #include <libbeemu/device/processor/processor.h>
 
 /**
@@ -39,6 +40,34 @@ void beemu_cq_write_address_bus(BeemuCommandQueue *queue, uint16_t value);
  * Add a flag write command to the command queue.
  */
 void beemu_cq_write_flag(BeemuCommandQueue *queue, BeemuFlag flag, uint8_t value);
+
+/**
+ * Write an instruction opcode to the instruction register.
+ */
+void beemu_cq_write_ir(BeemuCommandQueue *queue, uint8_t instruction_opcode);
+
+/**
+ * Write a instruction's location to the program counter
+ */
+void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value);
+
+/**
+ * Check if this command queue has a queued write order for a data bus
+ * modification for something OTHER than instruction register.
+ * @param queue Queue to check for
+ * @return True if a write order for the data bus exists without immediately
+ * followed by an IR write.
+ */
+bool beemu_cq_has_non_ir_data_bus_modification(const BeemuCommandQueue *queue);
+
+/**
+ * Check if this command queue has a queued addres bus modification for something
+ * other than the Program Counter.
+ * @param queue Queue to check for
+ * @return True if a write order for the address bus exists without immediately
+ * followed by a PC write.
+ */
+bool beemu_cq_has_non_pc_addr_bus_modification(const BeemuCommandQueue *queue);
 
 /**
  * Parse a parameter holding an 8 or 16 bit unsigned value.

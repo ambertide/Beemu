@@ -41,6 +41,47 @@ class WriteTo:
         }
 
     @classmethod
+    def ir(cls, value: int) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_WRITE",
+            "write": {
+                "target": {
+                    "type": "BEEMU_WRITE_TARGET_INTERNAL",
+                    "target": {
+                        "internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+                    }
+                },
+                "value": {
+                    "is_16": False,
+                    "value": {
+                        "byte_value": value
+                    }
+                }
+            }
+
+        }
+
+    @classmethod
+    def pc(cls, value: int) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_WRITE",
+            "write": {
+                "target": {
+                    "type": "BEEMU_WRITE_TARGET_INTERNAL",
+                    "target": {
+                        "internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+                    }
+                },
+                "value": {
+                    "is_16": True,
+                    "value": {
+                        "double_value": value
+                    }
+                }
+            }
+        }
+
+    @classmethod
     def address_bus(cls, value: int) -> dict:
         return {
             "type": "BEEMU_COMMAND_WRITE",
