@@ -66,21 +66,22 @@ int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t se
 }
 
 uint8_t resolve_half_carry_for_arithmatic(
-	const uint16_t first_value,
-	const uint16_t second_value,
-	const uint8_t carry_flag,
-	const BeemuOperation operation)
+    const uint16_t first_value,
+    const uint16_t second_value,
+    const uint8_t carry_flag,
+    const BeemuOperation operation)
 {
 	switch (operation) {
 	case BEEMU_OP_ADD:
 		return ((first_value & 0x0F) + (second_value & 0x0F) & 0x10) == 0x10;
 	case BEEMU_OP_ADC:
-		return (((first_value & 0x0F) + (second_value & 0x0F) + carry_flag) & 0x10 ) == 0x10;;
+		return (((first_value & 0x0F) + (second_value & 0x0F) + carry_flag) & 0x10) == 0x10;
+		;
 	case BEEMU_OP_SUB:
 	case BEEMU_OP_CP:
 		return (((first_value & 0x0F) - (second_value & 0x0F)) & 0x10) == 0x10;
 	case BEEMU_OP_SBC:
-		return (((first_value & 0x0F) - (second_value & 0x0F)  - carry_flag) & 0x10) == 0x10;
+		return (((first_value & 0x0F) - (second_value & 0x0F) - carry_flag) & 0x10) == 0x10;
 	default:
 		return 0;
 	}
