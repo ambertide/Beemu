@@ -110,7 +110,7 @@ void beemu_cq_write_memory_through_data_bus(BeemuCommandQueue *queue, const uint
 
 
 
-uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor)
+uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor, bool skip_deref)
 {
 	switch (parameter->type) {
 	case BEEMU_PARAM_TYPE_REGISTER_8: {
@@ -118,7 +118,7 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 		register_to_read.type = BEEMU_EIGHT_BIT_REGISTER;
 		register_to_read.name_of.eight_bit_register = parameter->value.register_8;
 		const uint8_t register_value = beemu_registers_read_register_value(processor->registers, register_to_read);
-		if (!parameter->pointer) {
+		if (!parameter->pointer || skip_deref) {
 			// If not pointer, nothing else to do.
 			return register_value;
 		}
@@ -131,7 +131,7 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 		register16_to_read.type = BEEMU_SIXTEEN_BIT_REGISTER;
 		register16_to_read.name_of.sixteen_bit_register = parameter->value.register_16;
 		const uint16_t register16_value = beemu_registers_read_register_value(processor->registers, register16_to_read);
-		if (!parameter->pointer) {
+		if (!parameter->pointer || skip_deref) {
 			// If not pointer, nothing else to do.
 			return register16_value;
 		}
@@ -142,7 +142,7 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 	case BEEMU_PARAM_TYPE_UINT_8:
 	case BEEMU_PARAM_TYPE_UINT16: {
 		const uint16_t value = parameter->value.value;
-		if (!parameter->pointer) {
+		if (!parameter->pointer || skip_deref) {
 			return value;
 		}
 		return beemu_memory_read(processor->memory, value);
