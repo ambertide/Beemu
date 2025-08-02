@@ -3,14 +3,15 @@ Print out the emitted bytecodes for a specific instruction
 by the `beemu_parser_parse` function using `lldb`
 """
 from json import load
-from plistlib import loads
 from typing import Generator
 
 import lldb
 import os
 from sys import argv
+from subprocess import Popen
 
 opcode = argv[1]
+should_compile = argv[2] == 'compile' if len(argv) > 2 else False
 
 print(opcode)
 
@@ -57,7 +58,9 @@ def parse_node(instr: lldb.SBValue) -> str:
         write_value_info = write_info.GetChildMemberWithName('value')
         write_value_type = write_value_info.GetChildMemberWithName('is_16').GetValue()
         write_value_field = value_map.get(write_value_type)
-        write_value = write_value_info.GetChildMemberWithName('value').GetChildMemberWithName(write_value_field).GetValue()
+        write_value: str = write_value_info.GetChildMemberWithName('value').GetChildMemberWithName(write_value_field).GetValue()
+        if write_value.startswith("'") and len(write_value.replace("'", '')) == 1:
+            write_value: int = ord(write_value.replace("'", ''))
         return f'WRITE {write_target} {write_value}'
     elif type_ == 'BEEMU_COMMAND_HALT':
         return 'HALT'
@@ -70,7 +73,13 @@ def print_on_centre(ls: str, rs: str) -> None:
     right_str_len = len(rs)
     print(f"{ls}{' ' * (80 - left_str_len)}{rs}")
 
+def compile_debug():
+    proc = Popen('cmake -DCMAKE_BUILD_TYPE=Debug .. && make', shell=True, cwd=os.getcwd() + '/build')
+    proc.wait()
+
 if __name__ == '__main__':
+    if should_compile:
+        compile_debug()
     # Set the path to the executable to debug
     exe = "./build/tests/tests"
     gtest_filter = f'--gtest_filter=BeemuParserTests/BeemuParserParameterizedTestFixture.TokenParsedCorrectly/{opcode}'
