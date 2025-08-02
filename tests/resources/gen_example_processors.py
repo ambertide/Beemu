@@ -37,4 +37,4 @@ if __name__ == '__main__':
         })
 
     with open('processors.json', 'w') as file:
-        dump(output, file)
+        dump(output, file, indent='\t')
