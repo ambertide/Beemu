@@ -189,7 +189,7 @@ for token in tokens:
                     *islice(flag_values.generate_flag_write_commands(), 3),
                     Halt.cycle(),
                     # M4/M1 begins
-                    WriteTo.address_bus(0x00),
+                    WriteTo.address_bus(0x01),
                     WriteTo.data_bus(get_opcode(token['original_machine_code']))
                 ]
             })
