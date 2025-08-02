@@ -133,17 +133,81 @@ bool is_param_hl_ptr(const BeemuParam *param)
 	return param->pointer && param->type == BEEMU_PARAM_TYPE_REGISTER_16 && param->value.register_16 == BEEMU_REGISTER_HL;
 }
 
+/**
+ * @brief Check if the parameter holding byte-length values.
+ *
+ * This can be a register or a memory address, former holds byte-length
+ * values if they are an 8-bit register, the latter always holds 8 bits,
+ * and so does pointer's, since they POINT to a memory address.
+ *
+ * @param param Parameter to check
+ * @return True if the location indicated by the BeemuParam can hold a
+ * 8 bit value.
+ */
+static bool do_param_hold_byte_length_values(const BeemuParam *param)
+{
+	if (param->pointer) {
+		// Pointers point to memory addresses
+		// which always hold a byte.
+		return true;
+	}
+
+	const bool is_param_8_bit_register = param->type == BEEMU_PARAM_TYPE_REGISTER_8;
+
+	if (is_param_8_bit_register) {
+		// Holds 8 bits even if not a pointer.
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Emit bytecodes that, when executed will write a byte sized result to its destination.
+ * @param queue Queue to emit the commands to.
+ * @param dst Parameter specifying the destination.
+ * @param result Result value to write
+ * @param processor BeemuProcessor to resolve the actual values.
+ */
+void beemu_cq_write_results_u8(
+	BeemuCommandQueue *queue,
+	const BeemuParam *dst,
+	const uint8_t result,
+	const BeemuProcessor *processor)
+{
+	if (dst->pointer) {
+		// We will write to memory.
+		// We can just use the resolve_instruction_param function to get the value
+		// which we now is the mem addr, and then we can emit the memory write.
+		const uint16_t memory_addr = beemu_resolve_instruction_parameter_unsigned(dst, processor, true);
+		beemu_cq_write_memory_through_data_bus(queue, memory_addr, result);
+	} else if (dst->type == BEEMU_PARAM_TYPE_REGISTER_8) {
+		beemu_cq_write_reg_8(queue, dst->value.register_8, result);
+	}
+}
+
+bool halts_after_flags(const BeemuInstruction *instruction)
+{
+	switch (instruction->original_machine_code) {
+	case 0x35:
+	case 0x34:
+		return true;
+	default:
+		return false;
+	}
+}
+
 void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction)
 {
 	BeemuArithmaticParams params = instruction->params.arithmatic_params;
 
 	// Resolve parameters
-	uint16_t first_value = beemu_resolve_instruction_parameter_unsigned(&params.dest_or_first, processor);
-	uint16_t second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor);
+	uint16_t first_value = beemu_resolve_instruction_parameter_unsigned(&params.dest_or_first, processor, false);
+	uint16_t second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	if (is_param_hl_ptr(&params.source_or_second) || is_param_hl_ptr(&params.dest_or_first)) {
 		set_data_address_busses_for_hl(queue, processor);
 	} else {
-		second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor);
+		second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	}
 
 	// Actually calculate the results
@@ -160,15 +224,22 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		params.operation
 	);
 	uint32_t actual_result = 0;
-	if (params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_8) {
+	if (do_param_hold_byte_length_values(&params.dest_or_first)) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
 		const uint8_t actual_result_size_corrected = operation_result;
 		if (params.operation != BEEMU_OP_CP) {
-			// Compare operation does not actually modify the contents of the register.
-			beemu_cq_write_reg_8(queue, params.dest_or_first.value.register_8, actual_result_size_corrected);
+			// Compare operation does not actually modify the contents of the destination.
+			beemu_cq_write_results_u8(
+				queue,
+				&params.dest_or_first,
+				actual_result_size_corrected,
+				processor);
 		}
 		actual_result = actual_result_size_corrected;
 	}
 	// Finally generate write orders for the flag values.
 	beemu_cq_write_flags(queue, operation_result, actual_result, params.operation, half_carry_result, instruction->original_machine_code < 0x40);
+	if (halts_after_flags(instruction)) {
+		beemu_cq_halt_cycle(queue);
+	}
 }
