@@ -118,14 +118,17 @@ if __name__ == '__main__':
                 child: lldb.SBValue = commands.GetChildMemberWithName('first')
                 last = commands.GetChildMemberWithName('last')
                 expected_generator = parse_expected_node()
-                print_on_centre('Actual Command', 'Expected Command')
+                print_on_centre('Expected Command', 'Actual Command')
                 while child.GetChildMemberWithName('next').GetValue() != last.GetChildMemberWithName('next').GetValue():
                     actual_node = parse_node(child.GetChildMemberWithName('current'))
                     expected_node = next(expected_generator)
-                    print_on_centre(actual_node, expected_node)
+                    print_on_centre(expected_node, actual_node)
                     child = child.GetChildMemberWithName('next')
                 else:
+                    # Afterwards
                     parse_node(child.GetChildMemberWithName('current'))
+                    for expected_command in expected_generator:
+                        print(expected_command)
         else:
             print('Failed to execute processs')
     else:
