@@ -90,6 +90,24 @@ void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_memory(BeemuCommandQueue *queue, const uint16_t memory_address, const uint8_t memory_value)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_MEMORY_ADDRESS;
+	command.write.target.target.mem_addr = memory_address;
+	command.write.value.is_16 = false;
+	command.write.value.value.byte_value = memory_value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+void beemu_cq_write_memory_through_data_bus(BeemuCommandQueue *queue, const uint16_t memory_address, const uint8_t memory_value)
+{
+	beemu_cq_write_data_bus(queue, memory_value);
+	beemu_cq_write_memory(queue, memory_address, memory_value);
+}
+
+
 
 
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor)

@@ -52,6 +52,17 @@ void beemu_cq_write_ir(BeemuCommandQueue *queue, uint8_t instruction_opcode);
 void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value);
 
 /**
+ * Emit a write order for a memory address.
+ */
+void beemu_cq_write_memory(BeemuCommandQueue *queue, uint16_t memory_address, uint8_t memory_value);
+
+/**
+ *  Emit a write order for a memory address, preceded by a write order
+ *  of the same value to the data bus.
+ */
+void beemu_cq_write_memory_through_data_bus(BeemuCommandQueue *queue, uint16_t memory_address, uint8_t memory_value);
+
+/**
  * Check if this command queue has a queued write order for a data bus
  * modification for something OTHER than instruction register.
  * @param queue Queue to check for
