@@ -104,108 +104,124 @@ flag_functions = {
 
 tests = []
 
+def emit_8_bit_mainline(token: dict, tests: list) -> None:
+    """
+    Emit a 8 bit arithmatic mainline instruction.
+    """
+    # First one is always the A register, which is always 0x0A
+    # second one depends on the  token.
+    values = [0x0A]
+    second_register = token["params"]["arithmatic_params"]["source_or_second"]['value']['register_8'].replace('BEEMU_REGISTER_', '') if token["params"]["arithmatic_params"]["source_or_second"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8' else 'HL'
+
+    # if hl this is always a pointer and since HL is always 0x0102, [0x0102] is...
+    second_value = 0x02 if second_register == 'HL' else register_values[register_index.index(second_register)]
+
+    values.append(second_value)
+
+    # Now calculate the results
+    operation_result = val_func(*values)
+    flag_values: FlagStates = flag_func(*values)
+
+
+    if second_register == 'HL':
+        tests.append({
+            "token": token,
+            "processor": "default",
+            "command_queue": [
+                # M1 Begins
+                *emit_m1_cycle(token),
+                # M2 begins
+                WriteTo.address_bus(0x0102),
+                WriteTo.data_bus(0x02),
+                # M2 ends M3/M1 begins
+                Halt.cycle(),
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
+                # Add the flag writes
+                *flag_values.generate_flag_write_commands(),
+                WriteTo.address_bus(0x01),
+                WriteTo.data_bus(get_opcode(token['original_machine_code']))
+            ]
+        })
+    else:
+        # Otherwise we just from register to register.
+        tests.append({
+            "token": token,
+            "processor": "default",
+            "command_queue": [
+                # M1 begins
+                *emit_m1_cycle(token),
+                # M2/M1 begins
+                *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
+                *flag_values.generate_flag_write_commands()
+            ]
+        })
+
+def emit_8_bit_preline(token: dict, tests: list) -> None:
+    """
+    Emit a preline arithmatic instruction in the preline segment.
+    """
+    # This is the pre-mainline
+    inc_dec_register = token["params"]["arithmatic_params"]["dest_or_first"]['value']['register_8'].replace('BEEMU_REGISTER_', '') if token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8' else 'HL'
+    # just get the value to be incremented or decremented
+    first_value = 0x02 if inc_dec_register == 'HL' else register_values[register_index.index(inc_dec_register)]
+    # And then the second is always 0x01 for INC or DEC
+    values = [first_value, 0x01]
+
+    operation_result = val_func(*values)
+    flag_values = flag_func(*values)
+
+    # Rather importantly, the Carry flag is NOT set for INC/DEC
+
+    if inc_dec_register == 'HL':
+        tests.append({
+            "token": token,
+            "processor": "default",
+            "command_queue": [
+                # M1 begins
+                *emit_m1_cycle(token),
+                # M2/M1 Begins
+                WriteTo.address_bus(0x0102),
+                WriteTo.data_bus(0x02),
+                Halt.cycle(),
+                # M3 begins
+                WriteTo.data_bus(operation_result),
+                WriteTo.memory(0x0102, operation_result),
+                *islice(flag_values.generate_flag_write_commands(), 3),
+                Halt.cycle(),
+                # M4/M1 begins
+                WriteTo.address_bus(0x01),
+                WriteTo.data_bus(get_opcode(token['original_machine_code']))
+            ]
+        })
+    else:
+        tests.append({
+            "token": token,
+            "processor": "default",
+            "command_queue": [
+                # M1 Begins
+                *emit_m1_cycle(token),
+                # M2/M1 Begins
+                WriteTo.register(inc_dec_register, operation_result),
+                # Toss away the C write because we do not set the Cy.
+                *islice(flag_values.generate_flag_write_commands(), 3)
+            ]
+        })
+
 for token in tokens:
     token = token['token']
     operation = token["params"]['arithmatic_params']['operation'].replace('BEEMU_OP_', '')
     val_func = val_functions[operation]
     flag_func = flag_functions[operation]
 
+    is_preline = token["original_machine_code"] < 0xC0
     is_mainline = 0xC0 > token["original_machine_code"] >= 0x80
+    is_8_bit = (token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8'
+                or token["params"]["arithmatic_params"]["dest_or_first"]['pointer'])
     if is_mainline:
-        # First one is always the A register, which is always 0x0A
-        # second one depends on the  token.
-        values = [0x0A]
-        second_register = token["params"]["arithmatic_params"]["source_or_second"]['value']['register_8'].replace('BEEMU_REGISTER_', '') if token["params"]["arithmatic_params"]["source_or_second"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8' else 'HL'
-
-        # if hl this is always a pointer and since HL is always 0x0102, [0x0102] is...
-        second_value = 0x02 if second_register == 'HL' else register_values[register_index.index(second_register)]
-
-        values.append(second_value)
-
-        # Now calculate the results
-        operation_result = val_func(*values)
-        flag_values: FlagStates = flag_func(*values)
-
-
-        if second_register == 'HL':
-            tests.append({
-                "token": token,
-                "processor": "default",
-                "command_queue": [
-                    # M1 Begins
-                    *emit_m1_cycle(token),
-                    # M2 begins
-                    WriteTo.address_bus(0x0102),
-                    WriteTo.data_bus(0x02),
-                    # M2 ends M3/M1 begins
-                    Halt.cycle(),
-                    *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
-                    # Add the flag writes
-                    *flag_values.generate_flag_write_commands(),
-                    WriteTo.address_bus(0x01),
-                    WriteTo.data_bus(get_opcode(token['original_machine_code']))
-                ]
-            })
-        else:
-            # Otherwise we just from register to register.
-            tests.append({
-                "token": token,
-                "processor": "default",
-                "command_queue": [
-                    # M1 begins
-                    *emit_m1_cycle(token),
-                    # M2/M1 begins
-                    *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
-                    *flag_values.generate_flag_write_commands()
-                ]
-            })
-    else:
-        # This is the pre-mainline
-        inc_dec_register = token["params"]["arithmatic_params"]["dest_or_first"]['value']['register_8'].replace('BEEMU_REGISTER_', '') if token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8' else 'HL'
-        # just get the value to be incremented or decremented
-        first_value = 0x02 if inc_dec_register == 'HL' else register_values[register_index.index(inc_dec_register)]
-        # And then the second is always 0x01 for INC or DEC
-        values = [first_value, 0x01]
-
-        operation_result = val_func(*values)
-        flag_values = flag_func(*values)
-
-        # Rather importantly, the Carry flag is NOT set for INC/DEC
-
-        if inc_dec_register == 'HL':
-            tests.append({
-                "token": token,
-                "processor": "default",
-                "command_queue": [
-                    # M1 begins
-                    *emit_m1_cycle(token),
-                    # M2/M1 Begins
-                    WriteTo.address_bus(0x0102),
-                    WriteTo.data_bus(0x02),
-                    Halt.cycle(),
-                    # M3 begins
-                    WriteTo.data_bus(operation_result),
-                    WriteTo.memory(0x0102, operation_result),
-                    *islice(flag_values.generate_flag_write_commands(), 3),
-                    Halt.cycle(),
-                    # M4/M1 begins
-                    WriteTo.address_bus(0x01),
-                    WriteTo.data_bus(get_opcode(token['original_machine_code']))
-                ]
-            })
-        else:
-            tests.append({
-                "token": token,
-                "processor": "default",
-                "command_queue": [
-                    # M1 Begins
-                    *emit_m1_cycle(token),
-                    # M2/M1 Begins
-                    WriteTo.register(inc_dec_register, operation_result),
-                    # Toss away the C write because we do not set the Cy.
-                    *islice(flag_values.generate_flag_write_commands(), 3)
-                ]
-            })
+        emit_8_bit_mainline(token, tests)
+    elif is_preline:
+        if is_8_bit:
+            emit_8_bit_preline(token, tests)
 
 if __name__ == '__main__':
     with open('../command_tests.json', 'w') as f:
