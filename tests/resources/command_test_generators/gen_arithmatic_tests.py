@@ -17,16 +17,16 @@ register_index = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'S', 'P']
 register_values = [0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x01, 0x02, 0x00, 0xFF]
 
 val_functions = {
-    "ADD": lambda a, b: (a + b) % 256,
+    "ADD": lambda a, b, c: (a + b) % c,
     # In default processor the C flag is set to 1
-    "ADC": lambda a, b: (a + b + 1) % 256,
-    "SUB": lambda a, b: (a - b) % 256,
+    "ADC": lambda a, b, c: (a + b + 1) % c,
+    "SUB": lambda a, b, c: (a - b) % c,
     # In default processor the C flag is set to 1
-    "SBC": lambda a, b: (a - b - 1) % 256,
-    "AND": lambda a, b: a & b,
-    "OR": lambda a, b: a | b,
-    "CP": lambda a, _: a,
-    "XOR": lambda a, b: a ^ b,
+    "SBC": lambda a, b, c: (a - b - 1) % c,
+    "AND": lambda a, b, _: a & b,
+    "OR": lambda a, b, _: a | b,
+    "CP": lambda a, _, __: a,
+    "XOR": lambda a, b, _: a ^ b,
 }
 
 def emit_m1_cycle(token: dict) -> list[dict]:
@@ -59,45 +59,45 @@ class FlagStates:
             yield WriteTo.flag(flag_name, flag_value)
 
 flag_functions = {
-    "ADD": lambda a, b: FlagStates(
-        z=((a + b) % 256) == 0,
+    "ADD": lambda a, b, c: FlagStates(
+        z=((a + b) % c) == 0,
         n=0,
         # Mask the lower bits and add them.
         h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
         c=(a + b) > 0xFF
     ),
-    "ADC": lambda a, b: FlagStates(
-        z=((a + b + 1) % 256) == 0,
+    "ADC": lambda a, b, c: FlagStates(
+        z=((a + b + 1) % c) == 0,
         n=0,
         h=((a & 0x0F) + (b & 0x0F) + 1) & 0x10 == 0x10,
         c=(a + b + 1) > 0xFF),
-    "SUB": lambda a, b: FlagStates(
-        z=((a - b) % 256) == 0,
+    "SUB": lambda a, b, c: FlagStates(
+        z=((a - b) % c) == 0,
         n=1,
         # Likewise for borrows this occurs for sub 0 underflow
         h=(((a & 0xF) - (b & 0x0F)) % 256) & 0x10 == 0x10,
         c=(a - b) < 0x00),
-    "SBC": lambda a, b: FlagStates(
-        z=((a - b - 1) % 256) == 0,
+    "SBC": lambda a, b, c: FlagStates(
+        z=((a - b - 1) % c) == 0,
         n=1,
         h=(((a & 0xF) - (b & 0x0F)) - 1) & 0x10 == 0x10,
         c=(a - b - 1) < 0x00),
-    "AND": lambda a, b: FlagStates(
+    "AND": lambda a, b, _: FlagStates(
         z=a & b == 0,
         n=0,
         h=1,
         c=0),
-    "XOR": lambda a, b: FlagStates(
+    "XOR": lambda a, b, _: FlagStates(
         z=a ^ b == 0,
         n=0,
         h=0,
         c=0),
-    "OR": lambda a, b: FlagStates(
+    "OR": lambda a, b, _: FlagStates(
         z=a | b == 0,
         n=0,
         h=0,
         c=0),
-    "CP": lambda a, b: FlagStates(
+    "CP": lambda a, b, _: FlagStates(
         z=a - b == 0,
         n=1,
         h=((a & 0xF) - (b & 0x0F)) & 0x10 == 0x10,
@@ -121,8 +121,8 @@ def emit_8_bit_mainline(token: dict, tests: list, val_func: Callable, flag_func:
     values.append(second_value)
 
     # Now calculate the results
-    operation_result = val_func(*values)
-    flag_values: FlagStates = flag_func(*values)
+    operation_result = val_func(*values, 256)
+    flag_values: FlagStates = flag_func(*values, 256)
 
 
     if second_register == 'HL':
@@ -169,8 +169,8 @@ def emit_8_bit_preline(token: dict, tests: list, val_func: Callable, flag_func: 
     # And then the second is always 0x01 for INC or DEC
     values = [first_value, 0x01]
 
-    operation_result = val_func(*values)
-    flag_values = flag_func(*values)
+    operation_result = val_func(*values, 256)
+    flag_values = flag_func(*values, 256)
 
     # Rather importantly, the Carry flag is NOT set for INC/DEC
 
@@ -225,12 +225,11 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
     # And then the second is always 0x01 for INC or DEC
     values = [first_value, 0x01]
 
-    operation_result = val_func(*values)
-    flag_values = flag_func(*values)
+    operation_result = val_func(*values, 256)
+    flag_values = flag_func(*values, 256)
 
     # Rather importantly, the Carry flag is NOT set for INC/DEC
 
-    print(inc_dec_register)
     tests.append({
         "token": token,
         "processor": "default",
@@ -251,7 +250,7 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
 def emit_16_bit_preline(token: dict, test: list, *args, **kwargs):
    match token['original_machine_code'] & 0x0F:
        case 0x09:
-           ...
+           ... # emit_16_bit_add(token, test, *args, **kwargs)
        case 0x03:
            emit_16_bit_inc_dec(token, test, *args, **kwargs)
        case 0x0B:
