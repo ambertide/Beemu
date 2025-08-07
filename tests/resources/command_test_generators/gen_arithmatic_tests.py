@@ -225,8 +225,8 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
     # And then the second is always 0x01 for INC or DEC
     values = [first_value, 0x01]
 
-    operation_result = val_func(*values, 256)
-    flag_values = flag_func(*values, 256)
+    operation_result = val_func(*values, 2 ** 16)
+    flag_values = flag_func(*values, 2 ** 16)
 
     # Rather importantly, the Carry flag is NOT set for INC/DEC
 
@@ -239,7 +239,7 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
             # M2/M1 Begins
             # temporarily uses PC as a ad-hoc 16 bit data bus.
             WriteTo.address_bus(first_value),
-            WriteTo.register(inc_dec_register, first_value + 1),
+            WriteTo.register(inc_dec_register, operation_result),
             Halt.cycle(),
             # Restore PC
             WriteTo.address_bus(0x01)
