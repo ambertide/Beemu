@@ -9,7 +9,13 @@ from json import dump
 from tests.resources.token_test_generators.utils import get_opcode, sort_instructions
 
 # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
-tokens = get_tokens_in_range(chain(range(0x80, 0xC0), range(0x04, 0x3D, 8), range(0x05, 0x3F, 8), range(0x03, 0x3C, 8)))
+tokens = get_tokens_in_range(chain(
+    range(0x80, 0xC0),
+    range(0x04, 0x3D, 8),
+    range(0x05, 0x3F, 8),
+    range(0x03, 0x3C, 8),
+    range(0x09, 0x3A, 16)
+))
 
 # The below values are hardcoded for the DEFAULT processor preset for testing
 # S and P are not real 8 bit registers but they are here for the sake of brevity
@@ -64,13 +70,13 @@ flag_functions = {
         n=0,
         # Mask the lower bits and add them.
         h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
-        c=(a + b) > 0xFF
+        c=(a + b) > c - 1
     ),
     "ADC": lambda a, b, c: FlagStates(
         z=((a + b + 1) % c) == 0,
         n=0,
         h=((a & 0x0F) + (b & 0x0F) + 1) & 0x10 == 0x10,
-        c=(a + b + 1) > 0xFF),
+        c=(a + b + 1) > c - 1),
     "SUB": lambda a, b, c: FlagStates(
         z=((a - b) % c) == 0,
         n=1,
@@ -247,10 +253,55 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
         ]
     })
 
+def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_func: Callable[[int, int, int], FlagStates]) -> None:
+    """
+    Emit a 16 bit add preline instruction IR
+    """
+    # Always HL, funny enough.
+    register1 = 'HL'
+    register2 = token["params"]["arithmatic_params"]["source_or_second"]['value']['register_16'].replace('BEEMU_REGISTER_', '')
+    values = []
+    for sixteen_bit_register in [register1, register2]:
+        eight_bit_parts = [*sixteen_bit_register]
+        value = 0
+        for eight_bit_register in eight_bit_parts:
+            # A 16 bit register is just the concat of 2 8 bit registers.
+            val = register_values[register_index.index(eight_bit_register)]
+            value <<= 4
+            value |= val
+        values.append(value)
+
+    operation_result = val_func(*values, 2 ** 16)
+    flag_values = flag_func(*values, 2 ** 16)
+
+    # Rather importantly, the Carry flag is NOT set for INC/DEC
+
+    tests.append({
+        "token": token,
+        "processor": "default",
+        "command_queue": [
+            # M1 Begins
+            *emit_m1_cycle(token),
+            # M2 Begins
+            # temporarily uses PC as an ad-hoc 16 bit data bus to, I assume
+            # zero to ALU?
+            WriteTo.address_bus(0x0000),
+            # We write part by part
+            WriteTo.register('H', (operation_result & 0xFF00) >> 8),
+            Halt.cycle(),
+            #M3/M1 begins
+            # We then write the L
+            WriteTo.register('L', (operation_result & 0xFF)),
+            # Restore PC
+            WriteTo.address_bus(0x01),
+            *flag_values.generate_flag_write_commands()
+        ]
+    })
+
 def emit_16_bit_preline(token: dict, test: list, *args, **kwargs):
    match token['original_machine_code'] & 0x0F:
        case 0x09:
-           ... # emit_16_bit_add(token, test, *args, **kwargs)
+           emit_16_bit_add(token, test, *args, **kwargs)
        case 0x03:
            emit_16_bit_inc_dec(token, test, *args, **kwargs)
        case 0x0B:
