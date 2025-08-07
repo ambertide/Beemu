@@ -103,6 +103,24 @@ class WriteTo:
 
     @classmethod
     def register(cls, register: str, value: int) -> dict:
+        if len(register) == 2:
+            return {
+                "type": "BEEMU_COMMAND_WRITE",
+                "write": {
+                    "target": {
+                        "type": "BEEMU_WRITE_TARGET_REGISTER_16",
+                        "target": {
+                            "register_16": f"BEEMU_REGISTER_{register}"
+                        }
+                    },
+                    "value": {
+                        "is_16": True,
+                        "value": {
+                            "double_value": value
+                        }
+                    }
+                }
+            }
         return {
             "type": "BEEMU_COMMAND_WRITE",
             "write": {

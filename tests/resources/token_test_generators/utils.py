@@ -33,13 +33,14 @@ def get_opcode(instruction: int) -> int:
     return opcode_lsb
 
 
-def sort_instructions(instruction: list[dict]) -> None:
+def sort_instructions(instruction: list[dict], resolve_instruction = lambda i: int(i['instruction'], base=16)) -> None:
     """In place sort the instruction according to canonical opcodes.
 
     Args:
             instruction (list[dict]): List holding the instructions.
+            resolve_instruction (Callable[[dict], int]): a function used to resolve from machine code from instruction
     """
-    instruction.sort(key=lambda i: get_opcode(int(i["instruction"], base=16)))
+    instruction.sort(key=lambda i: get_opcode(resolve_instruction(i)))
 
 
 def get_tokens_except(except_=[]) -> list[dict]:

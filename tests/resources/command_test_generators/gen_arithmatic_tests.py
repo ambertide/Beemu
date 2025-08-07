@@ -1,18 +1,20 @@
 from json import load, dumps
+from collections.abc import Callable
 
 from tests.resources.command_test_generators.utils import get_tokens_in_range, WriteTo, Halt
 from dataclasses import dataclass
 from itertools import chain, islice
 from json import dump
 
-from tests.resources.token_test_generators.utils import get_opcode
+from tests.resources.token_test_generators.utils import get_opcode, sort_instructions
 
 # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
-tokens = get_tokens_in_range(chain(range(0x80, 0xC0), range(0x04, 0x3D, 8), range(0x05, 0x3F, 8)))
+tokens = get_tokens_in_range(chain(range(0x80, 0xC0), range(0x04, 0x3D, 8), range(0x05, 0x3F, 8), range(0x03, 0x3C, 8)))
 
 # The below values are hardcoded for the DEFAULT processor preset for testing
-register_index = ['A', 'B', 'C', 'D', 'E', 'H', 'L']
-register_values = [0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x01, 0x02]
+# S and P are not real 8 bit registers but they are here for the sake of brevity
+register_index = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'S', 'P']
+register_values = [0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x01, 0x02, 0x00, 0xFF]
 
 val_functions = {
     "ADD": lambda a, b: (a + b) % 256,
@@ -104,7 +106,7 @@ flag_functions = {
 
 tests = []
 
-def emit_8_bit_mainline(token: dict, tests: list) -> None:
+def emit_8_bit_mainline(token: dict, tests: list, val_func: Callable, flag_func: Callable) -> None:
     """
     Emit a 8 bit arithmatic mainline instruction.
     """
@@ -156,7 +158,7 @@ def emit_8_bit_mainline(token: dict, tests: list) -> None:
             ]
         })
 
-def emit_8_bit_preline(token: dict, tests: list) -> None:
+def emit_8_bit_preline(token: dict, tests: list, val_func: Callable, flag_func: Callable) -> None:
     """
     Emit a preline arithmatic instruction in the preline segment.
     """
@@ -207,6 +209,54 @@ def emit_8_bit_preline(token: dict, tests: list) -> None:
             ]
         })
 
+def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: Callable):
+    """
+    Emit a preline arithmatic instruction that is a 16 bit inc dec
+    """
+    inc_dec_register = token["params"]["arithmatic_params"]["dest_or_first"]['value']['register_16'].replace('BEEMU_REGISTER_', '')
+    # just get the value to be incremented or decremented
+    eight_bit_parts = [*inc_dec_register]
+    first_value = 0
+    for eight_bit_register in eight_bit_parts:
+        # A 16 bit register is just the concat of 2 8 bit registers.
+        val = register_values[register_index.index(eight_bit_register)]
+        first_value <<= 4
+        first_value |= val
+    # And then the second is always 0x01 for INC or DEC
+    values = [first_value, 0x01]
+
+    operation_result = val_func(*values)
+    flag_values = flag_func(*values)
+
+    # Rather importantly, the Carry flag is NOT set for INC/DEC
+
+    print(inc_dec_register)
+    tests.append({
+        "token": token,
+        "processor": "default",
+        "command_queue": [
+            # M1 Begins
+            *emit_m1_cycle(token),
+            # M2/M1 Begins
+            # temporarily uses PC as a ad-hoc 16 bit data bus.
+            WriteTo.address_bus(first_value),
+            WriteTo.register(inc_dec_register, first_value + 1),
+            Halt.cycle(),
+            # Restore PC
+            WriteTo.address_bus(0x01)
+            # No flags are modified for IDU operations.
+        ]
+    })
+
+def emit_16_bit_preline(token: dict, test: list, *args, **kwargs):
+   match token['original_machine_code'] & 0x0F:
+       case 0x09:
+           ...
+       case 0x03:
+           emit_16_bit_inc_dec(token, test, *args, **kwargs)
+       case 0x0B:
+           emit_16_bit_inc_dec(token, test, *args, **kwargs)
+
 for token in tokens:
     token = token['token']
     operation = token["params"]['arithmatic_params']['operation'].replace('BEEMU_OP_', '')
@@ -218,10 +268,14 @@ for token in tokens:
     is_8_bit = (token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8'
                 or token["params"]["arithmatic_params"]["dest_or_first"]['pointer'])
     if is_mainline:
-        emit_8_bit_mainline(token, tests)
+        emit_8_bit_mainline(token, tests, val_func, flag_func)
     elif is_preline:
         if is_8_bit:
-            emit_8_bit_preline(token, tests)
+            emit_8_bit_preline(token, tests, val_func, flag_func)
+        else: # is_16_bit
+            emit_16_bit_preline(token, tests, val_func, flag_func)
+
+sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
 
 if __name__ == '__main__':
     with open('../command_tests.json', 'w') as f:
