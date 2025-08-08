@@ -185,15 +185,14 @@ uint16_t beemu_registers_read_register_value(BeemuRegisters *registers, BeemuReg
 	{
 		return *beemu_get_register_ptr_8(registers, register_.name_of.eight_bit_register);
 	}
-	else if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
+
+	if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of_three(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
 	{
 		return beemu_get_special_register_16(registers, register_.name_of.sixteen_bit_register);
 	}
-	else
-	{
-		// Otherwise this is a composed
-		return beemu_read_composed_register(registers, register_.name_of.sixteen_bit_register);
-	}
+
+	// Otherwise this is a composed
+	return beemu_read_composed_register(registers, register_.name_of.sixteen_bit_register);
 }
 
 void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegister register_, uint16_t value)
@@ -202,7 +201,7 @@ void beemu_registers_write_register_value(BeemuRegisters *registers, BeemuRegist
 	{
 		*beemu_get_register_ptr_8(registers, register_.name_of.eight_bit_register) = value;
 	}
-	else if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
+	else if (register_.type == BEEMU_SIXTEEN_BIT_REGISTER && beemu_util_is_one_of_three(register_.name_of.sixteen_bit_register, BEEMU_REGISTER_M, BEEMU_REGISTER_PC, BEEMU_REGISTER_SP))
 	{
 		beemu_set_special_register_16(registers, register_.name_of.sixteen_bit_register, value);
 	}

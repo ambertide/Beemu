@@ -22,17 +22,6 @@ extern "C"
 	} BeemuRotationDirection;
 
 	/**
-	 * @brief Check if the given integer is one of the elements.
-	 *
-	 * @param element Element to search for.
-	 * @param n the number of elements
-	 * @param ... Elements to search in.
-	 * @return true If the element is one of the elements.
-	 * @return false If the element is not one of the elements.
-	 */
-	bool beemu_util_is_one_of(int element, int n, ...);
-
-	/**
 	 * @brief Check if the given element is one of the two elements.
 	 *
 	 * @param element
