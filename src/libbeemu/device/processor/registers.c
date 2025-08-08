@@ -72,20 +72,8 @@ beemu_read_composed_register(BeemuRegisters *registers, BeemuRegister_16 registe
 		// Combine A and flags to a single value
 		return beemu_util_combine_8_to_16(beemu_read_basic_register(registers, BEEMU_REGISTER_A), registers->flags);
 	}
-	int index = 0;
-	// Sure, sure this is not extendable,
-	// but I don't think GB architecture will change
-	// anytime soon.
-	if (register_ == BEEMU_REGISTER_DE)
-	{
-		index = 1;
-	}
-	else
-	{
-		index = 2;
-	}
-	uint16_t left_register_value = beemu_read_basic_register(registers, beemu_16_to_8_bit_converter[index][0]);
-	uint16_t right_register_value = beemu_read_basic_register(registers, beemu_16_to_8_bit_converter[index][1]);
+	const uint16_t left_register_value = beemu_read_basic_register(registers, beemu_16_to_8_bit_converter[register_][0]);
+	const uint16_t right_register_value = beemu_read_basic_register(registers, beemu_16_to_8_bit_converter[register_][1]);
 	return beemu_util_combine_8_to_16(left_register_value, right_register_value);
 }
 
