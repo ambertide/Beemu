@@ -34,23 +34,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -58,23 +41,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 3
 							}
 						}
 					}
@@ -106,23 +72,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 188
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_BC"
@@ -132,29 +81,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 189
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -195,23 +121,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -219,23 +128,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 4
 							}
 						}
 					}
@@ -367,23 +259,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -391,23 +266,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 5
 							}
 						}
 					}
@@ -539,23 +397,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -563,23 +404,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 9
 							}
 						}
 					}
@@ -605,23 +429,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 0
-							}
-						}
 					}
 				},
 				{
@@ -660,23 +467,6 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 206
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -785,23 +575,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -809,23 +582,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 11
 							}
 						}
 					}
@@ -857,23 +613,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 188
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_BC"
@@ -883,29 +622,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 187
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -946,23 +662,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -970,23 +669,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 12
 							}
 						}
 					}
@@ -1118,23 +800,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -1142,23 +807,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 13
 							}
 						}
 					}
@@ -1290,23 +938,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -1314,23 +945,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 19
 							}
 						}
 					}
@@ -1362,23 +976,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 222
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_DE"
@@ -1388,29 +985,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 223
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -1451,23 +1025,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -1475,23 +1032,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 20
 							}
 						}
 					}
@@ -1623,23 +1163,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -1647,23 +1170,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 21
 							}
 						}
 					}
@@ -1795,23 +1301,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -1819,23 +1308,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 25
 							}
 						}
 					}
@@ -1861,23 +1333,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 0
-							}
-						}
 					}
 				},
 				{
@@ -1916,23 +1371,6 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 240
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -2041,23 +1479,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2065,23 +1486,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 27
 							}
 						}
 					}
@@ -2113,23 +1517,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 222
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_DE"
@@ -2139,29 +1526,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 221
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -2202,23 +1566,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2226,23 +1573,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 28
 							}
 						}
 					}
@@ -2374,23 +1704,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2398,23 +1711,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 29
 							}
 						}
 					}
@@ -2546,23 +1842,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2570,23 +1849,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 35
 							}
 						}
 					}
@@ -2618,23 +1880,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 18
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_HL"
@@ -2644,29 +1889,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 19
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -2707,23 +1929,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2731,23 +1936,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 36
 							}
 						}
 					}
@@ -2879,23 +2067,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -2903,23 +2074,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 37
 							}
 						}
 					}
@@ -3051,23 +2205,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3075,23 +2212,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 41
 							}
 						}
 					}
@@ -3117,23 +2237,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 0
-							}
-						}
 					}
 				},
 				{
@@ -3172,23 +2275,6 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 36
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -3297,23 +2383,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3321,23 +2390,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 43
 							}
 						}
 					}
@@ -3369,23 +2421,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 18
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_HL"
@@ -3395,29 +2430,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 17
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -3458,23 +2470,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3482,23 +2477,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 44
 							}
 						}
 					}
@@ -3630,23 +2608,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3654,23 +2615,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 45
 							}
 						}
 					}
@@ -3802,23 +2746,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3826,23 +2753,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 51
 							}
 						}
 					}
@@ -3874,23 +2784,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 255
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_SP"
@@ -3900,29 +2793,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 256
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -3963,23 +2833,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -3987,23 +2840,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 52
 							}
 						}
 					}
@@ -4032,60 +2868,9 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 3
-							}
-						}
 					}
 				},
 				{
@@ -4160,40 +2945,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 52
-							}
-						}
 					}
 				}
 			]
@@ -4232,23 +2983,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -4256,23 +2990,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 53
 							}
 						}
 					}
@@ -4301,60 +3018,9 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 1
-							}
-						}
 					}
 				},
 				{
@@ -4430,40 +3096,6 @@
 					"halt": {
 						"is_cycle_terminator": true
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 53
-							}
-						}
-					}
 				}
 			]
 		},
@@ -4501,23 +3133,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -4525,23 +3140,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 57
 							}
 						}
 					}
@@ -4567,23 +3165,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 0
-							}
-						}
 					}
 				},
 				{
@@ -4622,23 +3203,6 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 17
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -4747,23 +3311,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -4771,23 +3318,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 59
 							}
 						}
 					}
@@ -4819,23 +3349,6 @@
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 255
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
 							"target": {
 								"register_16": "BEEMU_REGISTER_SP"
@@ -4845,29 +3358,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 254
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
 							}
 						}
 					}
@@ -4908,23 +3398,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -4932,23 +3405,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 60
 							}
 						}
 					}
@@ -5080,23 +3536,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -5104,23 +3543,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 61
 							}
 						}
 					}
@@ -5252,23 +3674,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -5276,23 +3681,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 128
 							}
 						}
 					}
@@ -5441,23 +3829,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -5465,23 +3836,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 129
 							}
 						}
 					}
@@ -5630,23 +3984,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -5654,23 +3991,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 130
 							}
 						}
 					}
@@ -5819,23 +4139,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -5843,23 +4146,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 131
 							}
 						}
 					}
@@ -6008,23 +4294,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -6032,23 +4301,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 132
 							}
 						}
 					}
@@ -6197,23 +4449,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -6221,23 +4456,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 133
 							}
 						}
 					}
@@ -6386,23 +4604,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -6410,23 +4611,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 134
 							}
 						}
 					}
@@ -6452,40 +4636,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -6578,40 +4728,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 134
-							}
-						}
-					}
 				}
 			]
 		},
@@ -6649,23 +4765,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -6673,23 +4772,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 135
 							}
 						}
 					}
@@ -6838,23 +4920,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -6862,23 +4927,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 136
 							}
 						}
 					}
@@ -7027,23 +5075,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7051,23 +5082,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 137
 							}
 						}
 					}
@@ -7216,23 +5230,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7240,23 +5237,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 138
 							}
 						}
 					}
@@ -7405,23 +5385,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7429,23 +5392,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 139
 							}
 						}
 					}
@@ -7594,23 +5540,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7618,23 +5547,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 140
 							}
 						}
 					}
@@ -7783,23 +5695,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7807,23 +5702,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 141
 							}
 						}
 					}
@@ -7972,23 +5850,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -7996,23 +5857,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 142
 							}
 						}
 					}
@@ -8038,40 +5882,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -8164,40 +5974,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 142
-							}
-						}
-					}
 				}
 			]
 		},
@@ -8235,23 +6011,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -8259,23 +6018,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 143
 							}
 						}
 					}
@@ -8424,23 +6166,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -8448,23 +6173,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 144
 							}
 						}
 					}
@@ -8613,23 +6321,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -8637,23 +6328,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 145
 							}
 						}
 					}
@@ -8802,23 +6476,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -8826,23 +6483,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 146
 							}
 						}
 					}
@@ -8991,23 +6631,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -9015,23 +6638,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 147
 							}
 						}
 					}
@@ -9180,23 +6786,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -9204,23 +6793,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 148
 							}
 						}
 					}
@@ -9369,23 +6941,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -9393,23 +6948,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 149
 							}
 						}
 					}
@@ -9558,23 +7096,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -9582,23 +7103,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 150
 							}
 						}
 					}
@@ -9624,40 +7128,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -9750,40 +7220,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 150
-							}
-						}
-					}
 				}
 			]
 		},
@@ -9821,23 +7257,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -9845,23 +7264,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 151
 							}
 						}
 					}
@@ -10010,23 +7412,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10034,23 +7419,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 152
 							}
 						}
 					}
@@ -10199,23 +7567,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10223,23 +7574,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 153
 							}
 						}
 					}
@@ -10388,23 +7722,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10412,23 +7729,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 154
 							}
 						}
 					}
@@ -10577,23 +7877,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10601,23 +7884,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 155
 							}
 						}
 					}
@@ -10766,23 +8032,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10790,23 +8039,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 156
 							}
 						}
 					}
@@ -10955,23 +8187,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -10979,23 +8194,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 157
 							}
 						}
 					}
@@ -11144,23 +8342,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -11168,23 +8349,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 158
 							}
 						}
 					}
@@ -11210,40 +8374,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -11336,40 +8466,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 158
-							}
-						}
-					}
 				}
 			]
 		},
@@ -11407,23 +8503,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -11431,23 +8510,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 159
 							}
 						}
 					}
@@ -11596,23 +8658,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -11620,23 +8665,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 160
 							}
 						}
 					}
@@ -11785,23 +8813,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -11809,23 +8820,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 161
 							}
 						}
 					}
@@ -11974,23 +8968,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -11998,23 +8975,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 162
 							}
 						}
 					}
@@ -12163,23 +9123,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -12187,23 +9130,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 163
 							}
 						}
 					}
@@ -12352,23 +9278,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -12376,23 +9285,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 164
 							}
 						}
 					}
@@ -12541,23 +9433,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -12565,23 +9440,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 165
 							}
 						}
 					}
@@ -12730,23 +9588,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -12754,23 +9595,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 166
 							}
 						}
 					}
@@ -12796,40 +9620,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -12922,40 +9712,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 166
-							}
-						}
-					}
 				}
 			]
 		},
@@ -12993,23 +9749,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13017,23 +9756,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 167
 							}
 						}
 					}
@@ -13182,23 +9904,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13206,23 +9911,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 168
 							}
 						}
 					}
@@ -13371,23 +10059,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13395,23 +10066,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 169
 							}
 						}
 					}
@@ -13560,23 +10214,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13584,23 +10221,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 170
 							}
 						}
 					}
@@ -13749,23 +10369,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13773,23 +10376,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 171
 							}
 						}
 					}
@@ -13938,23 +10524,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -13962,23 +10531,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 172
 							}
 						}
 					}
@@ -14127,23 +10679,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -14151,23 +10686,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 173
 							}
 						}
 					}
@@ -14316,23 +10834,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -14340,23 +10841,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 174
 							}
 						}
 					}
@@ -14382,40 +10866,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -14508,40 +10958,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 174
-							}
-						}
-					}
 				}
 			]
 		},
@@ -14579,23 +10995,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -14603,23 +11002,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 175
 							}
 						}
 					}
@@ -14768,23 +11150,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -14792,23 +11157,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 176
 							}
 						}
 					}
@@ -14957,23 +11305,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -14981,23 +11312,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 177
 							}
 						}
 					}
@@ -15146,23 +11460,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -15170,23 +11467,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 178
 							}
 						}
 					}
@@ -15335,23 +11615,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -15359,23 +11622,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 179
 							}
 						}
 					}
@@ -15524,23 +11770,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -15548,23 +11777,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 180
 							}
 						}
 					}
@@ -15713,23 +11925,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -15737,23 +11932,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 181
 							}
 						}
 					}
@@ -15902,23 +12080,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -15926,23 +12087,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 182
 							}
 						}
 					}
@@ -15968,40 +12112,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -16094,40 +12204,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 182
-							}
-						}
-					}
 				}
 			]
 		},
@@ -16165,23 +12241,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -16189,23 +12248,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 183
 							}
 						}
 					}
@@ -16354,23 +12396,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -16378,23 +12403,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 184
 							}
 						}
 					}
@@ -16526,23 +12534,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -16550,23 +12541,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 185
 							}
 						}
 					}
@@ -16698,23 +12672,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -16722,23 +12679,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 186
 							}
 						}
 					}
@@ -16870,23 +12810,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -16894,23 +12817,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 187
 							}
 						}
 					}
@@ -17042,23 +12948,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -17066,23 +12955,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 188
 							}
 						}
 					}
@@ -17214,23 +13086,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -17238,23 +13093,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 189
 							}
 						}
 					}
@@ -17386,23 +13224,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -17410,23 +13231,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 190
 							}
 						}
 					}
@@ -17452,40 +13256,6 @@
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 258
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 2
-							}
-						}
 					}
 				},
 				{
@@ -17561,40 +13331,6 @@
 							}
 						}
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 190
-							}
-						}
-					}
 				}
 			]
 		},
@@ -17632,23 +13368,6 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_INTERNAL",
 							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_ADDRESS_BUS"
-							}
-						},
-						"value": {
-							"is_16": true,
-							"value": {
-								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
 								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
 							}
 						},
@@ -17656,23 +13375,6 @@
 							"is_16": true,
 							"value": {
 								"double_value": 1
-							}
-						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_INTERNAL",
-							"target": {
-								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_DATA_BUS"
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 191
 							}
 						}
 					}

@@ -27,16 +27,6 @@ void beemu_cq_halt_cycle(BeemuCommandQueue *queue);
 void beemu_cq_write_reg_8(BeemuCommandQueue *queue, BeemuRegister_8 reg, uint8_t value);
 
 /**
- * Add an internal write to data bus command to the command queue.
- */
-void beemu_cq_write_data_bus(BeemuCommandQueue *queue, uint8_t value);
-
-/**
- * Add an internal write to address bus command to the command queue.
- */
-void beemu_cq_write_address_bus(BeemuCommandQueue *queue, uint16_t value);
-
-/**
  * Add a flag write command to the command queue.
  */
 void beemu_cq_write_flag(BeemuCommandQueue *queue, BeemuFlag flag, uint8_t value);
@@ -55,30 +45,6 @@ void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
  * Emit a write order for a memory address.
  */
 void beemu_cq_write_memory(BeemuCommandQueue *queue, uint16_t memory_address, uint8_t memory_value);
-
-/**
- *  Emit a write order for a memory address, preceded by a write order
- *  of the same value to the data bus.
- */
-void beemu_cq_write_memory_through_data_bus(BeemuCommandQueue *queue, uint16_t memory_address, uint8_t memory_value);
-
-/**
- * Check if this command queue has a queued write order for a data bus
- * modification for something OTHER than instruction register.
- * @param queue Queue to check for
- * @return True if a write order for the data bus exists without immediately
- * followed by an IR write.
- */
-bool beemu_cq_has_non_ir_data_bus_modification(const BeemuCommandQueue *queue);
-
-/**
- * Check if this command queue has a queued addres bus modification for something
- * other than the Program Counter.
- * @param queue Queue to check for
- * @return True if a write order for the address bus exists without immediately
- * followed by a PC write.
- */
-bool beemu_cq_has_non_pc_addr_bus_modification(const BeemuCommandQueue *queue);
 
 /**
  * @brief Resolve the value of a parameter holding an 8 or 16 bit unsigned value.

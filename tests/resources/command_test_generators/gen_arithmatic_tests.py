@@ -37,9 +37,7 @@ val_functions = {
 
 def emit_m1_cycle(token: dict) -> list[dict]:
     return [
-        WriteTo.address_bus(0x01),
         WriteTo.pc(0x01),
-        WriteTo.data_bus(get_opcode(token['original_machine_code'])),
         WriteTo.ir(get_opcode(token['original_machine_code'])),
         Halt.cycle(),
     ]
@@ -139,15 +137,11 @@ def emit_8_bit_mainline(token: dict, tests: list, val_func: Callable, flag_func:
                 # M1 Begins
                 *emit_m1_cycle(token),
                 # M2 begins
-                WriteTo.address_bus(0x0102),
-                WriteTo.data_bus(0x02),
                 # M2 ends M3/M1 begins
                 Halt.cycle(),
                 *([WriteTo.register('A', operation_result)] if operation != 'CP' else []),
                 # Add the flag writes
                 *flag_values.generate_flag_write_commands(),
-                WriteTo.address_bus(0x01),
-                WriteTo.data_bus(get_opcode(token['original_machine_code']))
             ]
         })
     else:
@@ -188,17 +182,12 @@ def emit_8_bit_preline(token: dict, tests: list, val_func: Callable, flag_func: 
                 # M1 begins
                 *emit_m1_cycle(token),
                 # M2/M1 Begins
-                WriteTo.address_bus(0x0102),
-                WriteTo.data_bus(0x02),
                 Halt.cycle(),
                 # M3 begins
-                WriteTo.data_bus(operation_result),
                 WriteTo.memory(0x0102, operation_result),
                 *islice(flag_values.generate_flag_write_commands(), 3),
                 Halt.cycle(),
                 # M4/M1 begins
-                WriteTo.address_bus(0x01),
-                WriteTo.data_bus(get_opcode(token['original_machine_code']))
             ]
         })
     else:
@@ -244,12 +233,8 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
             *emit_m1_cycle(token),
             # M2/M1 Begins
             # temporarily uses PC as a ad-hoc 16 bit data bus.
-            WriteTo.address_bus(first_value),
             WriteTo.register(inc_dec_register, operation_result),
-            Halt.cycle(),
-            # Restore PC
-            WriteTo.address_bus(0x01)
-            # No flags are modified for IDU operations.
+            # But there is an extra halt for
         ]
     })
 
@@ -285,7 +270,6 @@ def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_
             # M2 Begins
             # temporarily uses PC as an ad-hoc 16 bit data bus to, I assume
             # zero to ALU?
-            WriteTo.address_bus(0x0000),
             # We write part by part
             WriteTo.register('H', (operation_result & 0xFF00) >> 8),
             Halt.cycle(),
@@ -293,7 +277,6 @@ def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_
             # We then write the L
             WriteTo.register('L', (operation_result & 0xFF)),
             # Restore PC
-            WriteTo.address_bus(0x01),
             *flag_values.generate_flag_write_commands()
         ]
     })

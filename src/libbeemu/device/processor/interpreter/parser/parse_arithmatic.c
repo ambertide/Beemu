@@ -20,7 +20,7 @@
  * @param processor Processor in its current state.
  * @return Dereferenced [HL]
  */
-uint8_t set_data_address_busses_for_hl(BeemuCommandQueue *queue, const BeemuProcessor *processor)
+uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor)
 {
 	// We can directly fetch the HL as the HL writes always occur after this point,
 	// no need to seek within the queue.
@@ -29,9 +29,6 @@ uint8_t set_data_address_busses_for_hl(BeemuCommandQueue *queue, const BeemuProc
 	HL.name_of.sixteen_bit_register = BEEMU_REGISTER_HL;
 	const uint16_t addr = beemu_registers_read_register_value(processor->registers, HL);
 	const uint8_t mem_value = beemu_memory_read(processor->memory, addr);
-	// Now write the write orders to the queue.
-	beemu_cq_write_address_bus(queue, addr);
-	beemu_cq_write_data_bus(queue, mem_value);
 	// And the halt order.
 	beemu_cq_halt_cycle(queue);
 	return mem_value;
@@ -180,7 +177,7 @@ void beemu_cq_write_results_u8(
 		// We can just use the resolve_instruction_param function to get the value
 		// which we now is the mem addr, and then we can emit the memory write.
 		const uint16_t memory_addr = beemu_resolve_instruction_parameter_unsigned(dst, processor, true);
-		beemu_cq_write_memory_through_data_bus(queue, memory_addr, result);
+		beemu_cq_write_memory(queue, memory_addr, result);
 	} else if (dst->type == BEEMU_PARAM_TYPE_REGISTER_8) {
 		beemu_cq_write_reg_8(queue, dst->value.register_8, result);
 	}
@@ -205,7 +202,7 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 	uint16_t first_value = beemu_resolve_instruction_parameter_unsigned(&params.dest_or_first, processor, false);
 	uint16_t second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	if (is_param_hl_ptr(&params.source_or_second) || is_param_hl_ptr(&params.dest_or_first)) {
-		set_data_address_busses_for_hl(queue, processor);
+		dereference_hl_with_halt(queue, processor);
 	} else {
 		second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	}
