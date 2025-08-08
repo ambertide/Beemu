@@ -215,7 +215,7 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
     for eight_bit_register in eight_bit_parts:
         # A 16 bit register is just the concat of 2 8 bit registers.
         val = register_values[register_index.index(eight_bit_register)]
-        first_value <<= 4
+        first_value <<= 8
         first_value |= val
     # And then the second is always 0x01 for INC or DEC
     values = [first_value, 0x01]
@@ -252,7 +252,7 @@ def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_
         for eight_bit_register in eight_bit_parts:
             # A 16 bit register is just the concat of 2 8 bit registers.
             val = register_values[register_index.index(eight_bit_register)]
-            value <<= 4
+            value <<= 8
             value |= val
         values.append(value)
 
