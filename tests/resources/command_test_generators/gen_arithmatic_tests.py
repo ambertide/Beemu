@@ -234,7 +234,8 @@ def emit_16_bit_inc_dec(token: dict, test: list, val_func: Callable, flag_func: 
             # M2/M1 Begins
             # temporarily uses PC as a ad-hoc 16 bit data bus.
             WriteTo.register(inc_dec_register, operation_result),
-            # But there is an extra halt for
+            # But there is an extra halt for restoring PC (i think)
+            Halt.cycle()
         ]
     })
 

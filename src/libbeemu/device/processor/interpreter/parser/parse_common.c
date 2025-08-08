@@ -34,6 +34,17 @@ void beemu_cq_write_reg_8(BeemuCommandQueue *queue, const BeemuRegister_8 reg, c
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_reg_16(BeemuCommandQueue *queue, const BeemuRegister_16 reg, const uint16_t value)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_REGISTER_16;
+	command.write.target.target.register_16 = reg;
+	command.write.value.is_16 = true;
+	command.write.value.value.double_value = value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
 void beemu_cq_write_flag(BeemuCommandQueue *queue, const BeemuFlag flag, const uint8_t value)
 {
 	BeemuMachineCommand command;

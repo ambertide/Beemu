@@ -27,6 +27,11 @@ void beemu_cq_halt_cycle(BeemuCommandQueue *queue);
 void beemu_cq_write_reg_8(BeemuCommandQueue *queue, BeemuRegister_8 reg, uint8_t value);
 
 /**
+ * Add a write register 16 machine command to the command queue.
+ */
+void beemu_cq_write_reg_16(BeemuCommandQueue *queue, BeemuRegister_16 reg, uint16_t value);
+
+/**
  * Add a flag write command to the command queue.
  */
 void beemu_cq_write_flag(BeemuCommandQueue *queue, BeemuFlag flag, uint8_t value);

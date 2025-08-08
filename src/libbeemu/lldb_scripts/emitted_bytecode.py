@@ -136,7 +136,10 @@ if __name__ == '__main__':
                 else:
                     # Afterwards
                     actual_node = parse_node(child.GetChildMemberWithName('current'))
-                    expected_node = next(expected_generator)
+                    try:
+                        expected_node = next(expected_generator)
+                    except StopIteration:
+                        expected_node = ''
                     print_on_centre(expected_node, actual_node)
                     for expected_command in expected_generator:
                         print(expected_command)

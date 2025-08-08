@@ -183,6 +183,27 @@ void beemu_cq_write_results_u8(
 	}
 }
 
+/**
+ * Emit bytecodes that, when executed will write a sword sized result to its destinatiion
+ * @param queue Queue to emit the commands to.
+ * @param dst Parameter specifying the destination.
+ * @param result Result value to write
+ * @param processor BeemuProcessor to resolve the actual values.
+ * @param is_idu_op If set to true, it means this instruction is executed on the INCREMENT DECREMENT UNIT.
+ */
+void beemu_cq_write_results_u16(
+	BeemuCommandQueue *queue,
+	const BeemuParam *dst,
+	const uint16_t result,
+	const BeemuProcessor *processor,
+	const bool is_idu_op)
+{
+	beemu_cq_write_reg_16(queue, dst->value.register_16, result);
+	// The cycle stops here, perhaps to restore PC? or a quirk
+	// of the IDU?
+	beemu_cq_halt_cycle(queue);
+}
+
 bool halts_after_flags(const BeemuInstruction *instruction)
 {
 	switch (instruction->original_machine_code) {
@@ -221,6 +242,7 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		params.operation
 	);
 	uint32_t actual_result = 0;
+	bool is_idu_op = params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_16 && !params.dest_or_first.pointer && params.source_or_second.type == BEEMU_PARAM_TYPE_UINT_8;
 	if (do_param_hold_byte_length_values(&params.dest_or_first)) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
 		const uint8_t actual_result_size_corrected = operation_result;
@@ -233,9 +255,21 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 				processor);
 		}
 		actual_result = actual_result_size_corrected;
+	} else {
+		// For 16 bit holding values.
+		const uint16_t actual_result_size_corrected = operation_result;
+		beemu_cq_write_results_u16(
+			queue,
+			&params.dest_or_first,
+			actual_result_size_corrected,
+			processor,
+			is_idu_op);
 	}
 	// Finally generate write orders for the flag values.
-	beemu_cq_write_flags(queue, operation_result, actual_result, params.operation, half_carry_result, instruction->original_machine_code < 0x40);
+	// IDU ops do not emit write orders.
+	if (!is_idu_op) {
+		beemu_cq_write_flags(queue, operation_result, actual_result, params.operation, half_carry_result, instruction->original_machine_code < 0x40);
+	}
 	if (halts_after_flags(instruction)) {
 		beemu_cq_halt_cycle(queue);
 	}
