@@ -15,6 +15,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <libbeemu/device/processor/processor.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Add a halt cycle command to a command queue.
@@ -64,4 +67,22 @@ void beemu_cq_write_memory(BeemuCommandQueue *queue, uint16_t memory_address, ui
  */
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor, bool skip_deref);
 
+/**
+ * Holds two params, typically exploded 16 bit register to two 8 bits.
+ */
+typedef struct BeemuParamTuple {
+	BeemuParam higher;
+	BeemuParam lower;
+} BeemuParamTuple;
+
+/**
+ * Given a "compound" parameter (ie: reg16 or uint16) explode it into two
+ * base parameters (ie: reg8, reg8 or uint8, uint8)
+ * @param param Parameter to explode.
+ * @return Ad-hoc tuple of two beemu params.
+ */
+BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param);
+#ifdef __cplusplus
+	}
+#endif
 #endif // BEEMU_PARSE_COMMON_H

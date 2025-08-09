@@ -10,6 +10,7 @@ add_executable(
 	interpreter/test_command_queue.cpp
 		interpreter/BeemuParserTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/BeemuTest.cpp
+        interpreter/BeemuParserUtilsTest.cpp
 )
 
 target_link_libraries(

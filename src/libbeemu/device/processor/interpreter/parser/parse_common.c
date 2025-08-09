@@ -132,3 +132,38 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 	}
 	}
 }
+
+BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param)
+{
+	BeemuParamTuple tuple;
+	BeemuRegister_8 register_map[3][2] = {
+		{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
+		{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
+		{BEEMU_REGISTER_H, BEEMU_REGISTER_L}
+	};
+	tuple.higher.pointer = param->pointer;
+	tuple.lower.pointer = param->pointer;
+	switch (param->type) {
+	case BEEMU_PARAM_TYPE_REGISTER_16: {
+		tuple.higher.type = BEEMU_PARAM_TYPE_REGISTER_8;
+		tuple.lower.type = BEEMU_PARAM_TYPE_REGISTER_8;
+		tuple.higher.value.register_8 = register_map[param->value.register_16][0];
+		tuple.lower.value.register_8 = register_map[param->value.register_16][1];
+		break;
+	}
+	case BEEMU_PARAM_TYPE_UINT16: {
+		tuple.higher.type = BEEMU_PARAM_TYPE_UINT_8;
+		tuple.lower.type = BEEMU_PARAM_TYPE_UINT_8;
+		tuple.higher.value.register_8 = (param->value.value & 0xFF00) >> 8;
+		tuple.lower.value.register_8 = param->value.value & 0x00FF;
+		break;
+	}
+	default: {
+		tuple.higher.type = param->type;
+		tuple.higher.value = param->value;
+		tuple.lower = tuple.higher;
+		break;
+	}
+	}
+	return tuple;
+}
