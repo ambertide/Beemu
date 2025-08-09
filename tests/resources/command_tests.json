@@ -455,6 +455,74 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
@@ -1371,6 +1439,74 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_HALT",
 					"halt": {
 						"is_cycle_terminator": true
@@ -2282,6 +2418,74 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 2
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
 							}
 						}
 					}
@@ -3222,6 +3426,74 @@
 							"is_16": false,
 							"value": {
 								"byte_value": 2
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_Z"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_N"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 0
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_H"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_FLAG",
+							"target": {
+								"flag": "BEEMU_FLAG_C"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
 							}
 						}
 					}

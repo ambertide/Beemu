@@ -258,6 +258,9 @@ def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_
         values.append(value)
 
     operation_result = val_func(*values, 2 ** 16)
+    # We must calculate flags twice because the ADD HL, r16 uses ALU twice and thus
+    # calculates the flags twice as well.
+    first_op_flag_values = flag_func(*(value & 0xFF for value in values), 2**8)
     flag_values = flag_func(*values, 2 ** 16)
 
     # Rather importantly, the Carry flag is NOT set for INC/DEC
@@ -273,6 +276,7 @@ def emit_16_bit_add(token, test, val_func: Callable[[int, int, int], int], flag_
             # zero to ALU?
             # We write part by part
             WriteTo.register('H', (operation_result & 0xFF00) >> 8),
+            *first_op_flag_values.generate_flag_write_commands(),
             Halt.cycle(),
             #M3/M1 begins
             # We then write the L
