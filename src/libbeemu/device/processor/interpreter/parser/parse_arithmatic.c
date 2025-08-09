@@ -187,6 +187,7 @@ void beemu_cq_write_results_u8(
  * Emit bytecodes that, when executed will write a sword sized result to its destinatiion
  * @param queue Queue to emit the commands to.
  * @param dst Parameter specifying the destination.
+ * @param src Parameter specifying the source.
  * @param result Result value to write
  * @param processor BeemuProcessor to resolve the actual values.
  * @param is_idu_op If set to true, it means this instruction is executed on the INCREMENT DECREMENT UNIT.
@@ -194,14 +195,53 @@ void beemu_cq_write_results_u8(
 void beemu_cq_write_results_u16(
 	BeemuCommandQueue *queue,
 	const BeemuParam *dst,
+	const BeemuParam *src,
 	const uint16_t result,
 	const BeemuProcessor *processor,
 	const bool is_idu_op)
 {
-	beemu_cq_write_reg_16(queue, dst->value.register_16, result);
-	// The cycle stops here, perhaps to restore PC? or a quirk
-	// of the IDU?
-	beemu_cq_halt_cycle(queue);
+	if (is_idu_op) {
+		beemu_cq_write_reg_16(queue, dst->value.register_16, result);
+		// The cycle stops here, perhaps to restore PC? or a quirk
+		// of the IDU?
+		beemu_cq_halt_cycle(queue);
+	} else {
+		// Otherwise this is ADD r16, r16 call
+		// Which calls ALU twice, AND emits flags twice.
+		// so we will have to calculate the interim flag write
+		// commands, which only use the lower registers, write the results,
+		// calculate the secondary flags, this time using the higher parts,
+		// AND the carry from the lower calc.
+		const BeemuParamTuple dst_parts = beemu_explode_beemu_param(dst);
+		const BeemuParamTuple src_parts = beemu_explode_beemu_param(src);
+		const uint8_t dst_lower_content = beemu_resolve_instruction_parameter_unsigned(&dst_parts.lower, processor, true);
+		const uint8_t src_lower_content = beemu_resolve_instruction_parameter_unsigned(&src_parts.lower, processor, true);
+		// Now we must calculate the result for the lower half of the operation.
+		// We do this _even if_ we have the total, because we want to see if the lower half overflows
+		// which we need to see to calculate the flags.
+		// We pass C as 0 in all of this because BEEMU_OP_ADD does not use carry.
+		const int32_t lsb_wo_overflow = resolve_result_wo_overflow(dst_lower_content, src_lower_content, BEEMU_OP_ADD, 0);
+		const uint8_t lsb_actual_result = lsb_wo_overflow;
+		// Also get the half carry result to emit the HC.
+		const uint8_t lower_half_carry = resolve_half_carry_for_arithmatic(dst_lower_content, src_lower_content, 0, BEEMU_OP_ADD);
+		// Now emit the result for the lower part AND its flags.
+		beemu_cq_write_results_u8(queue, &dst_parts.lower, lsb_actual_result, processor);
+		beemu_cq_write_flags(queue, lsb_wo_overflow, lsb_actual_result, BEEMU_OP_ADD, lower_half_carry, false);
+		// and HALT
+		beemu_cq_halt_cycle(queue);
+		// ON THE NEXT CYCLE,
+		// Do ALL of the above for the higher part...
+		// Except...
+		// We also need to add the CARRY flag from the lower part of the calculation, so let's extract that.
+		const uint8_t lsb_carry = lsb_wo_overflow != lsb_actual_result;
+		const uint16_t dst_higher_content = beemu_resolve_instruction_parameter_unsigned(&dst_parts.higher, processor, true);
+		const uint16_t src_higher_content = beemu_resolve_instruction_parameter_unsigned(&src_parts.higher, processor, true);
+		const int32_t msb_wo_overflow = resolve_result_wo_overflow(dst_higher_content + lsb_carry, src_higher_content, BEEMU_OP_ADD, 0);
+		const uint8_t msb_actual_result = msb_wo_overflow;
+		const uint8_t msb_half_carry = resolve_half_carry_for_arithmatic(dst_higher_content + lsb_carry, src_higher_content, BEEMU_OP_ADD, 0);
+		beemu_cq_write_results_u8(queue, &dst_parts.higher, msb_actual_result, processor);
+		beemu_cq_write_flags(queue, msb_wo_overflow, msb_actual_result, BEEMU_OP_ADD, msb_half_carry, false);
+	}
 }
 
 bool halts_after_flags(const BeemuInstruction *instruction)
@@ -261,13 +301,16 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		beemu_cq_write_results_u16(
 			queue,
 			&params.dest_or_first,
+			&params.source_or_second,
 			actual_result_size_corrected,
 			processor,
 			is_idu_op);
+		actual_result = actual_result_size_corrected;
 	}
 	// Finally generate write orders for the flag values.
 	// IDU ops do not emit write orders.
-	if (!is_idu_op) {
+	if (do_param_hold_byte_length_values(&params.dest_or_first)) {
+		// 16 bits handle their own flags.
 		beemu_cq_write_flags(queue, operation_result, actual_result, params.operation, half_carry_result, instruction->original_machine_code < 0x40);
 	}
 	if (halts_after_flags(instruction)) {
