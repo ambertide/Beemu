@@ -42,10 +42,12 @@ int32_t resolve_result_wo_overflow(const uint16_t first_value, const uint16_t se
 {
 	switch (operation) {
 	case BEEMU_OP_ADD:
+	case BEEMU_OP_INC:
 		return first_value + second_value;
 	case BEEMU_OP_ADC:
 		return first_value + second_value + carry_flag;
 	case BEEMU_OP_SUB:
+	case BEEMU_OP_DEC:
 		return first_value - second_value;
 	case BEEMU_OP_SBC:
 		return first_value - second_value - carry_flag;
@@ -70,11 +72,13 @@ uint8_t resolve_half_carry_for_arithmatic(
 {
 	switch (operation) {
 	case BEEMU_OP_ADD:
+	case BEEMU_OP_INC:
 		return ((first_value & 0x0F) + (second_value & 0x0F) & 0x10) == 0x10;
 	case BEEMU_OP_ADC:
 		return (((first_value & 0x0F) + (second_value & 0x0F) + carry_flag) & 0x10) == 0x10;
 		;
 	case BEEMU_OP_SUB:
+	case BEEMU_OP_DEC:
 	case BEEMU_OP_CP:
 		return (((first_value & 0x0F) - (second_value & 0x0F)) & 0x10) == 0x10;
 	case BEEMU_OP_SBC:
@@ -98,7 +102,7 @@ void beemu_cq_write_flags(
 	)
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
-	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC);
+	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC || operation == BEEMU_OP_DEC);
 	if (operation == BEEMU_OP_XOR || operation == BEEMU_OP_OR) {
 		// XOR and OR specifically set H and C to 0
 		beemu_cq_write_flag(queue, BEEMU_FLAG_H, 0);
@@ -281,8 +285,10 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C),
 		params.operation
 	);
+
+	// This parameter is used to later handle the over/underflows.
 	uint32_t actual_result = 0;
-	bool is_idu_op = params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_16 && !params.dest_or_first.pointer && params.source_or_second.type == BEEMU_PARAM_TYPE_UINT_8;
+	bool is_idu_op = params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_16 && (params.operation == BEEMU_OP_INC || params.operation == BEEMU_OP_DEC);
 	if (do_param_hold_byte_length_values(&params.dest_or_first)) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
 		const uint8_t actual_result_size_corrected = operation_result;

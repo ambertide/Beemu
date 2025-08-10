@@ -69,8 +69,8 @@ void determine_arithmatic_inc_dec_params(
 	static const BeemuOperation suboperations[] = {
 		// A rather... interseting design decision I had given early on
 		// was to encode INC and DEC as add and sub respectively.
-		BEEMU_OP_ADD,
-		BEEMU_OP_SUB
+		BEEMU_OP_INC,
+		BEEMU_OP_DEC
 	};
 	const uint8_t operation_selector = opcode & 0x1;
 	const uint8_t register_selector = (opcode & 0b00111000) >> 3;
@@ -169,8 +169,8 @@ void determine_arithmatic16_inc_dec_params(
 	uint8_t opcode)
 {
 	static const BeemuOperation operations[] = {
-		BEEMU_OP_ADD,
-		BEEMU_OP_SUB
+		BEEMU_OP_INC,
+		BEEMU_OP_DEC
 	};
 	const uint8_t operation_selector = (opcode & 0x08) >> 3;
 	const uint8_t register_selector = (opcode & 0x30) >> 4;

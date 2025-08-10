@@ -98,8 +98,10 @@ extern "C" {
 	 */
 	typedef enum BeemuOperation {
 		BEEMU_OP_ADD,
+		BEEMU_OP_INC,
 		BEEMU_OP_ADC,
 		BEEMU_OP_SUB,
+		BEEMU_OP_DEC,
 		BEEMU_OP_SBC,
 		BEEMU_OP_AND,
 		BEEMU_OP_OR,

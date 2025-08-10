@@ -26,9 +26,11 @@ register_values = [0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x01, 0x02, 0x00, 0xFF]
 
 val_functions = {
     "ADD": lambda a, b, c: (a + b) % c,
+    "INC": lambda a, b, c: (a + b) % c,
     # In default processor the C flag is set to 1
     "ADC": lambda a, b, c: (a + b + 1) % c,
     "SUB": lambda a, b, c: (a - b) % c,
+    "DEC": lambda a, b, c: (a - b) % c,
     # In default processor the C flag is set to 1
     "SBC": lambda a, b, c: (a - b - 1) % c,
     "AND": lambda a, b, _: a & b,
@@ -72,12 +74,25 @@ flag_functions = {
         h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
         c=(a + b) > c - 1
     ),
+    "INC": lambda a, b, c: FlagStates(
+        z=((a + b) % c) == 0,
+        n=0,
+        # Mask the lower bits and add them.
+        h=((a & 0x0F) + (b & 0x0F)) & 0x10 == 0x10,
+        c=(a + b) > c - 1
+    ),
     "ADC": lambda a, b, c: FlagStates(
         z=((a + b + 1) % c) == 0,
         n=0,
         h=((a & 0x0F) + (b & 0x0F) + 1) & 0x10 == 0x10,
         c=(a + b + 1) > c - 1),
     "SUB": lambda a, b, c: FlagStates(
+        z=((a - b) % c) == 0,
+        n=1,
+        # Likewise for borrows this occurs for sub 0 underflow
+        h=(((a & 0xF) - (b & 0x0F)) % 256) & 0x10 == 0x10,
+        c=(a - b) < 0x00),
+    "DEC": lambda a, b, c: FlagStates(
         z=((a - b) % c) == 0,
         n=1,
         # Likewise for borrows this occurs for sub 0 underflow

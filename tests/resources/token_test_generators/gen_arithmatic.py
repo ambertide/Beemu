@@ -63,9 +63,17 @@ for opcode, subop, source_register in zip(
 
 # Oh well...
 
+
+# Update: this was a horrible mistake, by encoding INC/DECs as ADD/SUB
+# Calls, I caused the parser to have to check the opcode, when it shouldn't have
+# to do this.
+
+# I now encode them properly as INC and DEC, but leaving the initial comment for...
+# Posterity.
+
 for operation, opcode_range in (
-    ("BEEMU_OP_ADD", range(0x04, 0x3D, 8)),
-    ("BEEMU_OP_SUB", range(0x05, 0x3F, 8)),
+    ("BEEMU_OP_INC", range(0x04, 0x3D, 8)),
+    ("BEEMU_OP_DEC", range(0x05, 0x3F, 8)),
 ):
     for opcode, dest_register in zip(opcode_range, registers):
         tokens.append(
@@ -160,7 +168,7 @@ registers = [
     sp_register
 ]
 
-for opcode, operation, register in  zip(range(0x03, 0x3C, 8), cycle(['BEEMU_OP_ADD', 'BEEMU_OP_SUB']), registers):
+for opcode, operation, register in  zip(range(0x03, 0x3C, 8), cycle(['BEEMU_OP_INC', 'BEEMU_OP_DEC']), registers):
     tokens.append(
         {
             "instruction": f"0x{opcode:06X}",
