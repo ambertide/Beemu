@@ -27,7 +27,7 @@ TEST_P(BeemuExplodeBeemuParamParameterizedTestFixture, ShouldExplodeSixteenBitRe
 	param.type = BEEMU_PARAM_TYPE_REGISTER_16;
 	param.pointer = false;
 	param.value.register_16 = compound_register;
-	const auto [higher, lower] = beemu_explode_beemu_param(&param);
+	const auto [higher, lower] = beemu_explode_beemu_param(&param, &processor.processor());
 	EXPECT_EQ(higher.type, BEEMU_PARAM_TYPE_REGISTER_8);
 	EXPECT_EQ(lower.type, BEEMU_PARAM_TYPE_REGISTER_8);
 	EXPECT_EQ(higher.pointer, false);
@@ -43,12 +43,25 @@ TEST_P(BeemuExplodeBeemuParamUint16ParameterizedTestFixture, ShouldExplodeSixtee
 	param.type = BEEMU_PARAM_TYPE_UINT16;
 	param.pointer = false;
 	param.value.value = sword;
-	const auto [higher, lower] = beemu_explode_beemu_param(&param);
+	const auto [higher, lower] = beemu_explode_beemu_param(&param, &processor.processor());
 	EXPECT_EQ(higher.type, BEEMU_PARAM_TYPE_UINT_8);
 	EXPECT_EQ(lower.type, BEEMU_PARAM_TYPE_UINT_8);
 	EXPECT_EQ(higher.pointer, false);
 	EXPECT_EQ(higher.value.value, msb);
 	EXPECT_EQ(lower.value.value, lsb);
+}
+
+TEST_F(BeemuExplodeBeemuParamTestFixture, ShouldExplodeSPRegisterToTwoUint8s)
+{
+	constexpr BeemuParam param { false, BEEMU_PARAM_TYPE_REGISTER_16, { .register_16 = BEEMU_REGISTER_SP } };
+	const auto processor_state = processor.processor();
+	const auto [higher, lower] = beemu_explode_beemu_param(&param, &processor_state);
+	EXPECT_EQ(higher.type, BEEMU_PARAM_TYPE_UINT_8);
+	EXPECT_EQ(lower.type, BEEMU_PARAM_TYPE_UINT_8);
+	EXPECT_EQ(higher.pointer, false);
+	EXPECT_EQ(lower.pointer, false);
+	EXPECT_EQ(higher.value.value, (processor_state.registers->stack_pointer & 0xFF00) >> 8);
+	EXPECT_EQ(lower.value.value, (processor_state.registers->stack_pointer & 0x00FF));
 
 }
 

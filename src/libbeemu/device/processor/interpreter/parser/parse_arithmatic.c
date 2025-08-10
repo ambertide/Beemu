@@ -212,8 +212,8 @@ void beemu_cq_write_results_u16(
 		// commands, which only use the lower registers, write the results,
 		// calculate the secondary flags, this time using the higher parts,
 		// AND the carry from the lower calc.
-		const BeemuParamTuple dst_parts = beemu_explode_beemu_param(dst);
-		const BeemuParamTuple src_parts = beemu_explode_beemu_param(src);
+		const BeemuParamTuple dst_parts = beemu_explode_beemu_param(dst, processor);
+		const BeemuParamTuple src_parts = beemu_explode_beemu_param(src, processor);
 		const uint8_t dst_lower_content = beemu_resolve_instruction_parameter_unsigned(&dst_parts.lower, processor, true);
 		const uint8_t src_lower_content = beemu_resolve_instruction_parameter_unsigned(&src_parts.lower, processor, true);
 		// Now we must calculate the result for the lower half of the operation.

@@ -79,9 +79,10 @@ typedef struct BeemuParamTuple {
  * Given a "compound" parameter (ie: reg16 or uint16) explode it into two
  * base parameters (ie: reg8, reg8 or uint8, uint8)
  * @param param Parameter to explode.
+ * @param processor Processor state use to resolve some parameters (like SP)
  * @return Ad-hoc tuple of two beemu params.
  */
-BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param);
+BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuProcessor *processor);
 #ifdef __cplusplus
 	}
 #endif

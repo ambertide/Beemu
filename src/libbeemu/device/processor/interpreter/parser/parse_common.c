@@ -133,7 +133,7 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 	}
 }
 
-BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param)
+BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuProcessor *processor)
 {
 	BeemuParamTuple tuple;
 	BeemuRegister_8 register_map[3][2] = {
@@ -145,10 +145,23 @@ BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param)
 	tuple.lower.pointer = param->pointer;
 	switch (param->type) {
 	case BEEMU_PARAM_TYPE_REGISTER_16: {
-		tuple.higher.type = BEEMU_PARAM_TYPE_REGISTER_8;
-		tuple.lower.type = BEEMU_PARAM_TYPE_REGISTER_8;
-		tuple.higher.value.register_8 = register_map[param->value.register_16][0];
-		tuple.lower.value.register_8 = register_map[param->value.register_16][1];
+		if (param->value.register_16 == BEEMU_REGISTER_SP) {
+			// SP is... special.
+			// it uses the 16-bit only stack pointer so we should
+			// manually explode it.
+			tuple.higher.type = BEEMU_PARAM_TYPE_UINT_8;
+			tuple.lower.type = BEEMU_PARAM_TYPE_UINT_8;
+			tuple.higher.value.value = (processor->registers->stack_pointer & 0xFF00) >> 8;
+			tuple.lower.value.value = processor->registers->stack_pointer & 0x00FF;
+
+		} else {
+			// Otherwise for compound registers,
+			// we just explode them to their constutient parts.
+			tuple.higher.type = BEEMU_PARAM_TYPE_REGISTER_8;
+			tuple.lower.type = BEEMU_PARAM_TYPE_REGISTER_8;
+			tuple.higher.value.register_8 = register_map[param->value.register_16][0];
+			tuple.lower.value.register_8 = register_map[param->value.register_16][1];
+		}
 		break;
 	}
 	case BEEMU_PARAM_TYPE_UINT16: {
