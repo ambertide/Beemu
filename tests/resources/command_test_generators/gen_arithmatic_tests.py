@@ -329,8 +329,9 @@ for token in tokens:
     val_func = val_functions[operation]
     flag_func = flag_functions[operation]
 
-    is_preline = token["original_machine_code"] < 0x80
-    is_mainline = 0xC0 > token["original_machine_code"] >= 0x80
+    opcode = get_opcode(token["original_machine_code"])
+    is_preline = get_opcode(token["original_machine_code"]) < 0x80
+    is_mainline = 0xC0 > get_opcode(token["original_machine_code"]) >= 0x80
     is_8_bit = (token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8'
                 or token["params"]["arithmatic_params"]["dest_or_first"]['pointer'])
     if is_mainline:
@@ -343,7 +344,7 @@ for token in tokens:
     else:
         ...
         # Post mainline immediate arithmetics.
-        emit_8_bit_postline(token, tests, val_func, flag_func)
+        # emit_8_bit_postline(token, tests, val_func, flag_func)
 
 sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
 

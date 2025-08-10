@@ -1,10 +1,14 @@
 from typing import Iterable
 from json import load
+
+from tests.resources.token_test_generators.utils import get_opcode
+
+
 def get_tokens_in_range(_range: Iterable[int]) -> list[dict]:
     concreate_range = [*_range]
     with open('../tokens.json') as file:
         tokens = load(file)['tokens']
-    return [token for token in tokens if int(token['instruction'], base=16) in concreate_range]
+    return [token for token in tokens if get_opcode(token['token']['original_machine_code']) in concreate_range]
 
 
 def reduce_flags(carry: int, parity: int, aux: int, zero: int):
