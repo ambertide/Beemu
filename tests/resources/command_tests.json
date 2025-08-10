@@ -443,13 +443,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_H"
+								"register_8": "BEEMU_REGISTER_L"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 12
+								"byte_value": 14
 							}
 						}
 					}
@@ -534,13 +534,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_L"
+								"register_8": "BEEMU_REGISTER_H"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 14
+								"byte_value": 12
 							}
 						}
 					}
@@ -1427,13 +1427,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_H"
+								"register_8": "BEEMU_REGISTER_L"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 14
+								"byte_value": 16
 							}
 						}
 					}
@@ -1518,13 +1518,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_L"
+								"register_8": "BEEMU_REGISTER_H"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 16
+								"byte_value": 14
 							}
 						}
 					}
@@ -1575,7 +1575,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 1
+								"byte_value": 0
 							}
 						}
 					}
@@ -2411,13 +2411,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_H"
+								"register_8": "BEEMU_REGISTER_L"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 2
+								"byte_value": 4
 							}
 						}
 					}
@@ -2502,13 +2502,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_L"
+								"register_8": "BEEMU_REGISTER_H"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 4
+								"byte_value": 2
 							}
 						}
 					}
@@ -3419,13 +3419,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_H"
+								"register_8": "BEEMU_REGISTER_L"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 2
+								"byte_value": 1
 							}
 						}
 					}
@@ -3510,13 +3510,13 @@
 						"target": {
 							"type": "BEEMU_WRITE_TARGET_REGISTER_8",
 							"target": {
-								"register_8": "BEEMU_REGISTER_L"
+								"register_8": "BEEMU_REGISTER_H"
 							}
 						},
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 1
+								"byte_value": 2
 							}
 						}
 					}
@@ -3567,7 +3567,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 1
+								"byte_value": 0
 							}
 						}
 					}
