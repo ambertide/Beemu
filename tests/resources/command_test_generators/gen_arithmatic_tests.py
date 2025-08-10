@@ -302,7 +302,7 @@ def emit_16_bit_preline(token: dict, test: list, *args, **kwargs):
 def emit_8_bit_postline(token: dict, tests: list, val_func: Callable, flag_func: Callable) -> None:
     values = [
         register_values[0],
-        token['params']['arithmatic_params']['value']['value']
+        token['params']['arithmatic_params']['source_or_second']['value']['value']
     ]
     result = val_func(*values, 2**8)
     flags = flag_func(*values, 2**8)
@@ -342,9 +342,8 @@ for token in tokens:
         else: # is_16_bit
             emit_16_bit_preline(token, tests, val_func, flag_func)
     else:
-        ...
         # Post mainline immediate arithmetics.
-        # emit_8_bit_postline(token, tests, val_func, flag_func)
+        emit_8_bit_postline(token, tests, val_func, flag_func)
 
 sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
 
