@@ -259,6 +259,15 @@ bool halts_after_flags(const BeemuInstruction *instruction)
 	}
 }
 
+/**
+ * Check if the arithmatic op a increment or decrement operation,
+ * given its params.
+ */
+bool is_op_inc_dec(const BeemuArithmaticParams *params)
+{
+	return params->operation == BEEMU_OP_INC || params->operation == BEEMU_OP_DEC;
+}
+
 void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction)
 {
 	BeemuArithmaticParams params = instruction->params.arithmatic_params;
@@ -268,6 +277,11 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 	uint16_t second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	if (is_param_hl_ptr(&params.source_or_second) || is_param_hl_ptr(&params.dest_or_first)) {
 		dereference_hl_with_halt(queue, processor);
+	} else if (!is_op_inc_dec(&params) && params.source_or_second.type == BEEMU_PARAM_TYPE_UINT_8) {
+		// If so, this means that the byte value must be taken from the instruction itself
+		// INTO the ALU, using the databus, this is important because it actually spends
+		// an extra cycle. SO HALT.
+		beemu_cq_halt_cycle(queue);
 	} else {
 		second_value = beemu_resolve_instruction_parameter_unsigned(&params.source_or_second, processor, false);
 	}
@@ -288,7 +302,10 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 
 	// This parameter is used to later handle the over/underflows.
 	uint32_t actual_result = 0;
-	bool is_idu_op = params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_16 && (params.operation == BEEMU_OP_INC || params.operation == BEEMU_OP_DEC);
+
+	// 16 bit increment decrement operations use a special piece of hardware called IDU
+	// that does not emit flag updates.
+	bool is_idu_op = params.dest_or_first.type == BEEMU_PARAM_TYPE_REGISTER_16 && is_op_inc_dec(&params);
 	if (do_param_hold_byte_length_values(&params.dest_or_first)) {
 		// Then we must convert to UINT8_T since destination holds 8 bits.
 		const uint8_t actual_result_size_corrected = operation_result;
