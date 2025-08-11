@@ -197,3 +197,11 @@ class Halt:
                "is_cycle_terminator": True
            }
        }
+
+
+def emit_m1_cycle(token: dict) -> list[dict]:
+    return [
+        WriteTo.pc(0x01),
+        WriteTo.ir(get_opcode(token['original_machine_code'])),
+        Halt.cycle(),
+    ]

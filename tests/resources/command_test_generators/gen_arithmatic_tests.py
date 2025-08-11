@@ -1,7 +1,7 @@
 from json import load, dumps
 from collections.abc import Callable
 
-from tests.resources.command_test_generators.utils import get_tokens_in_range, WriteTo, Halt
+from tests.resources.command_test_generators.utils import get_tokens_in_range, WriteTo, Halt, emit_m1_cycle
 from dataclasses import dataclass
 from itertools import chain, islice
 from json import dump
@@ -28,12 +28,7 @@ val_functions = {
     "XOR": lambda a, b, _: a ^ b,
 }
 
-def emit_m1_cycle(token: dict) -> list[dict]:
-    return [
-        WriteTo.pc(0x01),
-        WriteTo.ir(get_opcode(token['original_machine_code'])),
-        Halt.cycle(),
-    ]
+
 
 
 @dataclass()

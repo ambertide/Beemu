@@ -1,6 +1,5 @@
 # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
-from tests.resources.command_test_generators.utils import get_tokens_of_type, Halt, WriteTo
-
+from tests.resources.command_test_generators.utils import get_tokens_of_type, Halt, WriteTo, emit_m1_cycle
 
 # The below values are hardcoded for the DEFAULT processor preset for testing
 # S and P are not real 8 bit registers but they are here for the sake of brevity
@@ -21,7 +20,7 @@ def emit_bitwise_tests(tokens) -> list[dict]:
         impacts_bit = params['bit_number']
         command_queue = [
             # M1 ends
-            Halt.cycle(),
+            *emit_m1_cycle(token['token']),
             # M2 ends with extra read for CBXX operation
             Halt.cycle(),
         ]
