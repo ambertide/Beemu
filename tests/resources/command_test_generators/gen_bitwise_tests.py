@@ -12,6 +12,15 @@ operation_map = {
     'SET': lambda byte, bit: (byte | (2**bit))
 }
 
+def emit_m2_cycle(token):
+    return [
+        # Increment PC to read CBXX opcode
+        WriteTo.pc(0x02),
+        # Write actually op to IR.
+        WriteTo.ir(token['original_machine_code'] & 0xFF),
+        Halt.cycle(),
+    ]
+
 def emit_bitwise_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -22,7 +31,7 @@ def emit_bitwise_tests(tokens) -> list[dict]:
             # M1 ends
             *emit_m1_cycle(token['token']),
             # M2 ends with extra read for CBXX operation
-            Halt.cycle(),
+            *emit_m2_cycle(token['token'])
         ]
         if params['target']['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8':
             register =  params['target']['value']['register_8'].replace('BEEMU_REGISTER_', '')
