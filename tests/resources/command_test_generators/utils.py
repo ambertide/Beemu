@@ -11,6 +11,11 @@ def get_tokens_in_range(_range: Iterable[int]) -> list[dict]:
     return [token for token in tokens if get_opcode(token['token']['original_machine_code']) in concreate_range]
 
 
+def get_tokens_of_type(type_: str) -> list[dict]:
+    with open('../tokens.json') as file:
+        tokens = load(file)['tokens']
+    return [token for token in tokens if token['token']['type'] == type_]
+
 def reduce_flags(carry: int, parity: int, aux: int, zero: int):
     """
     Calculate flag compressed value from concrete values.

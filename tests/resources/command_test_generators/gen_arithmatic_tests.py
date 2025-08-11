@@ -327,7 +327,7 @@ def emit_8_bit_postline(token: dict, tests: list, val_func: Callable, flag_func:
         ]
     })
 
-def emit_arithmetic_tests():
+def emit_arithmetic_tests(_):
     # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
     tokens = get_tokens_in_range(chain(
         range(0x80, 0xC0),
