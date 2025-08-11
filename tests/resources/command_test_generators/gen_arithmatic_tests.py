@@ -8,17 +8,6 @@ from json import dump
 
 from tests.resources.token_test_generators.utils import get_opcode, sort_instructions
 
-# btw this is all the tokens in the 8 bit arithmatic mainline and preline.
-tokens = get_tokens_in_range(chain(
-    range(0x80, 0xC0),
-    range(0x04, 0x3D, 8),
-    range(0x05, 0x3F, 8),
-    range(0x03, 0x3C, 8),
-    range(0x09, 0x3A, 16),
-    # immediate arithmetics
-    range(0xC6, 0xFF, 8)
-))
-
 # The below values are hardcoded for the DEFAULT processor preset for testing
 # S and P are not real 8 bit registers but they are here for the sake of brevity
 register_index = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'S', 'P']
@@ -127,7 +116,7 @@ flag_functions = {
 
 tests = []
 
-def emit_8_bit_mainline(token: dict, tests: list, val_func: Callable, flag_func: Callable) -> None:
+def emit_8_bit_mainline(token: dict, tests: list, val_func: Callable, flag_func: Callable, operation: str) -> None:
     """
     Emit a 8 bit arithmatic mainline instruction.
     """
@@ -314,7 +303,7 @@ def emit_16_bit_preline(token: dict, test: list, *args, **kwargs):
        case 0x0B:
            emit_16_bit_inc_dec(token, test, *args, **kwargs)
 
-def emit_8_bit_postline(token: dict, tests: list, val_func: Callable, flag_func: Callable) -> None:
+def emit_8_bit_postline(token: dict, tests: list, val_func: Callable, flag_func: Callable, operation) -> None:
     values = [
         register_values[0],
         token['params']['arithmatic_params']['source_or_second']['value']['value']
@@ -338,30 +327,38 @@ def emit_8_bit_postline(token: dict, tests: list, val_func: Callable, flag_func:
         ]
     })
 
-for token in tokens:
-    token = token['token']
-    operation = token["params"]['arithmatic_params']['operation'].replace('BEEMU_OP_', '')
-    val_func = val_functions[operation]
-    flag_func = flag_functions[operation]
+def emit_arithmetic_tests():
+    # btw this is all the tokens in the 8 bit arithmatic mainline and preline.
+    tokens = get_tokens_in_range(chain(
+        range(0x80, 0xC0),
+        range(0x04, 0x3D, 8),
+        range(0x05, 0x3F, 8),
+        range(0x03, 0x3C, 8),
+        range(0x09, 0x3A, 16),
+        # immediate arithmetics
+        range(0xC6, 0xFF, 8)
+    ))
 
-    opcode = get_opcode(token["original_machine_code"])
-    is_preline = get_opcode(token["original_machine_code"]) < 0x80
-    is_mainline = 0xC0 > get_opcode(token["original_machine_code"]) >= 0x80
-    is_8_bit = (token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8'
-                or token["params"]["arithmatic_params"]["dest_or_first"]['pointer'])
-    if is_mainline:
-        emit_8_bit_mainline(token, tests, val_func, flag_func)
-    elif is_preline:
-        if is_8_bit:
-            emit_8_bit_preline(token, tests, val_func, flag_func)
-        else: # is_16_bit
-            emit_16_bit_preline(token, tests, val_func, flag_func)
-    else:
-        # Post mainline immediate arithmetics.
-        emit_8_bit_postline(token, tests, val_func, flag_func)
+    for token in tokens:
+        token = token['token']
+        operation = token["params"]['arithmatic_params']['operation'].replace('BEEMU_OP_', '')
+        val_func = val_functions[operation]
+        flag_func = flag_functions[operation]
 
-sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
+        opcode = get_opcode(token["original_machine_code"])
+        is_preline = get_opcode(token["original_machine_code"]) < 0x80
+        is_mainline = 0xC0 > get_opcode(token["original_machine_code"]) >= 0x80
+        is_8_bit = (token["params"]["arithmatic_params"]["dest_or_first"]['type'] == 'BEEMU_PARAM_TYPE_REGISTER_8'
+                    or token["params"]["arithmatic_params"]["dest_or_first"]['pointer'])
+        if is_mainline:
+            emit_8_bit_mainline(token, tests, val_func, flag_func, operation)
+        elif is_preline:
+            if is_8_bit:
+                emit_8_bit_preline(token, tests, val_func, flag_func)
+            else: # is_16_bit
+                emit_16_bit_preline(token, tests, val_func, flag_func)
+        else:
+            # Post mainline immediate arithmetics.
+            emit_8_bit_postline(token, tests, val_func, flag_func, operation)
 
-if __name__ == '__main__':
-    with open('../command_tests.json', 'w') as f:
-        dump({ 'commands': tests }, f, indent='\t')
+    return tests
