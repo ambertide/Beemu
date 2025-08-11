@@ -199,9 +199,9 @@ class Halt:
        }
 
 
-def emit_m1_cycle(token: dict) -> list[dict]:
+def emit_m1_cycle(token: dict, override_opcode: int = 0) -> list[dict]:
     return [
         WriteTo.pc(0x01),
-        WriteTo.ir(get_opcode(token['original_machine_code'])),
+        WriteTo.ir(get_opcode(token['original_machine_code']) if not override_opcode else override_opcode),
         Halt.cycle(),
     ]

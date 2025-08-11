@@ -180,3 +180,17 @@ BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuPr
 	}
 	return tuple;
 }
+
+uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor)
+{
+	// We can directly fetch the HL as the HL writes always occur after this point,
+	// no need to seek within the queue.
+	BeemuRegister HL;
+	HL.type = BEEMU_SIXTEEN_BIT_REGISTER;
+	HL.name_of.sixteen_bit_register = BEEMU_REGISTER_HL;
+	const uint16_t addr = beemu_registers_read_register_value(processor->registers, HL);
+	const uint8_t mem_value = beemu_memory_read(processor->memory, addr);
+	// And the halt order.
+	beemu_cq_halt_cycle(queue);
+	return mem_value;
+}

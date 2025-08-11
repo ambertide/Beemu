@@ -12,29 +12,6 @@
 #include "parse_arithmatic.h"
 
 /**
- * When called with [HL], the M2 cycle is spent fetching the memory value
- * and placing it into the data bus, as well as the HL value itself to the address
- * bus, this function generates commands to do so, as well as returning the [HL] value.
- *
- * @param queue Queue to add the commands to.
- * @param processor Processor in its current state.
- * @return Dereferenced [HL]
- */
-uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor)
-{
-	// We can directly fetch the HL as the HL writes always occur after this point,
-	// no need to seek within the queue.
-	BeemuRegister HL;
-	HL.type = BEEMU_SIXTEEN_BIT_REGISTER;
-	HL.name_of.sixteen_bit_register = BEEMU_REGISTER_HL;
-	const uint16_t addr = beemu_registers_read_register_value(processor->registers, HL);
-	const uint8_t mem_value = beemu_memory_read(processor->memory, addr);
-	// And the halt order.
-	beemu_cq_halt_cycle(queue);
-	return mem_value;
-}
-
-/**
  * Calculate the result of an operation as int32_t so that overflow/underflow won't occur.
  * @return
  */

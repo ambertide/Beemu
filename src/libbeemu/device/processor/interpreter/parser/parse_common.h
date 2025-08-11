@@ -83,6 +83,15 @@ typedef struct BeemuParamTuple {
  * @return Ad-hoc tuple of two beemu params.
  */
 BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuProcessor *processor);
+
+/**
+ * A common operation is to derefence HL and get its value, and issuing a halt.
+ * @param queue Queue to write to.
+ * @param processor Processor state.
+ * @return The value at mem addr [HL]
+ */
+uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor);
+
 #ifdef __cplusplus
 	}
 #endif

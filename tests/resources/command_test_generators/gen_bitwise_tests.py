@@ -29,7 +29,7 @@ def emit_bitwise_tests(tokens) -> list[dict]:
         impacts_bit = params['bit_number']
         command_queue = [
             # M1 ends
-            *emit_m1_cycle(token['token']),
+            *emit_m1_cycle(token['token'], 0xCB),
             # M2 ends with extra read for CBXX operation
             *emit_m2_cycle(token['token'])
         ]
