@@ -1,3 +1,4 @@
+import dataclasses
 from typing import Iterable
 from json import load
 
@@ -198,6 +199,24 @@ class Halt:
            }
        }
 
+
+@dataclasses.dataclass
+class Param:
+    type: str
+    pointer: bool
+    value: str | int
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Param":
+        return Param(
+            data['type'],
+            data['pointer'],
+            [*data['value'].values()][0]
+        )
+
+    @property
+    def register(self) -> str:
+        return self.value.replace('BEEMU_REGISTER_', '')
 
 def emit_m1_cycle(token: dict, override_opcode: int = 0) -> list[dict]:
     return [
