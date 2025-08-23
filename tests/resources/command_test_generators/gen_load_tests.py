@@ -76,6 +76,26 @@ def emit_eight_bit_load_to_derefed_memory(token, dst: Param, src: Param, post_lo
         # Next cycle is M3/M1.
     ]
 
+def emit_sixteen_bit_load_direct(token, dst: Param, src: Param) -> list[dict]:
+    """
+    This adds tests for LD rr, d16 cases.
+    """
+    direct_msb = src.value & 0xFF
+    direct_lsb = (src.value & 0xFF00) >> 8
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.pc(0x02),
+        WriteTo.ir(direct_lsb),
+        Halt.cycle(),
+        # M3
+        WriteTo.pc(0x03),
+        WriteTo.ir(direct_msb),
+        Halt.cycle(),
+        # M4/M1, by this point the value have been read from memory.
+        WriteTo.register(dst.register, src.value)
+    ]
+
 def emit_load_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -90,7 +110,9 @@ def emit_load_tests(tokens) -> list[dict]:
             case (False, 'BEEMU_PARAM_TYPE_REGISTER_8', True, 'BEEMU_PARAM_TYPE_REGISTER_16'):
                 command_queue = emit_eight_bit_hl_deref_load(emitted_token, dst, src, pst_ld_op)
             case (True, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_REGISTER_8'):
-                command_queue =emit_eight_bit_load_to_derefed_memory(emitted_token, dst, src, pst_ld_op)
+                command_queue = emit_eight_bit_load_to_derefed_memory(emitted_token, dst, src, pst_ld_op)
+            case (False, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_UINT16'):
+                command_queue = emit_sixteen_bit_load_direct(emitted_token, dst, src)
             case _:
                 continue
         tests.append({
