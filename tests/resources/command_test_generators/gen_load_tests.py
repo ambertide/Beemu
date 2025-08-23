@@ -127,6 +127,27 @@ def emit_eight_bit_dereffed_write_to_hl(token, dst: Param, src: Param) -> list[d
         Halt.cycle()
     ]
 
+def emit_sp_load(token, dst: Param, src: Param) -> list[dict]:
+    # .
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.pc(0x02),
+        WriteTo.ir((dst.value & 0xFF00) >> 8),
+        # M3
+        WriteTo.pc(0x03),
+        WriteTo.ir(dst.value & 0xFF),
+        # M4
+        # This is the SP value for highstack
+        WriteTo.memory(dst.value, 0xBB),
+        Halt.cycle(),
+        # M5
+        WriteTo.memory(dst.value + 1, 0xFF),
+        Halt.cycle(),
+        # M6/M1
+        Halt.cycle()
+    ]
+
 def emit_load_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -135,6 +156,7 @@ def emit_load_tests(tokens) -> list[dict]:
         src = Param.from_dict(ld_params['source'])
         dst = Param.from_dict(ld_params['dest'])
         pst_ld_op = ld_params['postLoadOperation']
+        processor = 'default'
         match (dst.pointer, dst.type, src.pointer, src.type):
             case (False, 'BEEMU_PARAM_TYPE_REGISTER_8', False, 'BEEMU_PARAM_TYPE_REGISTER_8'):
                 command_queue = emit_eight_bit_inter_register_load(emitted_token, dst, src)
@@ -148,12 +170,15 @@ def emit_load_tests(tokens) -> list[dict]:
                 command_queue = emit_eight_bit_load_direct(emitted_token, dst, src)
             case (True, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_UINT_8'):
                 command_queue = emit_eight_bit_dereffed_write_to_hl(emitted_token, dst, src)
+            case (True, 'BEEMU_PARAM_TYPE_UINT16', False, 'BEEMU_PARAM_TYPE_REGISTER_16'):
+                processor = 'highstack'
+                command_queue = emit_sp_load(emitted_token, dst, src)
             case _:
                 print(token['instruction'])
                 continue
         tests.append({
             'token': emitted_token,
-            'processor': 'default',
+            'processor': processor,
             'command_queue': command_queue
         })
     return tests

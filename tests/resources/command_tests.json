@@ -758,6 +758,196 @@
 		},
 		{
 			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 5,
+				"original_machine_code": 568269,
+				"byte_length": 3,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"dest": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_UINT16",
+							"value": {
+								"value": 43981
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_NOP"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 8
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 2
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 171
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 3
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 205
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 43981
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 187
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 43982
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 255
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				}
+			]
+		},
+		{
+			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
 				"duration_in_clock_cycles": 2,
 				"original_machine_code": 9,
