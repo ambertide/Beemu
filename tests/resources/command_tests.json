@@ -22057,6 +22057,295 @@
 		},
 		{
 			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 3,
+				"original_machine_code": 193,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"dest": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_BC"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 193
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48128
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48129
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_BC"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 511
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 4,
+				"original_machine_code": 197,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_BC"
+							}
+						},
+						"dest": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 197
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48126
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48126
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 12
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48125
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48125
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 11
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				}
+			]
+		},
+		{
+			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
 				"duration_in_clock_cycles": 2,
 				"original_machine_code": 50911,
@@ -22373,6 +22662,295 @@
 								"byte_value": 0
 							}
 						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 3,
+				"original_machine_code": 209,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"dest": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_DE"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 209
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48128
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48129
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_DE"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 511
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 4,
+				"original_machine_code": 213,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_DE"
+							}
+						},
+						"dest": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 213
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48126
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48126
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 14
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48125
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48125
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 13
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			]
@@ -22701,6 +23279,295 @@
 		},
 		{
 			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 3,
+				"original_machine_code": 225,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"dest": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_HL"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 225
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48128
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48129
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_HL"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 511
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 4,
+				"original_machine_code": 229,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_HL"
+							}
+						},
+						"dest": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 229
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48126
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48126
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 2
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48125
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48125
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				}
+			]
+		},
+		{
+			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_ARITHMATIC",
 				"duration_in_clock_cycles": 2,
 				"original_machine_code": 59103,
@@ -23017,6 +23884,295 @@
 								"byte_value": 0
 							}
 						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 3,
+				"original_machine_code": 241,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"dest": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_AF"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 241
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48128
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48129
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_AF"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 511
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"token": {
+				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
+				"duration_in_clock_cycles": 4,
+				"original_machine_code": 245,
+				"byte_length": 1,
+				"params": {
+					"load_params": {
+						"source": {
+							"pointer": false,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_AF"
+							}
+						},
+						"dest": {
+							"pointer": true,
+							"type": "BEEMU_PARAM_TYPE_REGISTER_16",
+							"value": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"postLoadOperation": "BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION"
+					}
+				}
+			},
+			"processor": "highstack",
+			"command_queue": [
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_PROGRAM_COUNTER"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 1
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_INTERNAL",
+							"target": {
+								"internal_target": "BEEMU_INTERNAL_WRITE_TARGET_INSTRUCTION_REGISTER"
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 245
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48126
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48126
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 240
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_REGISTER_16",
+							"target": {
+								"register_16": "BEEMU_REGISTER_SP"
+							}
+						},
+						"value": {
+							"is_16": true,
+							"value": {
+								"double_value": 48125
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_WRITE",
+					"write": {
+						"target": {
+							"type": "BEEMU_WRITE_TARGET_MEMORY_ADDRESS",
+							"target": {
+								"mem_addr": 48125
+							}
+						},
+						"value": {
+							"is_16": false,
+							"value": {
+								"byte_value": 10
+							}
+						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			]

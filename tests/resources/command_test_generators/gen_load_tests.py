@@ -16,7 +16,8 @@ mem_addr_values = {
 mem_addresses = {
     'HL': 0x0102,
     'BC': 0x0B0C,
-    'DE': 0x0D0E
+    'DE': 0x0D0E,
+    'AF': 0x0AF0
 }
 
 def emit_post_load(reg: Param, post_load_param: str) -> list[dict]:
@@ -148,6 +149,47 @@ def emit_sp_load(token, dst: Param, src: Param) -> list[dict]:
         Halt.cycle()
     ]
 
+def emit_pop(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:
+    """
+    Pop R16 tests
+    """
+    high_stack_sp = 0xBBFF
+    high_stack_sp_deref = 0xFF
+    high_stack_sp_deref_plus_one = 0x01
+    return [
+        *emit_m1_cycle(token),
+        # Increment the SP twice to capture the stack pointer value.
+        # M2
+        WriteTo.register('SP', high_stack_sp + 1),
+        Halt.cycle(),
+        # M3
+        WriteTo.register('SP', high_stack_sp + 2),
+        Halt.cycle(),
+        # M4/M1
+        WriteTo.register(dst.register, (high_stack_sp_deref_plus_one << 8) | high_stack_sp_deref)
+    ]
+def emit_push(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:
+    """
+    Tests for PUSH R16
+    """
+    reg_value = mem_addresses[src.register]
+    high_stack_sp = 0xBBFF
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.register('SP', high_stack_sp - 1),
+        Halt.cycle(),
+        # M3
+        WriteTo.memory(high_stack_sp - 1, reg_value & 0xFF),
+        WriteTo.register('SP', high_stack_sp - 2),
+        Halt.cycle(),
+        # M4
+        WriteTo.memory(high_stack_sp - 2, (reg_value & 0xFF00) >> 8),
+        Halt.cycle()
+        # M5/M1
+    ]
+
+
 def emit_load_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -173,6 +215,12 @@ def emit_load_tests(tokens) -> list[dict]:
             case (True, 'BEEMU_PARAM_TYPE_UINT16', False, 'BEEMU_PARAM_TYPE_REGISTER_16'):
                 processor = 'highstack'
                 command_queue = emit_sp_load(emitted_token, dst, src)
+            case (False, 'BEEMU_PARAM_TYPE_REGISTER_16', True, 'BEEMU_PARAM_TYPE_REGISTER_16'):
+                processor = 'highstack'
+                command_queue = emit_pop(emitted_token, dst, src, pst_ld_op)
+            case (True, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_REGISTER_16'):
+                processor = 'highstack'
+                command_queue = emit_push(emitted_token, dst, src, pst_ld_op)
             case _:
                 print(token['instruction'])
                 continue
