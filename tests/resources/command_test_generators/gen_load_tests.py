@@ -189,6 +189,41 @@ def emit_push(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:
         # M5/M1
     ]
 
+def emit_d8_ptr_a(token, dst: Param, src: Param) -> list[dict]:
+    """
+    LDH (a8), A
+    """
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        # It is actually unclear to me if IR is actually overwritten
+        # but it makes sense to me if PC is done.
+        WriteTo.pc(0x02),
+        WriteTo.ir(dst.value),
+        Halt.cycle(),
+        # M3
+        WriteTo.memory(0xFF00 + dst.value, 0x0A),
+        Halt.cycle(),
+        # M4/M1
+    ]
+
+def emit_a_d8_ptr(token, dst: Param, src: Param) -> list[dict]:
+    """
+    LDH A, (a8)
+    """
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.pc(0x02),
+        WriteTo.ir(src.value),
+        Halt.cycle(),
+        # M3
+        # Spent fetching memory
+        Halt.cycle(),
+        # M4/M1
+        # [0xFFBB] = 0xBB
+        WriteTo.register(dst.register, 0xBB)
+    ]
 
 def emit_load_tests(tokens) -> list[dict]:
     tests = []
@@ -221,6 +256,10 @@ def emit_load_tests(tokens) -> list[dict]:
             case (True, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_REGISTER_16'):
                 processor = 'highstack'
                 command_queue = emit_push(emitted_token, dst, src, pst_ld_op)
+            case (True, 'BEEMU_PARAM_TYPE_UINT_8', False, 'BEEMU_PARAM_TYPE_REGISTER_8'):
+                command_queue = emit_d8_ptr_a(emitted_token, dst, src)
+            case (False, 'BEEMU_PARAM_TYPE_REGISTER_8', True, 'BEEMU_PARAM_TYPE_UINT_8'):
+                command_queue = emit_a_d8_ptr(emitted_token, dst, src)
             case _:
                 print(token['instruction'])
                 continue
