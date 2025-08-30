@@ -269,6 +269,45 @@ def emit_a_d16_ptr(token, dst: Param, src: Param) -> list[dict]:
         # M5/M1
     ]
 
+def emit_ldh_c_deref_to_a(token, dst: Param, src: Param) -> list[dict]:
+    # 0XFF0C
+    mem_addr = 0xFF00 + register_val_dict[src.register]
+
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        # spent fetching from memory
+        Halt.cycle(),
+        # M3/M1
+        WriteTo.register('A', 0x0C)
+    ]
+
+def emit_ldh_a_to_c_deref(token, dst: Param, src: Param) -> list[dict]:
+    """
+    LDH (C), A
+    """
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.memory(0xFF0C, 0x0A),
+        Halt.cycle(),
+        # M3/M1
+    ]
+
+def emit_sp_hl(token, pst_ld_op) -> list[dict]:
+    """
+    LD SP, HL & LD HL, SP + s8
+    """
+    if pst_ld_op:
+        return []
+    return [
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.register('SP', mem_addr_values['HL']),
+        Halt.cycle()
+        # M3
+    ]
+
 def emit_load_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -308,6 +347,10 @@ def emit_load_tests(tokens) -> list[dict]:
                 command_queue = emit_d16_ptr_a(emitted_token, dst, src)
             case (False, 'BEEMU_PARAM_TYPE_REGISTER_8', True, 'BEEMU_PARAM_TYPE_UINT16'):
                 command_queue = emit_a_d16_ptr(emitted_token, dst, src)
+            case (False, 'BEEMU_PARAM_TYPE_REGISTER_8', True, 'BEEMU_PARAM_TYPE_REGISTER_8'):
+                command_queue = emit_ldh_c_deref_to_a(emitted_token, dst, src)
+            case (True, 'BEEMU_PARAM_TYPE_REGISTER_8', False, 'BEEMU_PARAM_TYPE_REGISTER_8'):
+                command_queue = emit_ldh_a_to_c_deref(emitted_token, dst, src)
             case _:
                 print(token['instruction'])
                 continue
