@@ -1,5 +1,6 @@
 # The below values are hardcoded for the DEFAULT processor preset for testing
 # S and P are not real 8 bit registers but they are here for the sake of brevity
+from tests.resources.command_test_generators.gen_arithmatic_tests import flag_functions
 from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt
 from re import match
 
@@ -294,12 +295,32 @@ def emit_ldh_a_to_c_deref(token, dst: Param, src: Param) -> list[dict]:
         # M3/M1
     ]
 
-def emit_sp_hl(token, pst_ld_op) -> list[dict]:
+def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
     """
     LD SP, HL & LD HL, SP + s8
     """
-    if pst_ld_op:
-        return []
+    if pst_ld_op == 'BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM':
+        ## According to https://gekkio.fi/files/gb-docs/gbctr.pdf
+        # The flag calculations occur in M3 wrt to the least significant
+        # byte of the SP and it treats as an addition.
+        flag_ops = flag_functions['ADD']
+        absolute_value = pst_ld_param.value * -1 if pst_ld_param.value < 0 else pst_ld_param.value
+        flag_vals = flag_ops(0xBB, absolute_value, 256)
+        genvalue = (0xffbb + pst_ld_param.value) % 2**16
+        l_value = genvalue & 0xFF
+        h_value = genvalue >> 8
+        return [
+            *emit_m1_cycle(token),
+            # M2
+            # Spent fetching the s8.
+            WriteTo.pc(0x02),
+            WriteTo.ir(token['original_machine_code'] & 0xFF),
+            # M3
+            WriteTo.register('L', l_value),
+            *flag_vals.generate_flag_write_commands(),
+            # M4 / M1
+            WriteTo.register('H', h_value)
+        ]
     return [
         *emit_m1_cycle(token),
         # M2
@@ -351,6 +372,12 @@ def emit_load_tests(tokens) -> list[dict]:
                 command_queue = emit_ldh_c_deref_to_a(emitted_token, dst, src)
             case (True, 'BEEMU_PARAM_TYPE_REGISTER_8', False, 'BEEMU_PARAM_TYPE_REGISTER_8'):
                 command_queue = emit_ldh_a_to_c_deref(emitted_token, dst, src)
+            case (False, 'BEEMU_PARAM_TYPE_REGISTER_16', False, 'BEEMU_PARAM_TYPE_REGISTER_16'):
+                processor = 'highstack'
+                pst_ld_param = Param('BEEMU_REGISTER_8', False, 'BEEMU_REGISTER_A')
+                if pst_ld_op == 'BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM':
+                    pst_ld_param = Param.from_dict(ld_params['auxPostLoadParameter'])
+                command_queue = emit_sp_hl(emitted_token, pst_ld_op, pst_ld_param)
             case _:
                 print(token['instruction'])
                 continue
