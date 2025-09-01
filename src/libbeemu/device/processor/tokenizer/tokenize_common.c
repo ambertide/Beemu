@@ -132,3 +132,10 @@ void parse_signed8_param_from_instruction(
 		param->value.signed_value = (int8_t) 0 + payload;
 	}
 }
+
+uint16_t beemu_parse_uint16_operand(const uint32_t original_machine_code)
+{
+	const uint16_t lsb = (original_machine_code >> 8) & 0xFF;
+	const uint16_t msb = original_machine_code & 0xFF;
+	return (msb << 8) | lsb;
+}

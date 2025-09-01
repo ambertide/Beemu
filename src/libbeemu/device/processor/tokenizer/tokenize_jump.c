@@ -87,7 +87,7 @@ void parse_jump_params(
 			instruction->original_machine_code);
 	} else {
 		// Parse as absolute mem addr.
-		const uint16_t jump_address = instruction->original_machine_code & 0xFFFF;
+		const uint16_t jump_address = beemu_parse_uint16_operand(instruction->original_machine_code);
 		params->param.pointer = false;
 		params->param.type = BEEMU_PARAM_TYPE_UINT16;
 		params->param.value.value = jump_address;

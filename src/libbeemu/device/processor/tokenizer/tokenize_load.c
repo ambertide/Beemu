@@ -169,7 +169,7 @@ void determine_load_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
 	static const BeemuParam register_a = { .pointer = false,
 		.type = BEEMU_PARAM_TYPE_REGISTER_8,
 		.value.register_8 = BEEMU_REGISTER_A };
-	const uint16_t memory_addr = instruction->original_machine_code & 0xFFFF;
+	const uint16_t memory_addr = beemu_parse_uint16_operand(instruction->original_machine_code);
 	const BeemuParam ptr = {
 		.pointer = true,
 		.type = BEEMU_PARAM_TYPE_UINT16,
@@ -200,7 +200,7 @@ void determine_load16_addr16_sp_params(BeemuInstruction *instruction, uint8_t op
 		false,
 		BEEMU_REGISTER_SP);
 	instruction->params.load_params.dest.type = BEEMU_PARAM_TYPE_UINT16;
-	instruction->params.load_params.dest.value.value = instruction->original_machine_code & 0xFFFF;
+	instruction->params.load_params.dest.value.value = beemu_parse_uint16_operand(instruction->original_machine_code);
 	instruction->params.load_params.dest.pointer = true;
 }
 
@@ -222,7 +222,7 @@ void determine_load16_imm16_params(BeemuInstruction* instruction, uint8_t opcode
 		);
 	instruction->params.load_params.source.type = BEEMU_PARAM_TYPE_UINT16;
 	instruction->params.load_params.source.pointer = false;
-	instruction->params.load_params.source.value.value = instruction->original_machine_code & 0xFFFF;
+	instruction->params.load_params.source.value.value = beemu_parse_uint16_operand(instruction->original_machine_code);
 }
 
 void determine_load_push_params(BeemuInstruction* instruction, uint8_t opcode)

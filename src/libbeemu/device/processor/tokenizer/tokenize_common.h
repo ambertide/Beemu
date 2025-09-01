@@ -111,6 +111,14 @@ extern "C" {
 		BeemuParam *param,
 		uint32_t original_machine_code);
 
+	/**
+	 * Given the full machine code, extract the 16 bit operand,
+	 * since gameboy is little endian this is not straightforward.
+	 * @param original_machine_code Machine code of the instruction
+	 * @return UINT16 value of operand.
+	 */
+	uint16_t beemu_parse_uint16_operand(uint32_t original_machine_code);
+
 #ifdef __cplusplus
 }
 #endif
