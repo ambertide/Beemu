@@ -1,6 +1,6 @@
 from json import dump
 
-from tests.resources.utils import get_tokens_except, sort_instructions, gen_register_16
+from utils import get_tokens_except, sort_instructions, gen_register_16
 
 jr_conditional = [*range(0x20, 0x39, 8)]
 rst_instructions = [*range(0xC7, 0x100, 8)]
@@ -113,11 +113,11 @@ for opcode, mem_address in zip(rst_instructions, mem_addresses):
 
 for opcode, condition in zip(conditional_jp_instructions, conditions):
     tokens.append({
-        "instruction": f"0x{opcode:02X}ABCD",
+        "instruction": f"0x{opcode:02X}CDAB",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 4,
-            "original_machine_code": (opcode << 16) + 0xABCD,
+            "original_machine_code": (opcode << 16) + 0xCDAB,
             "byte_length": 3,
             "params": {
                 "jump_params": {
@@ -139,11 +139,11 @@ for opcode, condition in zip(conditional_jp_instructions, conditions):
 # Unconditional variant of jump
 
 tokens.append({
-    "instruction": f"0xC3ABCD",
+    "instruction": f"0xC3CDAB",
     "token": {
         "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
         "duration_in_clock_cycles": 4,
-        "original_machine_code": (0xC3 << 16) + 0xABCD,
+        "original_machine_code": (0xC3 << 16) + 0xCDAB,
         "byte_length": 3,
         "params": {
             "jump_params": {
@@ -236,11 +236,11 @@ for opcode, enable_interrupts in zip(opcodes, enable_interruptses):
 
 for opcode, condition in zip([*call_conditional, 0xCD], [*conditions, "BEEMU_JUMP_IF_NO_CONDITION"]):
     tokens.append({
-        "instruction": f"0x{opcode:02X}ABCD",
+        "instruction": f"0x{opcode:02X}CDAB",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_JUMP",
             "duration_in_clock_cycles": 6,
-            "original_machine_code": (opcode << 16) + 0xABCD,
+            "original_machine_code": (opcode << 16) + 0xCDAB,
             "byte_length": 3,
             "params": {
                 "jump_params": {

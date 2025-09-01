@@ -293,11 +293,11 @@ tokens.append(
 
 tokens.append(
     {
-        "instruction": f"0xEADEBC",
+        "instruction": f"0xEABCDE",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 4,
-            "original_machine_code": 0xEADEBC,
+            "original_machine_code": 0xEABCDE,
             "byte_length": 3,
             "params": {
                 "load_params": {
@@ -314,11 +314,11 @@ tokens.append(
 
 tokens.append(
     {
-        "instruction": f"0xFADEBC",
+        "instruction": f"0xFABCDE",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 4,
-            "original_machine_code": 0xFADEBC,
+            "original_machine_code": 0xFABCDE,
             "byte_length": 3,
             "params": {
                 "load_params": {
@@ -429,11 +429,11 @@ load_immediates = [];
 
 for opcode, register in zip(opcodes, registers):
     load_immediates.append({
-        "instruction": f"0x{opcode:02X}ABCD",
+        "instruction": f"0x{opcode:02X}CDAB",
         "token": {
             "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
             "duration_in_clock_cycles": 3,
-            "original_machine_code": (opcode << 16) + 0xABCD,
+            "original_machine_code": (opcode << 16) + 0xCDAB,
             "byte_length": 3,
             "params": {
                 "load_params": {
@@ -452,11 +452,11 @@ for opcode, register in zip(opcodes, registers):
 
 
 save_sp = {
-    "instruction": f"0x08ABCD",
+    "instruction": f"0x08CDAB",
     "token": {
         "type": "BEEMU_INSTRUCTION_TYPE_LOAD",
         "duration_in_clock_cycles": 5,
-        "original_machine_code":0x08ABCD,
+        "original_machine_code":0x08CDAB,
         "byte_length": 3,
         "params": {
             "load_params": {
