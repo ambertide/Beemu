@@ -12,6 +12,7 @@
 #include "parser.h"
 #include "parse_arithmatic.h"
 #include "parse_bitwise.h"
+#include "parse_load.h"
 
 /**
  * Every gameboy instruction loads the PC and IR values and sets the
@@ -67,6 +68,9 @@ BeemuCommandQueue *beemu_parser_parse(const BeemuProcessor *processor, const Bee
 		break;
 	case BEEMU_INSTRUCTION_TYPE_BITWISE:
 		parse_bitwise(queue, processor, instruction);
+		break;
+	case BEEMU_INSTRUCTION_TYPE_LOAD:
+		parse_load(queue, processor, instruction);
 		break;
 	default:
 		break;
