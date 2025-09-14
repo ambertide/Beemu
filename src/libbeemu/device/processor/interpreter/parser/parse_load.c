@@ -198,6 +198,9 @@ DEFINE_STATE(fetch_cycle_start)
 		TRANSITION_TO(decode_operand);
 	} else if (fetches_from_memory) {
 		TRANSITION_TO(fetch_memory);
+	} else {
+		// For registers
+		TRANSITION_TO(write_cycle_start);
 	}
 }
 
