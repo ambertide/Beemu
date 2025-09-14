@@ -56,7 +56,25 @@ DEFINE_TERMINAL_STATE(register_write)
 }
 
 DEFINE_TERMINAL_STATE(write_to_stack) {}
-DEFINE_TERMINAL_STATE(write_to_memory) {}
+
+DEFINE_TERMINAL_STATE(write_to_memory)
+{
+	const uint16_t memory_addr = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->dest,
+		ctx->processor,
+		true); // SKIP Deref so we can get the full memaddr
+	const uint8_t memory_value = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->source,
+		ctx->processor,
+		false);
+	beemu_cq_write_memory(
+		ctx->queue,
+		memory_addr,
+		memory_value
+		);
+	// Mem writes consume an additional cycle.
+	beemu_cq_halt_cycle(ctx->queue);
+}
 
 /**
  * Start and branch off to the write step.
