@@ -92,6 +92,13 @@ BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuPr
  */
 uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor);
 
+/**
+ * Check if the param holds a 16-bit (double byte) value.
+ * @param param Param to check
+ * @return true if the value is 16 bits.
+ */
+bool beemu_param_holds_double(const BeemuParam *param);
+
 #ifdef __cplusplus
 	}
 #endif

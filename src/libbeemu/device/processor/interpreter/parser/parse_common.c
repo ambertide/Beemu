@@ -211,3 +211,12 @@ uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor 
 	beemu_cq_halt_cycle(queue);
 	return mem_value;
 }
+
+bool beemu_param_holds_double(const BeemuParam *param)
+{
+	if (param->pointer) {
+		return false;
+	}
+
+	return param->type == BEEMU_PARAM_TYPE_UINT16 || param->type == BEEMU_PARAM_TYPE_REGISTER_16;
+}

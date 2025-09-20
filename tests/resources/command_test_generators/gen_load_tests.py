@@ -130,24 +130,25 @@ def emit_eight_bit_dereffed_write_to_hl(token, dst: Param, src: Param) -> list[d
     ]
 
 def emit_sp_load(token, dst: Param, src: Param) -> list[dict]:
-    # .
+    # LD (a16), SP
     return [
         *emit_m1_cycle(token),
         # M2
         WriteTo.pc(0x02),
-        WriteTo.ir((dst.value & 0xFF00) >> 8),
+        WriteTo.ir((dst.value & 0xFF)),
+        Halt.cycle(),
         # M3
         WriteTo.pc(0x03),
-        WriteTo.ir(dst.value & 0xFF),
+        WriteTo.ir((dst.value & 0xFF00) >> 8),
+        Halt.cycle(),
         # M4
         # This is the SP value for highstack
-        WriteTo.memory(dst.value, 0xBB),
+        WriteTo.memory(dst.value, 0xFF),
         Halt.cycle(),
         # M5
-        WriteTo.memory(dst.value + 1, 0xFF),
+        WriteTo.memory(dst.value + 1, 0xBB),
         Halt.cycle(),
         # M6/M1
-        Halt.cycle()
     ]
 
 def emit_pop(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:

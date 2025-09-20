@@ -190,15 +190,39 @@ DEFINE_TERMINAL_STATE(write_to_memory)
 }
 
 /**
+ * Write a double to memory in little endian.
+ */
+DEFINE_TERMINAL_STATE(write_double_to_memory)
+{
+	const uint16_t mem_addr = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->dest,
+		ctx->processor,
+		true);
+	const uint16_t value = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->source,
+		ctx->processor,
+		false);
+	const uint8_t lsb = value & 0xFF;
+	const uint8_t msb = value >> 8;
+	beemu_cq_write_memory(ctx->queue, mem_addr, lsb);
+	beemu_cq_halt_cycle(ctx->queue);
+	beemu_cq_write_memory(ctx->queue, mem_addr + 1, msb);
+	beemu_cq_halt_cycle(ctx->queue);
+	TERMINATE_STATE_MACHINE;
+}
+
+/**
  * Start and branch off to the write step.
  */
 DEFINE_STATE(write_cycle_start)
 {
 	const bool write_to_stack = is_stack_op(ctx->ld_params->dest);
-	const bool write_from_stack = is_stack_op(ctx->ld_params->source);
 	const bool write_to_memory = ctx->ld_params->dest.pointer;
+	const bool write_double_to_memory = ctx->ld_params->dest.pointer && beemu_param_holds_double(&ctx->ld_params->source);
 	if (write_to_stack) {
 		TRANSITION_TO(write_to_stack);
+	} else if (write_double_to_memory) {
+		TRANSITION_TO(write_double_to_memory);
 	} else if (write_to_memory) {
 		TRANSITION_TO(write_to_memory);
 	} else {

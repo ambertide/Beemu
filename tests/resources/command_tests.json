@@ -853,9 +853,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 171
+								"byte_value": 205
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -887,9 +893,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 205
+								"byte_value": 171
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -904,7 +916,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 187
+								"byte_value": 255
 							}
 						}
 					}
@@ -927,15 +939,9 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 255
+								"byte_value": 187
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{
