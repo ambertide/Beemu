@@ -98,13 +98,19 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 		BeemuRegister register_to_read;
 		register_to_read.type = BEEMU_EIGHT_BIT_REGISTER;
 		register_to_read.name_of.eight_bit_register = parameter->value.register_8;
-		const uint8_t register_value = beemu_registers_read_register_value(processor->registers, register_to_read);
-		if (!parameter->pointer || skip_deref) {
+		uint16_t register_value = beemu_registers_read_register_value(processor->registers, register_to_read);
+		if (!parameter->pointer) {
 			// If not pointer, nothing else to do.
 			return register_value;
 		}
+		// 8-bit memory addresses of course are not real, instead what happens is
+		// they are offsetted to 0xff00
+		const uint16_t mem_addr = register_value + 0xff00;
+		if (skip_deref) {
+			return mem_addr;
+		}
 		// Otherwise dereference memory.
-		const uint8_t mem_value = beemu_memory_read(processor->memory, register_value);
+		const uint8_t mem_value = beemu_memory_read(processor->memory, mem_addr);
 		return mem_value;
 	}
 	case BEEMU_PARAM_TYPE_REGISTER_16: {
@@ -123,10 +129,21 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 	case BEEMU_PARAM_TYPE_UINT_8:
 	case BEEMU_PARAM_TYPE_UINT16: {
 		const uint16_t value = parameter->value.value;
-		if (!parameter->pointer || skip_deref) {
+		if (!parameter->pointer) {
 			return value;
 		}
-		return beemu_memory_read(processor->memory, value);
+		uint16_t mem_addr = value;
+		if (parameter->type == BEEMU_PARAM_TYPE_UINT_8) {
+			// Much like its REG8 sibling, this block also adds to an offset
+			// as 8 bit mem addresses really doesn't make set.
+			// (I mean they do but in DMG-01's context they are offsets to 0xFF00
+			mem_addr += 0xFF00;
+		}
+
+		if (skip_deref) {
+			return mem_addr;
+		}
+		return beemu_memory_read(processor->memory, mem_addr);
 		default:
 		return 0;
 	}
