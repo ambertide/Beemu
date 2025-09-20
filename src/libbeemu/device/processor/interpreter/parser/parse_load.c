@@ -55,7 +55,7 @@ DEFINE_TERMINAL_STATE(register_write)
 	}
 }
 
-DEFINE_TERMINAL_STATE(write_to_stack) {}
+DEFINE_TERMINAL_STATE(write_to_stack) { }
 
 DEFINE_TERMINAL_STATE(write_to_memory)
 {
@@ -103,9 +103,17 @@ DEFINE_STATE(write_cycle_start)
 DEFINE_STATE(decode_operand)
 {
 	for (int decoding_nth_byte = 1; decoding_nth_byte < ctx->instruction->byte_length; decoding_nth_byte++ ) {
-		const uint8_t next_ir_value = (ctx->instruction->original_machine_code >> (2 << decoding_nth_byte)) & 0xFF;
+		// Below works because we are essentially simulating how a little endian
+		// system reads a number from memory while we know the number's correct
+		// representation, so we can just read it from the end
+		const uint8_t next_ir_value = (
+			ctx->ld_params->source.value.value
+				>> (8 * (decoding_nth_byte - 1))
+				) & 0xFF;
 		// Increment to PC, write the new PC value to IR and Halt.
-		beemu_cq_write_pc(ctx->queue, ctx->processor->registers->program_counter + decoding_nth_byte - 1);
+		beemu_cq_write_pc(
+			ctx->queue,
+			ctx->processor->registers->program_counter + (decoding_nth_byte + 1));
 		beemu_cq_write_ir(ctx->queue, next_ir_value);
 		beemu_cq_halt_cycle(ctx->queue);
 	}

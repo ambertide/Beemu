@@ -4,7 +4,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 3,
-				"original_machine_code": 109517,
+				"original_machine_code": 118187,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -97,7 +97,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 171
+								"byte_value": 205
 							}
 						}
 					}
@@ -137,7 +137,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 205
+								"byte_value": 171
 							}
 						}
 					}
@@ -760,7 +760,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 5,
-				"original_machine_code": 568269,
+				"original_machine_code": 576939,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -1785,7 +1785,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 3,
-				"original_machine_code": 1158093,
+				"original_machine_code": 1166763,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -1878,7 +1878,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 171
+								"byte_value": 205
 							}
 						}
 					}
@@ -1918,7 +1918,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 205
+								"byte_value": 171
 							}
 						}
 					}
@@ -3376,7 +3376,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 3,
-				"original_machine_code": 2206669,
+				"original_machine_code": 2215339,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -3469,7 +3469,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 171
+								"byte_value": 205
 							}
 						}
 					}
@@ -3509,7 +3509,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 205
+								"byte_value": 171
 							}
 						}
 					}
@@ -5001,7 +5001,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 3,
-				"original_machine_code": 3255245,
+				"original_machine_code": 3263915,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -5094,7 +5094,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 171
+								"byte_value": 205
 							}
 						}
 					}
@@ -5134,7 +5134,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 205
+								"byte_value": 171
 							}
 						}
 					}
@@ -23957,7 +23957,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 4,
-				"original_machine_code": 15392444,
+				"original_machine_code": 15383774,
 				"byte_length": 3,
 				"params": {
 					"load_params": {
@@ -25273,7 +25273,7 @@
 			"token": {
 				"type": "BEEMU_INSTRUCTION_TYPE_LOAD",
 				"duration_in_clock_cycles": 4,
-				"original_machine_code": 16441020,
+				"original_machine_code": 16432350,
 				"byte_length": 3,
 				"params": {
 					"load_params": {

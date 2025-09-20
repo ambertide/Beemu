@@ -82,8 +82,8 @@ def emit_sixteen_bit_load_direct(token, dst: Param, src: Param) -> list[dict]:
     """
     This adds tests for LD rr, d16 cases.
     """
-    direct_msb = src.value & 0xFF
-    direct_lsb = (src.value & 0xFF00) >> 8
+    direct_lsb = src.value & 0xFF
+    direct_msb = (src.value & 0xFF00) >> 8
     return [
         *emit_m1_cycle(token),
         # M2
