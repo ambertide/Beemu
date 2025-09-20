@@ -128,7 +128,26 @@ DEFINE_TERMINAL_STATE(register_write)
 	TERMINATE_STATE_MACHINE;
 }
 
-DEFINE_TERMINAL_STATE(write_to_stack) { }
+DEFINE_TERMINAL_STATE(write_to_stack)
+{
+	// Stack by definition only holds 16 bit values, they must also be
+	// encoded in little endian since we are writing to memory.
+	uint16_t stack_ptr = ctx->processor->registers->stack_pointer;
+	const uint16_t value_to_push = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->source,
+		ctx->processor,
+		false);
+	const uint8_t msb_value = value_to_push >> 8;
+	const uint8_t lsb_value = value_to_push & 0xFF;
+	// Write is performed in byte-wise order in reverse.
+	beemu_cq_write_reg_16(ctx->queue, BEEMU_REGISTER_SP, --stack_ptr);
+	beemu_cq_halt_cycle(ctx->queue);
+	beemu_cq_write_memory(ctx->queue, stack_ptr, msb_value);
+	beemu_cq_write_reg_16(ctx->queue, BEEMU_REGISTER_SP, --stack_ptr);
+	beemu_cq_halt_cycle(ctx->queue);
+	beemu_cq_write_memory(ctx->queue, stack_ptr, lsb_value);
+	beemu_cq_halt_cycle(ctx->queue);
+}
 
 DEFINE_TERMINAL_STATE(write_to_memory)
 {

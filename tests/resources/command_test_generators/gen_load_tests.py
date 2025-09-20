@@ -175,17 +175,19 @@ def emit_push(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:
     """
     reg_value = mem_addresses[src.register]
     high_stack_sp = 0xBBFF
+    msb = (reg_value & 0xFF00) >> 8
+    lsb = reg_value & 0xFF
     return [
         *emit_m1_cycle(token),
         # M2
         WriteTo.register('SP', high_stack_sp - 1),
         Halt.cycle(),
         # M3
-        WriteTo.memory(high_stack_sp - 1, reg_value & 0xFF),
+        WriteTo.memory(high_stack_sp - 1, msb),
         WriteTo.register('SP', high_stack_sp - 2),
         Halt.cycle(),
         # M4
-        WriteTo.memory(high_stack_sp - 2, (reg_value & 0xFF00) >> 8),
+        WriteTo.memory(high_stack_sp - 2, lsb),
         Halt.cycle()
         # M5/M1
     ]
