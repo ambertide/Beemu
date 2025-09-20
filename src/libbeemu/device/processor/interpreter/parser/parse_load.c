@@ -32,8 +32,82 @@ typedef struct StateMachineContext {
 #define TRANSITION_TO(STATE_NAME) STATE_NAME##_step(ctx)
 #define START_STATE_MACHINE fetch_cycle_start_step(&ctx)
 #define TERMINATE_STATE_MACHINE return
-// WRITE CYCLE STEPS:
 
+// Utility functions
+/**
+ * Check if a post load operation decrements its target.
+ */
+bool post_load_decrements(const BeemuPostLoadOperation operation)
+{
+	return operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE
+		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
+}
+
+/**
+ * Check if a post load operation increments its target.
+ */
+bool post_load_increments(const BeemuPostLoadOperation operation)
+{
+	return operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE
+		|| operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION;
+}
+
+/**
+ * Check if a post load impacts the destination.
+ */
+bool post_load_impacts_dst(const BeemuPostLoadOperation operation)
+{
+	return operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION
+		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
+}
+
+/**
+ * Check if a post load impacts the load source
+ */
+bool post_load_impacts_src(const BeemuPostLoadOperation operation)
+{
+	return operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE
+		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
+}
+
+bool has_post_load(const BeemuLoadParams params)
+{
+	return params.postLoadOperation != BEEMU_POST_LOAD_NOP;
+}
+
+// WRITE CYCLE STEPS:
+DEFINE_TERMINAL_STATE(post_load_operation)
+{
+	assert(ctx->ld_params->postLoadOperation != BEEMU_POST_LOAD_NOP);
+	const int post_load_modifier = post_load_decrements(ctx->ld_params->postLoadOperation) ? -1 : 1;
+	const BeemuParam post_load_target = post_load_impacts_dst(ctx->ld_params->postLoadOperation)
+		? ctx->ld_params->dest
+		: ctx->ld_params->source;
+	// Calculate the LD value for target
+	const uint16_t new_target_value = beemu_resolve_instruction_parameter_unsigned(
+		&post_load_target,
+		ctx->processor,
+		true) + post_load_modifier;
+	if (post_load_target.type == BEEMU_PARAM_TYPE_REGISTER_16) {
+		beemu_cq_write_reg_16(
+			ctx->queue,
+			post_load_target.value.register_16,
+			new_target_value
+			);
+	} else {
+		// Otherwise write to r8
+		beemu_cq_write_reg_8(
+			ctx->queue,
+			post_load_target.value.register_8,
+			new_target_value);
+	}
+
+	if (ctx->ld_params->dest.pointer) {
+		beemu_cq_halt_cycle(ctx->queue);
+	}
+
+	TERMINATE_STATE_MACHINE;
+}
 
 DEFINE_TERMINAL_STATE(register_write)
 {
@@ -52,6 +126,12 @@ DEFINE_TERMINAL_STATE(register_write)
 			ctx->queue,
 			ctx->ld_params->dest.value.register_16,
 			write_value);
+	}
+
+	if (has_post_load(*ctx->ld_params)) {
+		TRANSITION_TO(post_load_operation);
+	} else {
+		TERMINATE_STATE_MACHINE;
 	}
 }
 
@@ -72,8 +152,14 @@ DEFINE_TERMINAL_STATE(write_to_memory)
 		memory_addr,
 		memory_value
 		);
-	// Mem writes consume an additional cycle.
-	beemu_cq_halt_cycle(ctx->queue);
+
+	if (has_post_load(*ctx->ld_params)) {
+		TRANSITION_TO(post_load_operation);
+	} else {
+		// Mem writes consume an additional cycle.
+		beemu_cq_halt_cycle(ctx->queue);
+		TERMINATE_STATE_MACHINE;
+	}
 }
 
 /**
