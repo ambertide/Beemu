@@ -102,14 +102,15 @@ DEFINE_STATE(write_cycle_start)
  */
 DEFINE_STATE(decode_operand)
 {
+	const uint16_t operand =
+		(ctx->ld_params->source.type == BEEMU_PARAM_TYPE_UINT16 || ctx->ld_params->source.type == BEEMU_PARAM_TYPE_UINT_8)
+			? ctx->ld_params->source.value.value
+			: ctx->ld_params->dest.value.value;
 	for (int decoding_nth_byte = 1; decoding_nth_byte < ctx->instruction->byte_length; decoding_nth_byte++ ) {
 		// Below works because we are essentially simulating how a little endian
 		// system reads a number from memory while we know the number's correct
 		// representation, so we can just read it from the end
-		const uint8_t next_ir_value = (
-			ctx->ld_params->source.value.value
-				>> (8 * (decoding_nth_byte - 1))
-				) & 0xFF;
+		const uint8_t next_ir_value = operand >> (8 * (decoding_nth_byte - 1)) & 0xFF;
 		// Increment to PC, write the new PC value to IR and Halt.
 		beemu_cq_write_pc(
 			ctx->queue,
