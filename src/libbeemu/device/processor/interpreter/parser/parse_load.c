@@ -32,12 +32,13 @@ typedef struct StateMachineContext {
 #define TRANSITION_TO(STATE_NAME) STATE_NAME##_step(ctx)
 #define START_STATE_MACHINE fetch_cycle_start_step(&ctx)
 #define TERMINATE_STATE_MACHINE return
+#define RETURN_TO_PREVIOUS_STATE return
 
 // Utility functions
 /**
  * Check if a post load operation decrements its target.
  */
-bool post_load_decrements(const BeemuPostLoadOperation operation)
+bool post_load_increments(const BeemuPostLoadOperation operation)
 {
 	return operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE
 		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
@@ -46,7 +47,7 @@ bool post_load_decrements(const BeemuPostLoadOperation operation)
 /**
  * Check if a post load operation increments its target.
  */
-bool post_load_increments(const BeemuPostLoadOperation operation)
+bool post_load_decrements(const BeemuPostLoadOperation operation)
 {
 	return operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE
 		|| operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_DESTINATION;
@@ -62,12 +63,12 @@ bool post_load_impacts_dst(const BeemuPostLoadOperation operation)
 }
 
 /**
- * Check if a post load impacts the load source
+ * Check if a post load impacts the source.
  */
 bool post_load_impacts_src(const BeemuPostLoadOperation operation)
 {
-	return operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE
-		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_DESTINATION;
+	return operation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE
+		|| operation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE;
 }
 
 bool has_post_load(const BeemuLoadParams params)
@@ -76,42 +77,39 @@ bool has_post_load(const BeemuLoadParams params)
 }
 
 // WRITE CYCLE STEPS:
-DEFINE_TERMINAL_STATE(post_load_operation)
+DEFINE_STATE(dst_post_load)
 {
 	assert(ctx->ld_params->postLoadOperation != BEEMU_POST_LOAD_NOP);
 	const int post_load_modifier = post_load_decrements(ctx->ld_params->postLoadOperation) ? -1 : 1;
-	const BeemuParam post_load_target = post_load_impacts_dst(ctx->ld_params->postLoadOperation)
-		? ctx->ld_params->dest
-		: ctx->ld_params->source;
 	// Calculate the LD value for target
 	const uint16_t new_target_value = beemu_resolve_instruction_parameter_unsigned(
-		&post_load_target,
+		&ctx->ld_params->dest,
 		ctx->processor,
 		true) + post_load_modifier;
-	if (post_load_target.type == BEEMU_PARAM_TYPE_REGISTER_16) {
+	if (ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_16) {
 		beemu_cq_write_reg_16(
 			ctx->queue,
-			post_load_target.value.register_16,
+			 ctx->ld_params->dest.value.register_16,
 			new_target_value
 			);
 	} else {
 		// Otherwise write to r8
 		beemu_cq_write_reg_8(
 			ctx->queue,
-			post_load_target.value.register_8,
+			 ctx->ld_params->dest.value.register_8,
 			new_target_value);
 	}
 
-	if (ctx->ld_params->dest.pointer) {
-		beemu_cq_halt_cycle(ctx->queue);
-	}
-
-	TERMINATE_STATE_MACHINE;
+	RETURN_TO_PREVIOUS_STATE;
 }
 
 DEFINE_TERMINAL_STATE(register_write)
 {
 	assert(ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_16 || ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_8);
+	if (post_load_impacts_dst(ctx->ld_params->postLoadOperation)) {
+		TRANSITION_TO(dst_post_load);
+		beemu_cq_halt_cycle(ctx->queue);
+	}
 	const uint32_t write_value = beemu_resolve_instruction_parameter_unsigned(
 		&ctx->ld_params->source,
 		ctx->processor,
@@ -127,12 +125,7 @@ DEFINE_TERMINAL_STATE(register_write)
 			ctx->ld_params->dest.value.register_16,
 			write_value);
 	}
-
-	if (has_post_load(*ctx->ld_params)) {
-		TRANSITION_TO(post_load_operation);
-	} else {
-		TERMINATE_STATE_MACHINE;
-	}
+	TERMINATE_STATE_MACHINE;
 }
 
 DEFINE_TERMINAL_STATE(write_to_stack) { }
@@ -153,13 +146,12 @@ DEFINE_TERMINAL_STATE(write_to_memory)
 		memory_value
 		);
 
-	if (has_post_load(*ctx->ld_params)) {
-		TRANSITION_TO(post_load_operation);
-	} else {
-		// Mem writes consume an additional cycle.
-		beemu_cq_halt_cycle(ctx->queue);
-		TERMINATE_STATE_MACHINE;
+	if (post_load_impacts_dst(ctx->ld_params->postLoadOperation)) {
+		TRANSITION_TO(dst_post_load);
 	}
+	// Mem writes consume an additional cycle.
+	beemu_cq_halt_cycle(ctx->queue);
+	TERMINATE_STATE_MACHINE;
 }
 
 /**
@@ -231,16 +223,17 @@ DEFINE_STATE(src_post_load)
 {
 	// POST LOADS at src only occur at 16 bit registers.
 	assert(ctx->ld_params->source.type == BEEMU_PARAM_TYPE_REGISTER_16);
-	const BeemuRegister_16 target_register = ctx->ld_params->source.value.register_16;
-	BeemuRegister reg_query;
-	reg_query.type = BEEMU_SIXTEEN_BIT_REGISTER;
-	reg_query.name_of.sixteen_bit_register = target_register;
-	const uint16_t target_register_value = beemu_registers_read_register_value(
-		ctx->processor->registers,
-		reg_query);
-	const uint16_t new_value = ctx->ld_params->postLoadOperation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE
-		? target_register_value - 1
-		: target_register_value + 1;
+	const uint16_t value = beemu_resolve_instruction_parameter_unsigned(
+		&ctx->ld_params->source,
+		ctx->processor,
+		true
+		);
+	const int modifier = post_load_decrements(ctx->ld_params->postLoadOperation) ? -1 : 1;
+	const uint16_t new_value = value + modifier;
+	beemu_cq_write_reg_16(
+		ctx->queue,
+		ctx->ld_params->source.value.register_16,
+		new_value);
 	beemu_cq_halt_cycle(ctx->queue);
 	TRANSITION_TO(write_cycle_start);
 }
@@ -254,10 +247,7 @@ DEFINE_STATE(fetch_memory)
 	const bool read_from_stack = ctx->ld_params->source.type == BEEMU_PARAM_TYPE_REGISTER_16
 		&& ctx->ld_params->source.pointer
 		&& ctx->ld_params->source.value.register_16 == BEEMU_REGISTER_SP;
-	const bool has_src_post_load = ctx->ld_params->postLoadOperation != BEEMU_POST_LOAD_NOP
-		&& (
-			ctx->ld_params->postLoadOperation == BEEMU_POST_LOAD_DECREMENT_INDIRECT_SOURCE
-			|| ctx->ld_params->postLoadOperation == BEEMU_POST_LOAD_INCREMENT_INDIRECT_SOURCE);
+	const bool has_src_post_load = post_load_impacts_src(ctx->ld_params->postLoadOperation);
 
 	if (read_from_stack) {
 		// EMIT SP STEP
