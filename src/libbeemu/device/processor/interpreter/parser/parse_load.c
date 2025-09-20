@@ -76,6 +76,18 @@ bool has_post_load(const BeemuLoadParams params)
 	return params.postLoadOperation != BEEMU_POST_LOAD_NOP;
 }
 
+/**
+ * Check if operation reads from or writes to stack.
+ * @param ld_dest_or_src BeemuLoadParam's dest or source
+ * @return true if pop or push, false otherwise.
+ */
+bool is_stack_op(const BeemuParam ld_dest_or_src)
+{
+	return ld_dest_or_src.type == BEEMU_PARAM_TYPE_REGISTER_16
+			&& ld_dest_or_src.pointer
+			&& ld_dest_or_src.value.register_16 == BEEMU_REGISTER_SP;
+}
+
 // WRITE CYCLE STEPS:
 DEFINE_STATE(dst_post_load)
 {
@@ -110,10 +122,14 @@ DEFINE_TERMINAL_STATE(register_write)
 		TRANSITION_TO(dst_post_load);
 		beemu_cq_halt_cycle(ctx->queue);
 	}
-	const uint32_t write_value = beemu_resolve_instruction_parameter_unsigned(
+	uint32_t write_value = beemu_resolve_instruction_parameter_unsigned(
 		&ctx->ld_params->source,
 		ctx->processor,
 		false);
+
+	if (is_stack_op(ctx->ld_params->source)) {
+		write_value = beemu_memory_read_16(ctx->processor->memory, ctx->processor->registers->stack_pointer);
+	}
 	if (ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_8) {
 		beemu_cq_write_reg_8(
 			ctx->queue,
@@ -178,9 +194,8 @@ DEFINE_TERMINAL_STATE(write_to_memory)
  */
 DEFINE_STATE(write_cycle_start)
 {
-	const bool write_to_stack = ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_16
-		&& ctx->ld_params->dest.pointer
-		&& ctx->ld_params->dest.value.register_16 == BEEMU_REGISTER_SP;
+	const bool write_to_stack = is_stack_op(ctx->ld_params->dest);
+	const bool write_from_stack = is_stack_op(ctx->ld_params->source);
 	const bool write_to_memory = ctx->ld_params->dest.pointer;
 	if (write_to_stack) {
 		TRANSITION_TO(write_to_stack);

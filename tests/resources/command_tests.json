@@ -22181,7 +22181,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 511
+								"double_value": 255
 							}
 						}
 					}
@@ -22792,7 +22792,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 511
+								"double_value": 255
 							}
 						}
 					}
@@ -23536,7 +23536,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 511
+								"double_value": 255
 							}
 						}
 					}
@@ -24546,7 +24546,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 511
+								"double_value": 255
 							}
 						}
 					}

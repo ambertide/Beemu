@@ -156,7 +156,7 @@ def emit_pop(token, dst: Param, src: Param, pst_ld_op: str) -> list[dict]:
     """
     high_stack_sp = 0xBBFF
     high_stack_sp_deref = 0xFF
-    high_stack_sp_deref_plus_one = 0x01
+    high_stack_sp_deref_plus_one = 0x00
     return [
         *emit_m1_cycle(token),
         # Increment the SP twice to capture the stack pointer value.
