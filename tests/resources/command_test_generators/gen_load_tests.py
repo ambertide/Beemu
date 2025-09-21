@@ -252,7 +252,7 @@ def emit_d16_ptr_a(token, dst: Param, src: Param) -> list[dict]:
 
 def emit_a_d16_ptr(token, dst: Param, src: Param) -> list[dict]:
     """
-    LDH A, (a16)
+    LD A, (a16)
     """
     return [
         *emit_m1_cycle(token),
@@ -260,16 +260,16 @@ def emit_a_d16_ptr(token, dst: Param, src: Param) -> list[dict]:
         # It is actually unclear to me if IR is actually overwritten
         # but it makes sense to me if PC is done.
         WriteTo.pc(0x02),
-        WriteTo.ir((src.value & 0xFF00) >> 8),
-        Halt.cycle(),
-        # M3
-        WriteTo.pc(0x02),
         WriteTo.ir(src.value & 0xFF),
         Halt.cycle(),
+        # M3
+        WriteTo.pc(0x03),
+        WriteTo.ir((src.value & 0xFF00) >> 8),
+        Halt.cycle(),
         # M4
-        WriteTo.register(dst.register, 0xBC),
         Halt.cycle(),
         # M5/M1
+        WriteTo.register(dst.register, 0xBC),
     ]
 
 def emit_ldh_c_deref_to_a(token, dst: Param, src: Param) -> list[dict]:
