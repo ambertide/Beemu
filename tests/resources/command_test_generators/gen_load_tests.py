@@ -326,7 +326,7 @@ def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
     return [
         *emit_m1_cycle(token),
         # M2
-        WriteTo.register('SP', mem_addr_values['HL']),
+        WriteTo.register('SP', mem_addresses['HL']),
         Halt.cycle()
         # M3
     ]

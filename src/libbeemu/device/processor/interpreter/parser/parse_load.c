@@ -140,7 +140,13 @@ DEFINE_TERMINAL_STATE(register_write)
 			ctx->queue,
 			ctx->ld_params->dest.value.register_16,
 			write_value);
+		if (ctx->ld_params->dest.type == ctx->ld_params->source.type && !ctx->ld_params->dest.pointer && !ctx->ld_params->source.pointer ) {
+			// Transfering data from a 16 bit register to another 16 bit
+			// register directly causes an extra machine cycle being spent.
+			beemu_cq_halt_cycle(ctx->queue);
+		}
 	}
+
 	TERMINATE_STATE_MACHINE;
 }
 
