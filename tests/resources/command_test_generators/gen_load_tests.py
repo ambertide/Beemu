@@ -224,8 +224,8 @@ def emit_a_d8_ptr(token, dst: Param, src: Param) -> list[dict]:
         # Spent fetching memory
         Halt.cycle(),
         # M4/M1
-        # [0xFFBB] = 0xBB
-        WriteTo.register(dst.register, 0xBB)
+        # [0xFFBC] = 0xBC
+        WriteTo.register(dst.register, 0xBC)
     ]
 
 def emit_d16_ptr_a(token, dst: Param, src: Param) -> list[dict]:

@@ -77,6 +77,19 @@ bool has_post_load(const BeemuLoadParams params)
 }
 
 /**
+ * Check if the given parameter is a memory offset,
+ * this happens when an 8-bit number from an 8-bit register
+ * or 8-bit uint is used a memory offset to some base addr,
+ * typically 0xFF00
+ * @param param Parameter to check
+ * @return true if memory offset, false otherwise.
+ */
+bool is_param_memory_offset(const BeemuParam param)
+{
+	return param.pointer && (param.type == BEEMU_PARAM_TYPE_UINT_8 || param.type == BEEMU_PARAM_TYPE_REGISTER_8);
+}
+
+/**
  * Check if operation reads from or writes to stack.
  * @param ld_dest_or_src BeemuLoadParam's dest or source
  * @return true if pop or push, false otherwise.
@@ -252,6 +265,12 @@ DEFINE_STATE(decode_operand)
 			ctx->queue,
 			ctx->processor->registers->program_counter + (decoding_nth_byte + 1));
 		beemu_cq_write_ir(ctx->queue, next_ir_value);
+		beemu_cq_halt_cycle(ctx->queue);
+	}
+
+	if (is_param_memory_offset(ctx->ld_params->source) || is_param_memory_offset(ctx->ld_params->dest)) {
+		// Offset calculations cause an extra halt, probably to calculate the
+		// actual mem addr.
 		beemu_cq_halt_cycle(ctx->queue);
 	}
 	TRANSITION_TO(write_cycle_start);
