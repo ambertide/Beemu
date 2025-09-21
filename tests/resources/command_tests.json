@@ -24050,7 +24050,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 222
+								"byte_value": 188
 							}
 						}
 					}
@@ -24073,7 +24073,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 2
+								"double_value": 3
 							}
 						}
 					}
@@ -24090,7 +24090,7 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 188
+								"byte_value": 222
 							}
 						}
 					}

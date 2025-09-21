@@ -238,11 +238,11 @@ def emit_d16_ptr_a(token, dst: Param, src: Param) -> list[dict]:
         # It is actually unclear to me if IR is actually overwritten
         # but it makes sense to me if PC is done.
         WriteTo.pc(0x02),
-        WriteTo.ir((dst.value & 0xFF00) >> 8),
+        WriteTo.ir(dst.value & 0xFF),
         Halt.cycle(),
         # M3
-        WriteTo.pc(0x02),
-        WriteTo.ir(dst.value & 0xFF),
+        WriteTo.pc(0x03),
+        WriteTo.ir((dst.value & 0xFF00) >> 8),
         Halt.cycle(),
         # M4
         WriteTo.memory(dst.value, 0x0A),
