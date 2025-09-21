@@ -5803,12 +5803,6 @@
 					"halt": {
 						"is_cycle_terminator": true
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
 				}
 			]
 		},

@@ -126,7 +126,6 @@ def emit_eight_bit_dereffed_write_to_hl(token, dst: Param, src: Param) -> list[d
         WriteTo.memory(0x0102, src.value),
         Halt.cycle(),
         # M4/M1, extra halt for write op.
-        Halt.cycle()
     ]
 
 def emit_sp_load(token, dst: Param, src: Param) -> list[dict]:
