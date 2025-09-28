@@ -10,6 +10,7 @@
  */
 
 #include "parse_load.h"
+#include <stdckdint.h>
 
 #include <assert.h>
 
@@ -115,6 +116,37 @@ DEFINE_STATE(dst_post_load)
 	RETURN_TO_PREVIOUS_STATE;
 }
 
+/**
+ * Copy the contents of SP + some offset to HL.
+ * This instruction is one-off, essentially.
+ */
+DEFINE_TERMINAL_STATE(offsetted_sp_copy)
+{
+	const int offset = ctx->ld_params->auxPostLoadParameter.value.signed_value;
+	const uint8_t sp_lsb = ctx->processor->registers->stack_pointer & 0xFF;
+	const uint8_t sp_msb = ctx->processor->registers->stack_pointer >> 8;
+	uint8_t lsb_add_result;
+	const bool carry = ckd_add(&lsb_add_result, sp_lsb, offset);
+	const uint16_t normalized_offset = offset < 0 ? 0xFF + offset : offset;
+	// Calculate H and C by hand
+	const int sp_lsb_normally = ((int) sp_lsb + normalized_offset);
+	const uint8_t sp_lsb_actually = sp_lsb_normally;
+	const int c_flag = carry;
+	const int h_flag = ((((uint16_t) sp_lsb & 0x0F) + (normalized_offset & 0x0F)) & 0x10) == 0x10;
+	const int adj = offset < 0 ? -1 : 0;
+	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_L, sp_lsb_actually);
+	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_Z, 0);
+	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_N, 0);
+	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_H, h_flag);
+	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_C, c_flag);
+	beemu_cq_halt_cycle(ctx->queue);
+	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_H, sp_msb + c_flag + adj);
+	TERMINATE_STATE_MACHINE;
+}
+
+/**
+ * Write step that writes to a register.
+ */
 DEFINE_TERMINAL_STATE(register_write)
 {
 	assert(ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_16 || ctx->ld_params->dest.type == BEEMU_PARAM_TYPE_REGISTER_8);
@@ -225,12 +257,15 @@ DEFINE_STATE(write_cycle_start)
 	const bool write_to_stack = is_stack_op(ctx->ld_params->dest);
 	const bool write_to_memory = ctx->ld_params->dest.pointer;
 	const bool write_double_to_memory = ctx->ld_params->dest.pointer && beemu_param_holds_double(&ctx->ld_params->source);
+	const bool offsetted_sp_copy = ctx->ld_params->postLoadOperation == BEEMU_POST_LOAD_SIGNED_PAYLOAD_SUM;
 	if (write_to_stack) {
 		TRANSITION_TO(write_to_stack);
 	} else if (write_double_to_memory) {
 		TRANSITION_TO(write_double_to_memory);
 	} else if (write_to_memory) {
 		TRANSITION_TO(write_to_memory);
+	} else if (offsetted_sp_copy) {
+		TRANSITION_TO(offsetted_sp_copy);
 	} else {
 		TRANSITION_TO(register_write);
 	}

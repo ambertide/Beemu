@@ -307,8 +307,8 @@ def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
         # byte of the SP and it treats as an addition.
         flag_ops = flag_functions['ADD']
         absolute_value = pst_ld_param.value * -1 if pst_ld_param.value < 0 else pst_ld_param.value
-        flag_vals = flag_ops(0xBB, absolute_value, 256)
-        genvalue = (0xffbb + pst_ld_param.value) % 2**16
+        flag_vals = flag_ops(0xff, 0xff - absolute_value, 256)
+        genvalue = (0xbbff + pst_ld_param.value) % 2**16
         l_value = genvalue & 0xFF
         h_value = genvalue >> 8
         return [
@@ -317,9 +317,11 @@ def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
             # Spent fetching the s8.
             WriteTo.pc(0x02),
             WriteTo.ir(token['original_machine_code'] & 0xFF),
+            Halt.cycle(),
             # M3
             WriteTo.register('L', l_value),
             *flag_vals.generate_flag_write_commands(),
+            Halt.cycle(),
             # M4 / M1
             WriteTo.register('H', h_value)
         ]
