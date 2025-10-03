@@ -307,7 +307,7 @@ def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
         # byte of the SP and it treats as an addition.
         flag_ops = flag_functions['ADD']
         absolute_value = pst_ld_param.value * -1 if pst_ld_param.value < 0 else pst_ld_param.value
-        flag_vals = flag_ops(0xff, 0xff - absolute_value, 256)
+        flag_vals = flag_ops(0xff, 0xf0, 256)
         genvalue = (0xbbff + pst_ld_param.value) % 2**16
         l_value = genvalue & 0xFF
         h_value = genvalue >> 8
@@ -323,7 +323,7 @@ def emit_sp_hl(token, pst_ld_op, pst_ld_param: Param) -> list[dict]:
             *flag_vals.generate_flag_write_commands(),
             Halt.cycle(),
             # M4 / M1
-            WriteTo.register('H', h_value)
+            WriteTo.register('H', h_value + int(flag_vals.c))
         ]
     return [
         *emit_m1_cycle(token),

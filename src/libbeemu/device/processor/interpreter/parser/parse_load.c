@@ -122,25 +122,20 @@ DEFINE_STATE(dst_post_load)
  */
 DEFINE_TERMINAL_STATE(offsetted_sp_copy)
 {
-	const int offset = ctx->ld_params->auxPostLoadParameter.value.signed_value;
+	const int offset = ctx->instruction->original_machine_code & 0xFF;
 	const uint8_t sp_lsb = ctx->processor->registers->stack_pointer & 0xFF;
 	const uint8_t sp_msb = ctx->processor->registers->stack_pointer >> 8;
 	uint8_t lsb_add_result;
-	const bool carry = ckd_add(&lsb_add_result, sp_lsb, offset);
-	const uint16_t normalized_offset = offset < 0 ? 0xFF + offset : offset;
+	const int carry = ckd_add(&lsb_add_result, sp_lsb, offset);
 	// Calculate H and C by hand
-	const int sp_lsb_normally = ((int) sp_lsb + normalized_offset);
-	const uint8_t sp_lsb_actually = sp_lsb_normally;
-	const int c_flag = carry;
-	const int h_flag = ((((uint16_t) sp_lsb & 0x0F) + (normalized_offset & 0x0F)) & 0x10) == 0x10;
-	const int adj = offset < 0 ? -1 : 0;
-	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_L, sp_lsb_actually);
+	const int h_flag = (((sp_lsb & 0x0F) + (offset & 0x0F)) & 0x10) == 0x10;
+	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_L, lsb_add_result);
 	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_Z, 0);
 	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_N, 0);
 	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_H, h_flag);
-	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_C, c_flag);
+	beemu_cq_write_flag(ctx->queue, BEEMU_FLAG_C, carry);
 	beemu_cq_halt_cycle(ctx->queue);
-	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_H, sp_msb + c_flag + adj);
+	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_H, sp_msb + carry);
 	TERMINATE_STATE_MACHINE;
 }
 
