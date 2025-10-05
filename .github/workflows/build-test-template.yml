@@ -1,28 +1,28 @@
-name: CMake
+name: Build and Test Template
+
+# This structure is as per https://github.com/orgs/community/discussions/42335#discussioncomment-7997348
+# To support multiple OS's accross multiple jobs.
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
-    build:
-      strategy:
-        matrix:
-          os: [ 'ubuntu-24.04', 'macos-26' ]
+  build:
+    runs-on: ${{inputs.os}}
 
-      runs-on: ${{ matrix.os}}
-
-      outputs:
-        # This one is required to trigger downstream
-        # jobs with the same operating system.
-        os: ${{matrix.os}}
-      steps:
+    outputs:
+      # This one is required to trigger downstream
+      # jobs with the same operating system.
+      os: ${{inputs.os}}
+    steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
@@ -48,27 +48,27 @@ jobs:
       - name: Tar build artifacts
         working-directory: ${{github.workspace}}
         # Tar is required to maintain permissions
-        run: tar -cvf beemu-build-${{matrix.os}}.tar build
+        run: tar -cvf beemu-build-${{inputs.os}}.tar build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: beemu-build-${{matrix.os}}
-          path: beemu-build-${{matrix.os}}.tar
+          name: beemu-build-${{inputs.os}}
+          path: beemu-build-${{inputs.os}}.tar
 
-    test:
-      needs: build
-      runs-on: ${{needs.build.outputs.os}}
-      steps:
+  test:
+    needs: build
+    runs-on: ${{inputs.os}}
+    steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: Download build artifacts for ${{needs.build.outputs.os}}
+      - name: Download build artifacts for ${{inputs.os}}
         uses: actions/download-artifact@v5
         with:
-          name: beemu-build-${{needs.build.outputs.os}}
-      - name: Unarchive build artifacts for ${{needs.build.outputs.os}}
-        run: tar -xvf beemu-build-${{needs.build.outputs.os}}.tar
+          name: beemu-build-${{inputs.os}}
+      - name: Unarchive build artifacts for ${{inputs.os}}
+        run: tar -xvf beemu-build-${{inputs.os}}.tar
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.

@@ -1,0 +1,17 @@
+name: build-and-test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26]
+    uses: ./.github/workflows/build-test-template.yml
+    with:
+      os: ${{ matrix.os }}
