@@ -23,9 +23,9 @@ jobs:
         submodules: 'recursive'
 
 
-    - name: switch to gcc-15 on linux
+    - name: Switch to gcc-15 on linux
       # as per https://stackoverflow.com/a/67791068
-      if: matrix.configurations.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt install gcc-15 g++-15
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 --slave /usr/bin/g++ g++ /usr/bin/g++-15 --slave /usr/bin/gcov gcov /usr/bin/gcov-15
