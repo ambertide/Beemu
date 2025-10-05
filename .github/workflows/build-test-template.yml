@@ -30,7 +30,7 @@ jobs:
 
       - name: Switch to gcc-14 on linux
         # as per https://stackoverflow.com/a/67791068
-        if: matrix.os == 'ubuntu-24.04'
+        if: inputs.os == 'ubuntu-24.04'
         run: |
           sudo add-apt-repository -y universe && sudo apt -y update && sudo apt install -y gcc-14 g++-14          
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 --slave /usr/bin/g++ g++ /usr/bin/g++-14 --slave /usr/bin/gcov gcov /usr/bin/gcov-14
