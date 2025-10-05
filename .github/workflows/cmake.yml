@@ -60,6 +60,9 @@ jobs:
       needs: build
       runs-on: ${{needs.build.outputs.os}}
       steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
       - name: Download build artifacts for ${{needs.build.outputs.os}}
         uses: actions/download-artifact@v5
         with:
