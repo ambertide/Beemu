@@ -45,11 +45,15 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+      - name: Tar build artifacts
+        # Tar is required to maintain permissions
+        run: tar -cvf beemu-build-${{matrix.os}}.tar ${{github.workspace}}/build
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: beemu-build-${{matrix.os}}
-          path: ${{github.workspace}}/build
+          path: beemu-build-${{matrix.os}}.tar
 
     test:
       needs: build
@@ -59,7 +63,9 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: beemu-build-${{needs.build.outputs.os}}
-          path: ${{github.workspace}}/build
+          path: beemu-build-${{matrix.os}}.tar
+      - name: Unarchive build artifacts for ${{needs.build.outputs.os}}
+        run: tar -xvf beemu-build-${{matrix.os}}.tar ${{github.workspace}}/build
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
