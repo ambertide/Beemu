@@ -45,10 +45,21 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beemu-build-${{matrix.os}}
+          path: ${{github.workspace}}/build
+
     test:
       needs: build
       runs-on: ${{needs.build.outputs.os}}
       steps:
+      - name: Download build artifacts for ${{needs.build.outputs.os}}
+        uses: actions/download-artifact@v5
+        with:
+          name: beemu-build-${{needs.build.outputs.os}}
+          path: ${{github.workspace}}/build
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
