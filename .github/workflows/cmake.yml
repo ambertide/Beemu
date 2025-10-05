@@ -46,8 +46,9 @@ jobs:
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       - name: Tar build artifacts
+        working-directory: ${{github.workspace}}
         # Tar is required to maintain permissions
-        run: tar -cvf beemu-build-${{matrix.os}}.tar ${{github.workspace}}/build
+        run: tar -cvf beemu-build-${{matrix.os}}.tar build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -65,7 +66,7 @@ jobs:
           name: beemu-build-${{needs.build.outputs.os}}
           path: beemu-build-${{matrix.os}}.tar
       - name: Unarchive build artifacts for ${{needs.build.outputs.os}}
-        run: tar -xvf beemu-build-${{matrix.os}}.tar ${{github.workspace}}/build
+        run: tar -xvf beemu-build-${{matrix.os}}.tar
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
