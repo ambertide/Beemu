@@ -64,7 +64,6 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: beemu-build-${{needs.build.outputs.os}}
-          path: beemu-build-${{matrix.os}}.tar
       - name: Unarchive build artifacts for ${{needs.build.outputs.os}}
         run: tar -xvf beemu-build-${{matrix.os}}.tar
       - name: Test
