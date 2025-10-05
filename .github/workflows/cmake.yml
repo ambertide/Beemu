@@ -65,7 +65,7 @@ jobs:
         with:
           name: beemu-build-${{needs.build.outputs.os}}
       - name: Unarchive build artifacts for ${{needs.build.outputs.os}}
-        run: tar -xvf beemu-build-${{matrix.os}}.tar
+        run: tar -xvf beemu-build-${{needs.build.outputs.os}}.tar
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
