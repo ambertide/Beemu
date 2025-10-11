@@ -98,6 +98,22 @@ extern "C"
 	 * @return uint8_t The rotated/shifted value and the new extra bit value.
 	 */
 	BeemuByteTuple beemu_util_rotate_or_shift(uint8_t value, uint8_t extra_bit, bool rotate, bool through_extra_bit, BeemuRotationDirection direction, bool keep_msb);
+
+	// Current releases of msvc does not support stdckdint
+	// while clang and gcc do, therefore we need to seperate these two.
+	// For msvc we must use an internal windows header which is activated
+	// via a macro declaration.
+	#ifdef _WIN32
+	#ifndef ENABLE_INTSAFE_SIGNED_FUNCTIONS
+	#define ENABLE_INTSAFE_SIGNED_FUNCTIONS
+	#include <intsafe.h>
+	#define BEEMU_CKD_ADD(result, a, b) IntAdd(a, b, result)
+	#endif
+	#else
+	#include <stdckdint.h>
+	#define BEEMU_CKD_ADD(result, a, b) ckd_add(result, a, b)
+	#endif
+
 #ifdef __cplusplus
 }
 #endif

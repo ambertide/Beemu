@@ -10,8 +10,8 @@
  */
 
 #include "parse_load.h"
-#include <stdckdint.h>
 
+#include "libbeemu/internals/utility.h"
 #include <assert.h>
 
 // This file is written in the form of a state machine, each step function therefore
@@ -126,7 +126,7 @@ DEFINE_TERMINAL_STATE(offsetted_sp_copy)
 	const uint8_t sp_lsb = ctx->processor->registers->stack_pointer & 0xFF;
 	const uint8_t sp_msb = ctx->processor->registers->stack_pointer >> 8;
 	uint8_t lsb_add_result;
-	const int carry = ckd_add(&lsb_add_result, sp_lsb, offset);
+	const int carry = BEEMU_CKD_ADD(&lsb_add_result, sp_lsb, offset);
 	// Calculate H and C by hand
 	const int h_flag = (((sp_lsb & 0x0F) + (offset & 0x0F)) & 0x10) == 0x10;
 	beemu_cq_write_reg_8(ctx->queue, BEEMU_REGISTER_L, lsb_add_result);
