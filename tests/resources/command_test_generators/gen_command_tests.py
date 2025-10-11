@@ -13,6 +13,17 @@ test_emitters = {
     'LOAD': emit_load_tests
 }
 
+def name_instructions(tests: list) -> None:
+    """
+    Tests didn't used to have names, name support was added with
+    JUMP tests to allow multiple variants.
+    :param tests: Tests to add names to if not exists.
+    :return: None.
+    """
+    for test in tests:
+        if "name" not in test:
+            test["name"] = f"0x{test['token']['original_machine_code']:06X}"
+
 if __name__ == '__main__':
     tests = []
     for token_type, emitter in test_emitters.items():
@@ -23,6 +34,6 @@ if __name__ == '__main__':
 
 
     sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
-
+    name_instructions(tests)
     with open('../command_tests.json', 'w') as f:
         dump({ 'commands': tests }, f, indent='\t')

@@ -6,9 +6,9 @@ namespace BeemuTests
 TEST_P(BeemuParserParameterizedTestFixture, TokenParsedCorrectly)
 {
 	auto params = GetParam();
-	auto instruction = std::get<0>(params);
-	auto processor = std::get<1>(params);
-	auto expected_commands = std::get<2>(params);
+	auto instruction = std::get<1>(params);
+	auto processor = std::get<2>(params);
+	auto expected_commands = std::get<3>(params);
 	// Get the actual parsed commands.
 	auto actual_commands = beemu_parser_parse(&processor, &instruction);
 	// Check if, you know, they match at all.
@@ -47,7 +47,7 @@ INSTANTIATE_TEST_SUITE_P(
 	{
 		// Can use info.param here to generate the test suffix
 		std::stringstream stream;
-		stream << "0x" << std::hex << std::uppercase << std::get<0>(info.param).original_machine_code;
+		stream << std::get<0>(info.param);
 		std::string name = stream.str();
 		return name;
 	});

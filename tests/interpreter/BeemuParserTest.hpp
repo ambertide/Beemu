@@ -8,6 +8,7 @@
 #include <libbeemu/device/processor/processor.h>
 
 struct InterpreterCommandTest {
+	std::string name;
 	BeemuInstruction token;
 	std::string processor;
 	std::vector<BeemuMachineCommand> command_queue;
@@ -15,6 +16,7 @@ struct InterpreterCommandTest {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
 	InterpreterCommandTest,
+	name,
 	token,
 	processor,
 	command_queue);
@@ -51,7 +53,7 @@ namespace BeemuTests {
 	*
 	* @return std::tuple<BeemuInstruction, BeemuProcessor, BeemuCommandQueue>>
 	*/
-	std::vector<std::tuple<BeemuInstruction, BeemuProcessor, BeemuCommandQueue>> getCommandsFromTestFile()
+	std::vector<std::tuple<std::string, BeemuInstruction, BeemuProcessor, BeemuCommandQueue>> getCommandsFromTestFile()
 	{
 		std::string test_file_path = PATH_TO_TEST_RESOURCES;
 		test_file_path += "/command_tests.json";
@@ -59,7 +61,7 @@ namespace BeemuTests {
 		auto parsed_test_data = nlohmann::json::parse(test_file);
 		InterpreterCommandTestFile test_data;
 		::from_json(parsed_test_data, test_data);
-		std::vector<std::tuple<BeemuInstruction, BeemuProcessor, BeemuCommandQueue>> new_vector;
+		std::vector<std::tuple<std::string, BeemuInstruction, BeemuProcessor, BeemuCommandQueue>> new_vector;
 		for (const InterpreterCommandTest &test_case : test_data.commands)
 		{
 			auto processor = new BeemuProcessorPreset(test_case.processor);
@@ -67,13 +69,13 @@ namespace BeemuTests {
 		    for (auto command : test_case.command_queue) {
 		    	beemu_command_queue_enqueue(queue, &command);
 		    }
-			auto tuple = std::make_tuple(test_case.token, processor->processor(), *queue);
+			auto tuple = std::make_tuple(test_case.name, test_case.token, processor->processor(), *queue);
 			new_vector.push_back(tuple);
 		}
 		return new_vector;
 	}
 
-	class BeemuParserParameterizedTestFixture : public ::testing::TestWithParam<std::tuple<BeemuInstruction, BeemuProcessor, BeemuCommandQueue>>
+	class BeemuParserParameterizedTestFixture : public ::testing::TestWithParam<std::tuple<std::string, BeemuInstruction, BeemuProcessor, BeemuCommandQueue>>
 	{
 	protected:
 		void SetUp() override {}
