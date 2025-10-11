@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.14)
 project(Beemu VERSION 0.1 LANGUAGES C CXX)
 # GoogleTest requires at least C++14
 # std::optional requires C++17
-set(CMAKE_CXX_STANDARD 17)
+# Designated initializers required C++20
+# which in turn is required because MSVC compiles
+# the C section of this project in C++ mode as well.g
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 23)
 
 add_library(libbeemu)
