@@ -7,6 +7,7 @@ project(Beemu VERSION 0.1 LANGUAGES C CXX)
 # the C section of this project in C++ mode as well.g
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_library(libbeemu)
 add_executable(Beemu src/beemu.c)
