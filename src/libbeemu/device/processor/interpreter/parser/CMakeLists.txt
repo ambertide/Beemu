@@ -7,6 +7,8 @@ target_sources(libbeemu PRIVATE
         parse_bitwise.h
         parse_common.c
         parse_common.h
+        parse_jump.c
+        parse_jump.h
         parse_load.c
         parse_load.h
 )

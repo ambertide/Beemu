@@ -1,6 +1,7 @@
 from gen_arithmatic_tests import emit_arithmetic_tests
 from gen_bitwise_tests import emit_bitwise_tests
 from gen_load_tests import emit_load_tests
+from gen_jump_tests import emit_jump_tests
 
 from json import dump
 
@@ -10,7 +11,8 @@ from tests.resources.token_test_generators.utils import sort_instructions
 test_emitters = {
     'ARITHMETIC': emit_arithmetic_tests,
     'BITWISE': emit_bitwise_tests,
-    'LOAD': emit_load_tests
+    'LOAD': emit_load_tests,
+    'JUMP': emit_jump_tests
 }
 
 def name_instructions(tests: list) -> None:
