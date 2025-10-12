@@ -108,7 +108,51 @@ def emit_jump_direct(token, tests, jp_params, param: Param) -> None:
         })
 
 
+def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
+    """
+    Emit a JR [cc]?, (s8) instruction
+    """
+    signed_payload_twos_complement = token['original_machine_code'] & 0xFF
+    jr_condition = jp_params['condition']
+    command_queue = [
+        # M1
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.pc(0x02),
+        WriteTo.ir(signed_payload_twos_complement),
+        Halt.cycle()
+    ]
 
+    jump_dest = (0x02 + param.value + 1) % 2**16
+    truthy_command_queue = [
+        *command_queue,
+        # M3 Spent handling ALU logic for PCH, PCL
+        Halt.cycle(),
+        # M4/M1
+        WriteTo.pc(jump_dest),
+        WriteTo.ir(jump_dest & 0xFF)
+    ]
+
+   # Emit the truthy test case
+    truthy_processor = processor_state_matching(jr_condition)
+
+    tests.append({
+        'token': token,
+        'processor': truthy_processor,
+        'command_queue': truthy_command_queue,
+        'name': f'0x{token["original_machine_code"]:06X}J'
+            if jr_condition != 'BEEMU_JUMP_IF_NO_CONDITION'
+            else f'0x{token["original_machine_code"]:06X}'
+    })
+
+    if jr_condition != 'BEEMU_JUMP_IF_NO_CONDITION':
+        # Also emit the no jump condition for jr cc, s8
+        tests.append({
+            'token': token,
+            'processor': truthy_processor,
+            'command_queue': command_queue,
+            'name': f'0x{token["original_machine_code"]:06X}NJ'
+        })
 
 def emit_jump_tests(tokens) -> list[dict]:
     tests = []
@@ -123,6 +167,8 @@ def emit_jump_tests(tokens) -> list[dict]:
             case ('BEEMU_JUMP_TYPE_JUMP', False, _):
                 emit_jump_direct(emitted_token, tests, jp_params, param)
                 continue
+            case ('BEEMU_JUMP_TYPE_JUMP', True, _):
+                emit_jump_relative(emitted_token, tests, jp_params, param)
             case _:
                 print(token['instruction'])
                 continue

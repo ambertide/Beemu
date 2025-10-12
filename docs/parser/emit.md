@@ -47,9 +47,18 @@ the data bus and the address bus is temporarily
 populated by the `HL` register's contents, this
 is then reverted at the MLast.
 
+### Handling Special cases with JR and JP
+
+Certain `JP` and `JR` calls set the `PC` in their
+`MLast/M1` which means they fetch the next instruction,
+when this occurs, the `Invoker` *DOES NOT* execute
+the `M1` cycle `PC/IR` fetches for the instruction
+immediately following them.
+
 ### Data and Address Buses
 
 Emulatino of the two busses connected to the
 ALU and IDU are mostly for emulation for emulation
 sake, and they are not used by the internal
-`libbeemu` implementation.
+`libbeemu` implementation, therefore
+busses are not emulated
