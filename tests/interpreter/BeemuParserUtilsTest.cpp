@@ -1,4 +1,4 @@
-#include "../../src/libbeemu/device/processor/interpreter/parser/parse_common.h"
+#include "../../src/beemu/device/processor/interpreter/parser/parse_common.h"
 #include <BeemuTest.hpp>
 #include "BeemuParserUtilsTest.hpp"
 #include <gtest/gtest.h>

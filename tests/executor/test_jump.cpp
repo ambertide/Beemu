@@ -1,5 +1,5 @@
-#include <libbeemu/device/processor/executor.h>
-#include <libbeemu/device/primitives/instruction.h>
+#include <beemu/device/processor/executor.h>
+#include <beemu/device/primitives/instruction.h>
 #include <BeemuTest.hpp>
 #include <stdbool.h>
 #include <gtest/gtest.h>

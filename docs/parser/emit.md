@@ -1,7 +1,7 @@
 # Standards for Emitted IR
 
 Parser emits Write/Halt commands from concrete
-instructions, this is the `libbeemu`'s format of
+instructions, this is the `beemu`'s format of
 a bytecode or intermediate representation,
 although read operations are done at parsing
 time to avoid the need for a stack machine
@@ -60,5 +60,5 @@ immediately following them.
 Emulatino of the two busses connected to the
 ALU and IDU are mostly for emulation for emulation
 sake, and they are not used by the internal
-`libbeemu` implementation, therefore
+`beemu` implementation, therefore
 busses are not emulated

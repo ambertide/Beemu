@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <libbeemu/device/processor/processor.h>
+#include <beemu/device/processor/processor.h>
 #include <version.h>
 
 int main()

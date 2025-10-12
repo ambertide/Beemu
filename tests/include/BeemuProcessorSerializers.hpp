@@ -11,11 +11,11 @@
 
 #ifndef BEEMU_BEEMU_PROCESSOR_SERIALIZERS_HPP
 #define BEEMU_BEEMU_PROCESSOR_SERIALIZERS_HPP
-#include "libbeemu/device/processor/processor.h"
+#include "beemu/device/processor/processor.h"
 
-#include <libbeemu/device/memory.h>
-#include <libbeemu/device/processor/processor.h>
-#include <libbeemu/device/processor/registers.h>
+#include <beemu/device/memory.h>
+#include <beemu/device/processor/processor.h>
+#include <beemu/device/processor/registers.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 

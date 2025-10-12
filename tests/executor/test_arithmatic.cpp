@@ -1,7 +1,7 @@
 #include <BeemuTest.hpp>
 #include <gtest/gtest.h>
-#include <libbeemu/device/primitives/instruction.h>
-#include <libbeemu/device/processor/executor.h>
+#include <beemu/device/primitives/instruction.h>
+#include <beemu/device/processor/executor.h>
 #include <stdbool.h>
 
 namespace BeemuTests {

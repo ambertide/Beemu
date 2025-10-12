@@ -1,7 +1,7 @@
-#include "../../src/libbeemu/device/processor/interpreter/command.h"
+#include "../../src/beemu/device/processor/interpreter/command.h"
 #include <BeemuTest.hpp>
 #include <gtest/gtest.h>
-#include <libbeemu/device/primitives/instruction.h>
+#include <beemu/device/primitives/instruction.h>
 #include <stdbool.h>
 
 namespace BeemuTests {

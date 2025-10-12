@@ -1,7 +1,7 @@
-#include "libbeemu/device/processor/processor.h"
+#include "beemu/device/processor/processor.h"
 
 #include <BeemuTokenTest.hpp>
-#include <libbeemu/device/processor/tokenizer.h>
+#include <beemu/device/processor/tokenizer.h>
 
 namespace BeemuTests
 {

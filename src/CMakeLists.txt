@@ -1,1 +1,1 @@
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libbeemu)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/beemu)

@@ -17,7 +17,7 @@ target_link_libraries(
 	tests
 	PRIVATE
 		GTest::gtest_main
-		libbeemu
+		beemu
 		nlohmann_json::nlohmann_json
 
 )

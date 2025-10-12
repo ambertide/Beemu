@@ -1,5 +1,5 @@
 #include "BeemuTokenSerializers.hpp"
-#include <libbeemu/device/primitives/instruction.h>
+#include <beemu/device/primitives/instruction.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>

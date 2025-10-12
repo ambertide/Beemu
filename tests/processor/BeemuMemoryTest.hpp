@@ -11,7 +11,7 @@
 
 #ifndef BEEMU_BEEMU_MEMORY_TEST_HPP
 #define BEEMU_BEEMU_MEMORY_TEST_HPP
-#include <libbeemu/device/memory.h>
+#include <beemu/device/memory.h>
 #include <BeemuTest.hpp>
 
 namespace BeemuTests {

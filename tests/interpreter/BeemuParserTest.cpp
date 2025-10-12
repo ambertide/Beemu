@@ -1,5 +1,5 @@
 #include "BeemuParserTest.hpp"
-#include "../../src/libbeemu/device/processor/interpreter/parser/parser.h"
+#include "../../src/beemu/device/processor/interpreter/parser/parser.h"
 
 namespace BeemuTests
 {

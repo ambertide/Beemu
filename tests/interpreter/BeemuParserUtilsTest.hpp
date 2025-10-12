@@ -4,7 +4,7 @@
 #include "../utilities/BeemuProcessorPreset.hpp"
 
 #include <gtest/gtest.h>
-#include <libbeemu/device/primitives/register.h>
+#include <beemu/device/primitives/register.h>
 
 namespace BeemuTests {
 	class BeemuExplodeBeemuParamParameterizedTestFixture : public ::testing::TestWithParam<std::tuple<BeemuRegister_16, std::tuple<BeemuRegister_8, BeemuRegister_8>>> {

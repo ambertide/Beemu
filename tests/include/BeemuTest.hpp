@@ -1,5 +1,5 @@
-#include <libbeemu/device/processor/registers.h>
-#include <libbeemu/device/memory.h>
+#include <beemu/device/processor/registers.h>
+#include <beemu/device/memory.h>
 #include <gtest/gtest.h>
 
 #ifndef BEEMU_BEEMU_TEST_HPP

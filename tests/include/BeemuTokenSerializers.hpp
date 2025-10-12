@@ -4,8 +4,8 @@
 
 #ifndef BEEMU_TOKEN_SERIALIZERS_HPP
 #define BEEMU_TOKEN_SERIALIZERS_HPP
-#include <libbeemu/device/processor/registers.h>
-#include <libbeemu/device/primitives/instruction.h>
+#include <beemu/device/processor/registers.h>
+#include <beemu/device/primitives/instruction.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>

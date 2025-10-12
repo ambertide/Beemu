@@ -9,13 +9,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(libbeemu)
+add_library(beemu SHARED)
 add_executable(Beemu src/beemu.c)
 add_subdirectory(src)
-target_include_directories(libbeemu PRIVATE include)
+target_include_directories(beemu PRIVATE include)
 target_include_directories(Beemu PRIVATE include)
-target_include_directories(libbeemu PUBLIC ${PROJECT_BINARY_DIR})
-target_link_libraries(Beemu PUBLIC libbeemu)
+target_include_directories(beemu PUBLIC ${PROJECT_BINARY_DIR})
+target_link_libraries(Beemu PUBLIC beemu)
 
 configure_file(include/version.h.in version.h)
 

@@ -1,11 +1,11 @@
 #ifndef BEEMU_BEEMU_PARSER_TEST
 #define BEEMU_BEEMU_PARSER_TEST
-#include "../../src/libbeemu/device/processor/interpreter/command.h"
+#include "../../src/beemu/device/processor/interpreter/command.h"
 #include "../include/BeemuCommandSerializers.hpp"
 #include "../utilities/BeemuProcessorPreset.hpp"
 
 #include <gtest/gtest.h>
-#include <libbeemu/device/processor/processor.h>
+#include <beemu/device/processor/processor.h>
 
 struct InterpreterCommandTest {
 	std::string name;
