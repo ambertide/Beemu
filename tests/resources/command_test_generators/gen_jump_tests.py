@@ -135,6 +135,7 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
 
    # Emit the truthy test case
     truthy_processor = processor_state_matching(jr_condition)
+    falsey_processor = processor_state_not_matching(jr_condition)
 
     tests.append({
         'token': token,
@@ -149,10 +150,64 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
         # Also emit the no jump condition for jr cc, s8
         tests.append({
             'token': token,
-            'processor': truthy_processor,
+            'processor': falsey_processor,
             'command_queue': command_queue,
             'name': f'0x{token["original_machine_code"]:06X}NJ'
         })
+
+def emit_call(token, tests, jp_params, param: Param) -> None:
+    command_queue = [
+        # M1
+        *emit_m1_cycle(token),
+        # M2
+        WriteTo.pc(0x02),
+        WriteTo.ir(param.value & 0xFF),
+        Halt.cycle(),
+        # M3
+        WriteTo.pc(0x03),
+        WriteTo.ir(param.value >> 8),
+        Halt.cycle()
+    ]
+
+    truthy_command_queue = [
+        # M4
+        WriteTo.pc(0xBBFF - 1),
+        Halt.cycle(),
+        # M5
+        WriteTo.memory(0xBBFF - 1, 0x00),
+        WriteTo.pc(0xBBFF - 2),
+        Halt.cycle(),
+        # M6
+        # Write the lower byte of the current PC to stack
+        WriteTo.memory(0xBBFF - 2, 0x03),
+        # Actually jump to the addr.
+        WriteTo.pc(param.value),
+        Halt.cycle()
+    ]
+
+    truthy_processor = processor_state_matching(jp_params['condition'])
+    falsey_processor = processor_state_not_matching(jp_params['condition'])
+
+    tests.append({
+        'token': token,
+        'processor': truthy_processor,
+        'command_queue': truthy_command_queue,
+        'name': f'0x{token["original_machine_code"]:06X}J'
+            if jp_params['condition'] == 'BEEMU_JUMP_IF_NO_CONDITION'
+            else f'0x{token["original_machine_code"]:06X}'
+    })
+
+    if jp_params['condition'] != 'BEEMU_JUMP_IF_NO_CONDITION':
+        # emit no jump test if one exists
+        tests.append({
+            'token': token,
+            'processor': falsey_processor,
+            'command_queue': command_queue,
+            'name': f'0x{token["original_machine_code"]:06X}'
+        })
+
+
+
 
 def emit_jump_tests(tokens) -> list[dict]:
     tests = []
@@ -169,6 +224,8 @@ def emit_jump_tests(tokens) -> list[dict]:
                 continue
             case ('BEEMU_JUMP_TYPE_JUMP', True, _):
                 emit_jump_relative(emitted_token, tests, jp_params, param)
+            case ('BEEMU_JUMP_TYPE_CALL', _, _):
+                emit_call(emitted_token, tests, jp_params, param)
             case _:
                 print(token['instruction'])
                 continue
