@@ -156,6 +156,9 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
         })
 
 def emit_call(token, tests, jp_params, param: Param) -> None:
+    """
+    Emit call [cc?] a16 calls
+    """
     command_queue = [
         # M1
         *emit_m1_cycle(token),
@@ -207,6 +210,55 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
         })
 
 
+def emit_ret(token, tests, jp_params, param: Param) -> None:
+    # 0xBBFF ~> FF
+    # 0XBC00 ~> 00
+    # RET = ...
+    return_addr = 0x00FF
+    truthy_processor = processor_state_matching(jp_params['condition'])
+    falsey_processor = processor_state_not_matching(jp_params['condition'])
+    if jp_params['condition'] != 'BEEMU_JUMP_IF_NO_CONDITION':
+        falsey_command_queue = [
+            # M1
+            *emit_m1_cycle(token),
+            Halt.cycle(),
+            # M2
+            # Condition check happens here.
+            Halt.cycle()
+        ]
+        # emit no jump test if one exists
+        tests.append({
+            'token': token,
+            'processor': falsey_processor,
+            'command_queue': falsey_command_queue,
+            'name': f'0x{token["original_machine_code"]:06X}'
+        })
+
+    truthy_command_queue = [
+        # M1
+        *emit_m1_cycle(token),
+        Halt.cycle(),
+        # M2
+        WriteTo.register('SP', 0xBC00),
+        Halt.cycle(),
+        # M3
+        WriteTo.register('SP', 0xBC01),
+        Halt.cycle(),
+        # M4
+        WriteTo.pc(return_addr),
+        *([] if not jp_params['enable_interrupts'] else [WriteTo.ime(1)]),
+        Halt.cycle()
+        # M5/M1
+    ]
+
+    tests.append({
+        'token': token,
+        'processor': truthy_processor,
+        'command_queue': truthy_command_queue,
+        'name': f'0x{token["original_machine_code"]:06X}J'
+            if jp_params['condition'] == 'BEEMU_JUMP_IF_NO_CONDITION'
+            else f'0x{token["original_machine_code"]:06X}'
+    })
 
 
 def emit_jump_tests(tokens) -> list[dict]:
@@ -226,6 +278,8 @@ def emit_jump_tests(tokens) -> list[dict]:
                 emit_jump_relative(emitted_token, tests, jp_params, param)
             case ('BEEMU_JUMP_TYPE_CALL', _, _):
                 emit_call(emitted_token, tests, jp_params, param)
+            case ('BEEMU_JUMP_TYPE_RET', _, _):
+                emit_ret(emitted_token, tests, jp_params, param)
             case _:
                 print(token['instruction'])
                 continue

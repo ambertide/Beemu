@@ -92,6 +92,26 @@ class WriteTo:
         }
 
     @classmethod
+    def ime(cls, value: int) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_WRITE",
+            "write": {
+                "target": {
+                    "type": "BEEMU_WRITE_TARGET_IME",
+                    "target": {
+                        "mem_addr": 0
+                    }
+                },
+                "value": {
+                    "is_16": False,
+                    "value": {
+                        "byte_value": value
+                    }
+                }
+            }
+        }
+
+    @classmethod
     def address_bus(cls, value: int) -> dict:
         return {
             "type": "BEEMU_COMMAND_WRITE",
