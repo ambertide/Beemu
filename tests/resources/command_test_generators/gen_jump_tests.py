@@ -163,16 +163,19 @@ def emit_jump_part_of_call(addr: int, current_addr = 0x03) -> Generator:
     """
     # M4
     yield WriteTo.pc(0xBBFF - 1)
+    yield WriteTo.ir(0xFF - 1)
     yield Halt.cycle()
     # M5
     yield WriteTo.memory(0xBBFF - 1, 0x00)
     yield WriteTo.pc(0xBBFF - 2)
+    yield WriteTo.ir(0xFF - 2)
     yield Halt.cycle()
     # M6
     # Write the lower byte of the current PC to stack
     yield WriteTo.memory(0xBBFF - 2, current_addr)
     # Actually jump to the addr.
     yield WriteTo.pc(addr)
+    yield WriteTo.ir(addr & 0xFF)
     yield Halt.cycle()
 
 def emit_call(token, tests, jp_params, param: Param) -> None:
@@ -253,6 +256,7 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         Halt.cycle(),
         # M4
         WriteTo.pc(return_addr),
+        WriteTo.ir(return_addr & 0xFF),
         *([] if not jp_params['enable_interrupts'] else [WriteTo.ime(1)]),
         Halt.cycle()
         # M5/M1
