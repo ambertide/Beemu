@@ -1,4 +1,5 @@
 from asyncore import write
+from typing import Generator
 
 from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt
 
@@ -155,6 +156,25 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
             'name': f'0x{token["original_machine_code"]:06X}NJ'
         })
 
+def emit_jump_part_of_call(addr: int, current_addr = 0x03) -> Generator:
+    """
+    Emit the jump portion off CALL/RST,
+    the M values are based on CALL semantics.
+    """
+    # M4
+    yield WriteTo.pc(0xBBFF - 1)
+    yield Halt.cycle()
+    # M5
+    yield WriteTo.memory(0xBBFF - 1, 0x00)
+    yield WriteTo.pc(0xBBFF - 2)
+    yield Halt.cycle(),
+    # M6
+    # Write the lower byte of the current PC to stack
+    yield WriteTo.memory(0xBBFF - 2, current_addr)
+    # Actually jump to the addr.
+    yield WriteTo.pc(addr)
+    yield Halt.cycle()
+
 def emit_call(token, tests, jp_params, param: Param) -> None:
     """
     Emit call [cc?] a16 calls
@@ -173,19 +193,7 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
     ]
 
     truthy_command_queue = [
-        # M4
-        WriteTo.pc(0xBBFF - 1),
-        Halt.cycle(),
-        # M5
-        WriteTo.memory(0xBBFF - 1, 0x00),
-        WriteTo.pc(0xBBFF - 2),
-        Halt.cycle(),
-        # M6
-        # Write the lower byte of the current PC to stack
-        WriteTo.memory(0xBBFF - 2, 0x03),
-        # Actually jump to the addr.
-        WriteTo.pc(param.value),
-        Halt.cycle()
+        *emit_jump_part_of_call(param.value)
     ]
 
     truthy_processor = processor_state_matching(jp_params['condition'])
@@ -261,6 +269,21 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
     })
 
 
+def emit_rst(token, tests, param: Param) -> None:
+    """
+    Emit a RST addr instruction
+    """
+    tests.append({
+        'token': token,
+        'processor': 'highstack',
+        'command_queue': [
+            # M1
+            *emit_m1_cycle(token),
+            # M2 -> M5/Last,
+            *emit_jump_part_of_call(param.value, 0x01)
+        ]
+    })
+
 def emit_jump_tests(tokens) -> list[dict]:
     tests = []
     for token in tokens:
@@ -280,6 +303,8 @@ def emit_jump_tests(tokens) -> list[dict]:
                 emit_call(emitted_token, tests, jp_params, param)
             case ('BEEMU_JUMP_TYPE_RET', _, _):
                 emit_ret(emitted_token, tests, jp_params, param)
+            case ('BEEMU_JUMP_TYPE_RST', _, _):
+                emit_rst(emitted_token, tests, param)
             case _:
                 print(token['instruction'])
                 continue
