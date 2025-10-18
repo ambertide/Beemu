@@ -99,7 +99,7 @@ if __name__ == '__main__':
     if target:
         # If the target is valid set a breakpoint at main
         main_bp = target.BreakpointCreateByName(
-            "beemu_parser_parse", target.GetExecutable().GetFilename()
+            "beemu_parser_parse"
         )
 
         print(main_bp)
