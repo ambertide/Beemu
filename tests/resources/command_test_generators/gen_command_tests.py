@@ -26,6 +26,13 @@ def name_instructions(tests: list) -> None:
         if "name" not in test:
             test["name"] = f"0x{test['token']['original_machine_code']:06X}"
 
+def unique_count(tests: list) -> int:
+    """
+    Count the number of unique tests in the project.
+    """
+    opcodes = set(test['token']['original_machine_code'] for test in tests)
+    return len(opcodes)
+
 if __name__ == '__main__':
     tests = []
     for token_type, emitter in test_emitters.items():
@@ -37,5 +44,7 @@ if __name__ == '__main__':
 
     sort_instructions(tests, lambda test: test["token"]["original_machine_code"])
     name_instructions(tests)
+    instruction_count = unique_count(tests)
+    print(f'Emitted tests for {instruction_count} unique DMG instructions')
     with open('../command_tests.json', 'w') as f:
         dump({ 'commands': tests }, f, indent='\t')
