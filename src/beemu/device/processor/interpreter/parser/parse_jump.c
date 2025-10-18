@@ -11,7 +11,7 @@
 
 #include "parse_jump.h"
 
-void emit_decode_parameter(
+int emit_decode_parameter(
 	BeemuCommandQueue *queue,
 	const BeemuProcessor *processor,
 	const BeemuInstruction *instruction
@@ -21,9 +21,14 @@ void emit_decode_parameter(
 	beemu_cq_write_pc(queue, previous_pc_value + 1);
 	beemu_cq_write_ir(queue, instruction->original_machine_code & 0xFF);
 	beemu_cq_halt_cycle(queue);
+	if (instruction->byte_length == 2) {
+		// JR only has one byte of operand space.
+		return 1;
+	}
 	beemu_cq_write_pc(queue, previous_pc_value + 2);
 	beemu_cq_write_ir(queue, (instruction->original_machine_code >> 8) & 0xFF);
 	beemu_cq_halt_cycle(queue);
+	return 2;
 }
 
 /**
@@ -95,10 +100,12 @@ void emit_stack_push(
 
 void emit_jump(
 	BeemuCommandQueue *queue,
+	const BeemuProcessor *processor,
 	const uint16_t addr
 )
 {
 	beemu_cq_write_pc(queue, addr);
+	beemu_cq_write_ir(queue, beemu_memory_read(processor->memory, addr));
 	beemu_cq_halt_cycle(queue);
 }
 
@@ -110,8 +117,8 @@ void parse_jump(
 	BeemuJumpParams params = instruction->params.jump_params;
 	if (instruction->byte_length > 1) {
 		// Means we have a parameter to decode.
-		emit_decode_parameter(queue, processor, instruction);
-		current_pc_location += 2;
+		const int decode_count = emit_decode_parameter(queue, processor, instruction);
+		current_pc_location += decode_count;
 	}
 
 	const BeemuJumpCondition jump_condition = instruction->params.jump_params.condition;
@@ -140,15 +147,19 @@ void parse_jump(
 	case BEEMU_JUMP_TYPE_JUMP: {
 		if (instruction->params.jump_params.is_relative) {
 			// For JR, jump location is relative.
+			// Also spends a cycle there to calculate that :)
+			beemu_cq_halt_cycle(queue);
 			jump_location = current_pc_location + params.param.value.signed_value;
 		} else {
 			// For both CALL and JUMP the value is written in param.
 			jump_location = params.param.value.value;
 		}
+		break;
 	}
 	case BEEMU_JUMP_TYPE_RET:
 		jump_location = emit_stack_pop(queue, processor, params.enable_interrupts);
+		break;
 	}
 
-	emit_jump(queue, jump_location);
+	emit_jump(queue, processor, jump_location);
 }
