@@ -18,15 +18,17 @@ int emit_decode_parameter(
 	) {
 	// +1 because that was incremented for reading the opcode
 	const uint16_t previous_pc_value = processor->registers->program_counter + 1;
-	beemu_cq_write_pc(queue, previous_pc_value + 1);
-	beemu_cq_write_ir(queue, instruction->original_machine_code & 0xFF);
-	beemu_cq_halt_cycle(queue);
 	if (instruction->byte_length == 2) {
-		// JR only has one byte of operand space.
+		beemu_cq_write_pc(queue, previous_pc_value + 1);
+		beemu_cq_write_ir(queue, instruction->original_machine_code & 0xFF);
+		beemu_cq_halt_cycle(queue);
 		return 1;
 	}
+	beemu_cq_write_pc(queue, previous_pc_value + 1);
+	beemu_cq_write_ir(queue, instruction->params.jump_params.param.value.value & 0xFF);
+	beemu_cq_halt_cycle(queue);
 	beemu_cq_write_pc(queue, previous_pc_value + 2);
-	beemu_cq_write_ir(queue, (instruction->original_machine_code >> 8) & 0xFF);
+	beemu_cq_write_ir(queue, (instruction->params.jump_params.param.value.value >> 8) & 0xFF);
 	beemu_cq_halt_cycle(queue);
 	return 2;
 }
