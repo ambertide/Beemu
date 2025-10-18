@@ -67,6 +67,17 @@ void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcod
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_ime(BeemuCommandQueue *queue, const uint8_t ime_value)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_IME;
+	command.write.target.target.mem_addr = 0;
+	command.write.value.is_16 = false;
+	command.write.value.value.byte_value = ime_value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
 void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
 {
 

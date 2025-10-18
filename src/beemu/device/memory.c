@@ -80,10 +80,10 @@ bool beemu_memory_copy(BeemuMemory *memory, BeemuMemory *destination, int start,
 
 uint16_t beemu_memory_read_16(BeemuMemory *memory, uint16_t address)
 {
-	const uint8_t lower = beemu_memory_read(memory, address + 1);
-	const uint8_t higher = beemu_memory_read(memory, address);
-	beemu_log(BEEMU_LOG_INFO, "Read two bytes from 0x%X, which were 0x%X and 0x%X", address, lower, higher);
-	return (((uint16_t)lower) << 8) | ((uint16_t)higher);
+	const uint8_t higher = beemu_memory_read(memory, address + 1);
+	const uint8_t lower = beemu_memory_read(memory, address);
+	beemu_log(BEEMU_LOG_INFO, "Read two bytes from 0x%X, which were 0x%X and 0x%X", address, higher, lower);
+	return (((uint16_t)higher) << 8) | ((uint16_t)lower);
 }
 
 void beemu_memory_write_16(BeemuMemory *memory, uint16_t address, uint16_t value)

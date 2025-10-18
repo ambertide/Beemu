@@ -45,6 +45,11 @@ void beemu_cq_write_flag(BeemuCommandQueue *queue, BeemuFlag flag, uint8_t value
 void beemu_cq_write_ir(BeemuCommandQueue *queue, uint8_t instruction_opcode);
 
 /**
+ * Set the instruction master enable flag.
+ */
+void beemu_cq_write_ime(BeemuCommandQueue *queue, uint8_t ime_value);
+
+/**
  * Write a instruction's location to the program counter
  */
 void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value);
