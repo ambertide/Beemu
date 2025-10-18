@@ -33,7 +33,7 @@ value_map = {
 def parse_expected_node() -> Generator[str, None, None]:
     with open('tests/resources/command_tests.json') as f:
         all_instrs: list = load(f)['commands']
-    instr = next(inst for inst in all_instrs if inst['token']['original_machine_code'] == int(opcode, base=16))
+    instr = next(inst for inst in all_instrs if inst['name'] == opcode)
     commands = instr['command_queue']
     for command in commands:
         if command['type'] == 'BEEMU_COMMAND_WRITE':
@@ -61,6 +61,8 @@ def parse_node(instr: lldb.SBValue) -> str:
         write_value: str = write_value_info.GetChildMemberWithName('value').GetChildMemberWithName(write_value_field).GetValue()
         if write_value.startswith("'") and len(write_value.replace("'", '')) == 1:
             write_value: int = ord(write_value.replace("'", ''))
+        if write_value.startswith("'\\x"):
+            write_value: int = int(write_value.replace("'", '').replace('\\x', ''), base=16)
         return f'WRITE {write_target} {write_value}'
     elif type_ == 'BEEMU_COMMAND_HALT':
         return 'HALT'
