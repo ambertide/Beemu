@@ -62,3 +62,81 @@ ALU and IDU are mostly for emulation for emulation
 sake, and they are not used by the internal
 `beemu` implementation, therefore
 busses are not emulated
+
+## Specific Emit Flows
+
+Here are some notes about the emit flows and the way they were written
+
+### Arithmatic
+
+This was written without much planning, it shows.
+
+### Load
+
+Having taken a valuable lesson from arithmatic instructions, I sat
+down and planned this, and while it did simplify things I made the
+mistake of writing a custom state machine infrastructure for this reason.
+
+Look, I think I was drunk when I came up with this idea but I wrote
+the load parser as a state machine, this wasn't a good idea as much
+as I thought it was and it actually ended up more complicated than I
+thought, who could have guessed?
+
+Anyway here is how it works though:
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> fetch_cycle
+    state fetch_cycle {
+        direction LR
+        [*] --> decode_operand: hasOperand
+        decode_operand --> [*]
+        [*] --> fetch_memory: loadsFromMemory
+        state fetch_memory {
+            direction LR
+            [*] --> [*]: none
+            [*] --> read_from_stack: isStackRead
+            [*] --> src_post_load: hasPostSrcLoad
+            src_post_load --> [*]
+            read_from_stack --> [*]
+        }
+        fetch_memory --> [*]
+        [*] --> [*]: none 
+    }
+
+    fetch_cycle --> write_cycle
+    state write_cycle {
+        direction LR
+        [*] --> write_to_stack: writesToStack
+        [*] --> write_double_to_memory: writesDoubleToMemory
+        [*] --> write_to_memory: writesToMemory
+        [*] --> offsetted_sp_copy: isOffsettedSPCopy
+        [*] --> register_write: none
+        register_write --> dst_pst_load: hasPostLoad
+        write_to_memory --> dst_pst_load: hasPostLoad
+        dst_pst_load --> register_write: comesFromRegister
+        dst_pst_load --> write_to_memory: comesFromRegister
+        register_write --> [*]
+        write_to_memory -->[*]
+        write_double_to_memory --> [*]
+        offsetted_sp_copy --> [*]
+        write_to_stack --> [*]
+    }
+    write_cycle --> [*]
+```
+
+### Jump
+```mermaid
+flowchart LR
+    A@{ shape: circle, label: "Start" } --> B{hasParam}
+    B -->|Yes|D[emit_decode]
+    D --> E
+    B -->|No|E
+    E{hasCondition}
+    E -->|Yes|F{MeetsCondition}
+    F -->|No|T@{ shape: doublecircle, label: "Stop"}
+    F -->|Yes|G[emit_jump]
+    E --> |No|G
+    G --> T
+```
