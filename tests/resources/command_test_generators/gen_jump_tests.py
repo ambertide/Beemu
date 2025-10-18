@@ -167,7 +167,7 @@ def emit_jump_part_of_call(addr: int, current_addr = 0x03) -> Generator:
     # M5
     yield WriteTo.memory(0xBBFF - 1, 0x00)
     yield WriteTo.pc(0xBBFF - 2)
-    yield Halt.cycle(),
+    yield Halt.cycle()
     # M6
     # Write the lower byte of the current PC to stack
     yield WriteTo.memory(0xBBFF - 2, current_addr)
@@ -203,9 +203,9 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
         'token': token,
         'processor': truthy_processor,
         'command_queue': truthy_command_queue,
-        'name': f'0x{token["original_machine_code"]:06X}J'
+        'name': f'0x{token["original_machine_code"]:06X}'
             if jp_params['condition'] == 'BEEMU_JUMP_IF_NO_CONDITION'
-            else f'0x{token["original_machine_code"]:06X}'
+            else f'0x{token["original_machine_code"]:06X}J'
     })
 
     if jp_params['condition'] != 'BEEMU_JUMP_IF_NO_CONDITION':
@@ -214,7 +214,7 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
             'token': token,
             'processor': falsey_processor,
             'command_queue': command_queue,
-            'name': f'0x{token["original_machine_code"]:06X}'
+            'name': f'0x{token["original_machine_code"]:06X}NJ'
         })
 
 
@@ -239,13 +239,12 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
             'token': token,
             'processor': falsey_processor,
             'command_queue': falsey_command_queue,
-            'name': f'0x{token["original_machine_code"]:06X}'
+            'name': f'0x{token["original_machine_code"]:06X}NJ'
         })
 
     truthy_command_queue = [
         # M1
         *emit_m1_cycle(token),
-        Halt.cycle(),
         # M2
         WriteTo.register('SP', 0xBC00),
         Halt.cycle(),
@@ -263,9 +262,9 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         'token': token,
         'processor': truthy_processor,
         'command_queue': truthy_command_queue,
-        'name': f'0x{token["original_machine_code"]:06X}J'
+        'name': f'0x{token["original_machine_code"]:06X}'
             if jp_params['condition'] == 'BEEMU_JUMP_IF_NO_CONDITION'
-            else f'0x{token["original_machine_code"]:06X}'
+            else f'0x{token["original_machine_code"]:06X}J'
     })
 
 

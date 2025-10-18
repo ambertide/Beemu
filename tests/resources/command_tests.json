@@ -23481,7 +23481,7 @@
 					}
 				}
 			],
-			"name": "0x0000C0"
+			"name": "0x0000C0NJ"
 		},
 		{
 			"token": {
@@ -23540,12 +23540,6 @@
 								"byte_value": 192
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -23624,7 +23618,7 @@
 					}
 				}
 			],
-			"name": "0x0000C0"
+			"name": "0x0000C0J"
 		},
 		{
 			"token": {
@@ -24366,14 +24360,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -24415,7 +24407,7 @@
 					}
 				}
 			],
-			"name": "0xC4CDAB"
+			"name": "0xC4CDABJ"
 		},
 		{
 			"token": {
@@ -24563,7 +24555,7 @@
 					}
 				}
 			],
-			"name": "0xC4CDAB"
+			"name": "0xC4CDABNJ"
 		},
 		{
 			"token": {
@@ -25006,14 +24998,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -25135,7 +25125,7 @@
 					}
 				}
 			],
-			"name": "0x0000C8"
+			"name": "0x0000C8NJ"
 		},
 		{
 			"token": {
@@ -25203,12 +25193,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -25278,7 +25262,7 @@
 					}
 				}
 			],
-			"name": "0x0000C8"
+			"name": "0x0000C8J"
 		},
 		{
 			"token": {
@@ -25346,12 +25330,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -25421,7 +25399,7 @@
 					}
 				}
 			],
-			"name": "0x0000C9J"
+			"name": "0x0000C9"
 		},
 		{
 			"token": {
@@ -25841,14 +25819,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -25890,7 +25866,7 @@
 					}
 				}
 			],
-			"name": "0xCCCDAB"
+			"name": "0xCCCDABJ"
 		},
 		{
 			"token": {
@@ -26038,7 +26014,7 @@
 					}
 				}
 			],
-			"name": "0xCCCDAB"
+			"name": "0xCCCDABNJ"
 		},
 		{
 			"token": {
@@ -26122,14 +26098,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -26171,7 +26145,7 @@
 					}
 				}
 			],
-			"name": "0xCDCDABJ"
+			"name": "0xCDCDAB"
 		},
 		{
 			"token": {
@@ -26457,14 +26431,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -26586,7 +26558,7 @@
 					}
 				}
 			],
-			"name": "0x0000D0"
+			"name": "0x0000D0NJ"
 		},
 		{
 			"token": {
@@ -26645,12 +26617,6 @@
 								"byte_value": 208
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -26729,7 +26695,7 @@
 					}
 				}
 			],
-			"name": "0x0000D0"
+			"name": "0x0000D0J"
 		},
 		{
 			"token": {
@@ -27283,14 +27249,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -27332,7 +27296,7 @@
 					}
 				}
 			],
-			"name": "0xD4CDAB"
+			"name": "0xD4CDABJ"
 		},
 		{
 			"token": {
@@ -27480,7 +27444,7 @@
 					}
 				}
 			],
-			"name": "0xD4CDAB"
+			"name": "0xD4CDABNJ"
 		},
 		{
 			"token": {
@@ -27923,14 +27887,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -28052,7 +28014,7 @@
 					}
 				}
 			],
-			"name": "0x0000D8"
+			"name": "0x0000D8NJ"
 		},
 		{
 			"token": {
@@ -28111,12 +28073,6 @@
 								"byte_value": 216
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -28195,7 +28151,7 @@
 					}
 				}
 			],
-			"name": "0x0000D8"
+			"name": "0x0000D8J"
 		},
 		{
 			"token": {
@@ -28254,12 +28210,6 @@
 								"byte_value": 217
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{
@@ -28355,7 +28305,7 @@
 					}
 				}
 			],
-			"name": "0x0000D9J"
+			"name": "0x0000D9"
 		},
 		{
 			"token": {
@@ -28775,14 +28725,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -28824,7 +28772,7 @@
 					}
 				}
 			],
-			"name": "0xDCCDAB"
+			"name": "0xDCCDABJ"
 		},
 		{
 			"token": {
@@ -28972,7 +28920,7 @@
 					}
 				}
 			],
-			"name": "0xDCCDAB"
+			"name": "0xDCCDABNJ"
 		},
 		{
 			"token": {
@@ -29258,14 +29206,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -30112,14 +30058,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -30723,14 +30667,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -31577,14 +31519,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
@@ -32389,14 +32329,12 @@
 						}
 					}
 				},
-				[
-					{
-						"type": "BEEMU_COMMAND_HALT",
-						"halt": {
-							"is_cycle_terminator": true
-						}
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
-				],
+				},
 				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
