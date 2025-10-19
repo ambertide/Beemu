@@ -28979,21 +28979,8 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_WRITE",
-					"write": {
-						"target": {
-							"type": "BEEMU_WRITE_TARGET_IME",
-							"target": {
-								"mem_addr": 0
-							}
-						},
-						"value": {
-							"is_16": false,
-							"value": {
-								"byte_value": 1
-							}
-						}
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU_SPECIAL_COMMAND_ENABLE_IME"
 				},
 				{
 					"type": "BEEMU_COMMAND_HALT",

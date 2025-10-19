@@ -258,7 +258,7 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         # M4
         WriteTo.pc(return_addr),
         WriteTo.ir(return_addr & 0xFF),
-        *([] if not jp_params['enable_interrupts'] else [WriteTo.ime(1)]),
+        *([] if not jp_params['enable_interrupts'] else [Special.set_ime()]),
         Halt.cycle()
         # M5/M1
     ]

@@ -64,8 +64,7 @@ bool do_processor_meet_condition(const BeemuProcessor *processor, BeemuJumpCondi
  */
 uint16_t emit_stack_pop(
 	BeemuCommandQueue *queue,
-	const BeemuProcessor *processor,
-	const bool enable_interrupts
+	const BeemuProcessor *processor
 	)
 {
 	const uint16_t current_stack_pointer = processor->registers->stack_pointer;
@@ -73,9 +72,6 @@ uint16_t emit_stack_pop(
 	beemu_cq_write_reg_16(queue, BEEMU_REGISTER_SP, current_stack_pointer + 1);
 	beemu_cq_halt_cycle(queue);
 	beemu_cq_write_reg_16(queue, BEEMU_REGISTER_SP, current_stack_pointer + 2);
-	if (enable_interrupts) {
-		beemu_cq_write_ime(queue, 1);
-	}
 	beemu_cq_halt_cycle(queue);
 	return memory_value_at_stack;
 }
@@ -103,11 +99,15 @@ void emit_stack_push(
 void emit_jump(
 	BeemuCommandQueue *queue,
 	const BeemuProcessor *processor,
-	const uint16_t addr
+	const uint16_t addr,
+	const bool set_ime
 )
 {
 	beemu_cq_write_pc(queue, addr);
 	beemu_cq_write_ir(queue, beemu_memory_read(processor->memory, addr));
+	if (set_ime) {
+		beemu_cq_special_set_ime(queue);
+	}
 	beemu_cq_halt_cycle(queue);
 }
 
@@ -198,9 +198,9 @@ void parse_jump(
 		break;
 	}
 	case BEEMU_JUMP_TYPE_RET:
-		jump_location = emit_stack_pop(queue, processor, params.enable_interrupts);
+		jump_location = emit_stack_pop(queue, processor);
 		break;
 	}
 
-	emit_jump(queue, processor, jump_location);
+	emit_jump(queue, processor, jump_location, params.enable_interrupts);
 }
