@@ -238,6 +238,28 @@ class Param:
     def register(self) -> str:
         return self.value.replace('BEEMU_REGISTER_', '')
 
+class Special:
+    @classmethod
+    def skip_next_m1_cycle(cls) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_SPECIAL",
+            "special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
+        }
+
+    @classmethod
+    def set_ime(cls) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_SPECIAL",
+            "special": "BEEMU_SPECIAL_COMMAND_ENABLE_IME"
+        }
+
+    @classmethod
+    def reset_ime(cls) -> dict:
+        return {
+            "type": "BEEMU_COMMAND_SPECIAL",
+            "special": "BEEMU_SPECIAL_COMMAND_DISABLE_IME"
+        }
+
 def emit_m1_cycle(token: dict, override_opcode: int = 0) -> list[dict]:
     return [
         WriteTo.pc(0x01),

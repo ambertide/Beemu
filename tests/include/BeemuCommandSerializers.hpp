@@ -32,6 +32,14 @@ inline void to_json(nlohmann::json &json, const BeemuHaltCommand& command)
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
+	BeemuSpecialCommand,
+	{{BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE, "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"},
+		{BEEMU_SPECIAL_COMMAND_DISABLE_IME, "BEEMU_SPECIAL_COMMAND_DISABLE_IME"},
+		{BEEMU_SPECIAL_COMMAND_ENABLE_IME, "BEEMU_SPECIAL_COMMAND_ENABLE_IME"}});
+
+
+
+NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuWriteTargetType,
 	{{BEEMU_WRITE_TARGET_REGISTER_16, "BEEMU_WRITE_TARGET_REGISTER_16"},
 		{BEEMU_WRITE_TARGET_REGISTER_8, "BEEMU_WRITE_TARGET_REGISTER_8"},
@@ -143,7 +151,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 	BeemuCommandType,
 	{
 		{BEEMU_COMMAND_HALT, "BEEMU_COMMAND_HALT"},
-		{BEEMU_COMMAND_WRITE, "BEEMU_COMMAND_WRITE"}
+		{BEEMU_COMMAND_WRITE, "BEEMU_COMMAND_WRITE"},
+		{BEEMU_COMMAND_SPECIAL, "BEEMU_COMMAND_SPECIAL"}
 	});
 
 inline void to_json(nlohmann::json &json, const BeemuMachineCommand &command)
@@ -151,8 +160,10 @@ inline void to_json(nlohmann::json &json, const BeemuMachineCommand &command)
 	json["type"] = command.type;
 	if (command.type == BEEMU_COMMAND_WRITE) {
 		json["write"] = command.write;
-	} else {
+	} else if (command.type == BEEMU_COMMAND_HALT) {
 		json["halt"] = command.halt;
+	} else {
+		json["special"] = command.special;
 	}
 }
 
@@ -161,8 +172,10 @@ inline void from_json(const nlohmann::json &json, BeemuMachineCommand &command)
 	json.at("type").get_to(command.type);
 	if (command.type == BEEMU_COMMAND_WRITE) {
 		json.at("write").get_to(command.write);
-	} else {
+	} else if (command.type == BEEMU_COMMAND_HALT) {
 		json.at("halt").get_to(command.halt);
+	} else {
+		json.at("special").get_to(command.special);
 	}
 }
 

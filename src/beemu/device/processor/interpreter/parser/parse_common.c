@@ -67,6 +67,17 @@ void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcod
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+void beemu_cq_write_ime(BeemuCommandQueue *queue, const uint8_t ime_value)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_WRITE;
+	command.write.target.type = BEEMU_WRITE_TARGET_IME;
+	command.write.target.target.mem_addr = 0;
+	command.write.value.is_16 = false;
+	command.write.value.value.byte_value = ime_value;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
 void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
 {
 
@@ -90,6 +101,31 @@ void beemu_cq_write_memory(BeemuCommandQueue *queue, const uint16_t memory_addre
 	beemu_command_queue_enqueue(queue, &command);
 }
 
+
+void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+
+void beemu_cq_special_set_ime(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_ENABLE_IME;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+void beemu_cq_special_reset_ime(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_DISABLE_IME;
+	beemu_command_queue_enqueue(queue, &command);
+}
 
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor, bool skip_deref)
 {

@@ -129,14 +129,23 @@ stateDiagram-v2
 ### Jump
 ```mermaid
 flowchart LR
-    A@{ shape: circle, label: "Start" } --> B{hasParam}
-    B -->|Yes|D[emit_decode]
-    D --> E
-    B -->|No|E
-    E{hasCondition}
-    E -->|Yes|F{MeetsCondition}
-    F -->|No|T@{ shape: doublecircle, label: "Stop"}
-    F -->|Yes|G[emit_jump]
-    E --> |No|G
-    G --> T
+    S@{ shape: circle, label: "Start" } --> hasParam{"hasParam"}
+    hasParam -->|Yes|emit_decode
+    emit_decode --> hasCondition
+    hasParam -->|No|hasCondition
+    hasCondition{hasCondition}
+    hasCondition -->|Yes|meetsCondition{meetsCondition}
+    meetsCondition -->|No|T@{ shape: doublecircle, label: "Stop"}
+    meetsCondition -->|Yes|isRelative{isRelative}
+    hasCondition --> |No|isRelative
+    isRelative --> |No|isRet{isRet}
+    isRelative --> |Yes|decode_relative
+    decode_relative --> emit_jump
+    isRet --> |Yes|emit_decode_stack_pop
+    isRet --> |No|hasStackPush{hasStackPush}
+    emit_decode_stack_pop --> emit_jump
+    hasStackPush --> |Yes| emit_stack_push
+    emit_stack_push --> emit_jump
+    hasStackPush --> |No| emit_jump
+    emit_jump --> T@{ shape: doublecircle, label: " "}
 ```

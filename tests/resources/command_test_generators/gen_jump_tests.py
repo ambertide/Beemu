@@ -1,7 +1,7 @@
 from asyncore import write
 from typing import Generator
 
-from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt
+from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt, Special
 
 
 def processor_state_matching(condition: str) -> str:
@@ -36,7 +36,8 @@ def emit_jump_direct(token, tests, jp_params, param: Param) -> None:
             # M2/M1
             # (Contents of HL) + 1
             WriteTo.pc(0x0103),
-            WriteTo.ir(0x03)
+            WriteTo.ir(0x03),
+            Special.skip_next_m1_cycle()
         ]
         tests.append({
             'token': token,
@@ -131,7 +132,8 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
         Halt.cycle(),
         # M4/M1
         WriteTo.pc(jump_dest),
-        WriteTo.ir(jump_dest & 0xFF)
+        WriteTo.ir(jump_dest & 0xFF),
+        Special.skip_next_m1_cycle()
     ]
 
    # Emit the truthy test case
@@ -161,18 +163,20 @@ def emit_jump_part_of_call(addr: int, current_addr = 0x03) -> Generator:
     Emit the jump portion off CALL/RST,
     the M values are based on CALL semantics.
     """
+    # First push to the stack
     # M4
-    yield WriteTo.pc(0xBBFF - 1)
+    yield WriteTo.register('SP', 0xBBFF - 1)
     yield Halt.cycle()
     # M5
     yield WriteTo.memory(0xBBFF - 1, 0x00)
-    yield WriteTo.pc(0xBBFF - 2)
+    yield WriteTo.register('SP', 0xBBFF - 2)
     yield Halt.cycle()
     # M6
     # Write the lower byte of the current PC to stack
     yield WriteTo.memory(0xBBFF - 2, current_addr)
     # Actually jump to the addr.
     yield WriteTo.pc(addr)
+    yield WriteTo.ir(addr & 0xFF)
     yield Halt.cycle()
 
 def emit_call(token, tests, jp_params, param: Param) -> None:
@@ -193,6 +197,7 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
     ]
 
     truthy_command_queue = [
+        *command_queue,
         *emit_jump_part_of_call(param.value)
     ]
 
@@ -229,7 +234,6 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         falsey_command_queue = [
             # M1
             *emit_m1_cycle(token),
-            Halt.cycle(),
             # M2
             # Condition check happens here.
             Halt.cycle()
@@ -253,7 +257,8 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         Halt.cycle(),
         # M4
         WriteTo.pc(return_addr),
-        *([] if not jp_params['enable_interrupts'] else [WriteTo.ime(1)]),
+        WriteTo.ir(return_addr & 0xFF),
+        *([] if not jp_params['enable_interrupts'] else [Special.set_ime()]),
         Halt.cycle()
         # M5/M1
     ]
