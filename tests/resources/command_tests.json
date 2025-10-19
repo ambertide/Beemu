@@ -23473,12 +23473,6 @@
 					"halt": {
 						"is_cycle_terminator": true
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
 				}
 			],
 			"name": "0x0000C0NJ"
@@ -25236,12 +25230,6 @@
 					"halt": {
 						"is_cycle_terminator": true
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
 				}
 			],
 			"name": "0x0000C8NJ"
@@ -26856,12 +26844,6 @@
 					"halt": {
 						"is_cycle_terminator": true
 					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
 				}
 			],
 			"name": "0x0000D0NJ"
@@ -28418,12 +28400,6 @@
 								"byte_value": 216
 							}
 						}
-					}
-				},
-				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
 					}
 				},
 				{

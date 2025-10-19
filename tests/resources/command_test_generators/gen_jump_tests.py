@@ -232,7 +232,6 @@ def emit_ret(token, tests, jp_params, param: Param) -> None:
         falsey_command_queue = [
             # M1
             *emit_m1_cycle(token),
-            Halt.cycle(),
             # M2
             # Condition check happens here.
             Halt.cycle()
