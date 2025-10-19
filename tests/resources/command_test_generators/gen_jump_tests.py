@@ -195,6 +195,7 @@ def emit_call(token, tests, jp_params, param: Param) -> None:
     ]
 
     truthy_command_queue = [
+        *command_queue,
         *emit_jump_part_of_call(param.value)
     ]
 
