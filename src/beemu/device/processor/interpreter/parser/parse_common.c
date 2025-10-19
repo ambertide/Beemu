@@ -102,6 +102,31 @@ void beemu_cq_write_memory(BeemuCommandQueue *queue, const uint16_t memory_addre
 }
 
 
+void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+
+void beemu_cq_special_set_ime(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_ENABLE_IME;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
+void beemu_cq_special_reset_ime(BeemuCommandQueue *queue)
+{
+	BeemuMachineCommand command;
+	command.type = BEEMU_COMMAND_SPECIAL;
+	command.special = BEEMU_SPECIAL_COMMAND_DISABLE_IME;
+	beemu_command_queue_enqueue(queue, &command);
+}
+
 uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor, bool skip_deref)
 {
 	switch (parameter->type) {

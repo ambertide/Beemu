@@ -1,7 +1,7 @@
 from asyncore import write
 from typing import Generator
 
-from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt
+from tests.resources.command_test_generators.utils import Param, emit_m1_cycle, WriteTo, Halt, Special
 
 
 def processor_state_matching(condition: str) -> str:
@@ -36,7 +36,8 @@ def emit_jump_direct(token, tests, jp_params, param: Param) -> None:
             # M2/M1
             # (Contents of HL) + 1
             WriteTo.pc(0x0103),
-            WriteTo.ir(0x03)
+            WriteTo.ir(0x03),
+            Special.skip_next_m1_cycle()
         ]
         tests.append({
             'token': token,
@@ -124,14 +125,15 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
         Halt.cycle()
     ]
 
-    jump_dest = (0x02 + param.value) % 2**16
+    jump_dest = (0x02 + param.value + 1) % 2**16
     truthy_command_queue = [
         *command_queue,
         # M3 Spent handling ALU logic for PCH, PCL
-        WriteTo.pc(jump_dest),
-        WriteTo.ir(jump_dest & 0xFF),
         Halt.cycle(),
         # M4/M1
+        WriteTo.pc(jump_dest),
+        WriteTo.ir(jump_dest & 0xFF),
+        Special.skip_next_m1_cycle()
     ]
 
    # Emit the truthy test case

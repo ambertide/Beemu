@@ -80,8 +80,28 @@ extern "C" {
 
 	typedef enum BeemuCommandType {
 		BEEMU_COMMAND_HALT,
-		BEEMU_COMMAND_WRITE
+		BEEMU_COMMAND_WRITE,
+		BEEMU_COMMAND_SPECIAL
 	} BeemuCommandType;
+
+	typedef enum BeemuSpecialCommand {
+		/**
+		 * Certain instructions disrupt the pipelining by ordering the
+		 * emulator to skip the next fetch cycle, in effect they fetch the next
+		 * instruction themselves. Consider the JR [cc]? s8 and JP HL instructions
+		 * for concrete examples.
+		 */
+		BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE,
+		/**
+		 * Signal the processor to set the interrupt master enable flag
+		 * after the next instruction is set.
+		 */
+		BEEMU_SPECIAL_COMMAND_ENABLE_IME,
+		/**
+		 * Same as above but disables IME.
+		 */
+		BEEMU_SPECIAL_COMMAND_DISABLE_IME
+	} BeemuSpecialCommand;
 
 	/**
 	 * Represents a machine command that must be executed
@@ -92,6 +112,7 @@ extern "C" {
 		union {
 			BeemuWriteCommand write;
 			BeemuHaltCommand halt;
+			BeemuSpecialCommand special;
 		};
 	} BeemuMachineCommand;
 

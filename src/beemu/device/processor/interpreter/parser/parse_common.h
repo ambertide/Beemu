@@ -60,6 +60,23 @@ void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
 void beemu_cq_write_memory(BeemuCommandQueue *queue, uint16_t memory_address, uint8_t memory_value);
 
 /**
+ * Emit a special command to skip the next m1 fetch cycle,
+ * this is generally emitted because the previous instruction's
+ * command queue handled the fetch such as JR [cc]? s8 and JP HL.
+ */
+void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue *queue);
+
+/**
+ * Emit a special command to set the IME flag (1).
+ */
+void beemu_cq_special_set_ime(BeemuCommandQueue *queue);
+
+/**
+ * Emit a special command to reset the IME flag (0).
+ */
+void beemu_cq_special_reset_ime(BeemuCommandQueue *queue);
+
+/**
  * @brief Resolve the value of a parameter holding an 8 or 16 bit unsigned value.
  *
  * "Resolve" might get the underlying value directly, in case of a register or a memory
@@ -107,4 +124,5 @@ bool beemu_param_holds_double(const BeemuParam *param);
 #ifdef __cplusplus
 	}
 #endif
-#endif // BEEMU_PARSE_COMMON_H
+
+#endif

@@ -2668,6 +2668,12 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -2679,7 +2685,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65522
+								"double_value": 65523
 							}
 						}
 					}
@@ -2696,16 +2702,14 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 242
+								"byte_value": 243
 							}
 						}
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0018F0"
@@ -3657,6 +3661,12 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -3668,7 +3678,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65522
+								"double_value": 65523
 							}
 						}
 					}
@@ -3685,16 +3695,14 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 242
+								"byte_value": 243
 							}
 						}
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0020F0J"
@@ -4692,6 +4700,12 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -4703,7 +4717,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65522
+								"double_value": 65523
 							}
 						}
 					}
@@ -4720,16 +4734,14 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 242
+								"byte_value": 243
 							}
 						}
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0028F0J"
@@ -5806,6 +5818,12 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -5817,7 +5835,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65522
+								"double_value": 65523
 							}
 						}
 					}
@@ -5834,16 +5852,14 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 242
+								"byte_value": 243
 							}
 						}
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0030F0J"
@@ -6871,6 +6887,12 @@
 					}
 				},
 				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
+					}
+				},
+				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -6882,7 +6904,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65522
+								"double_value": 65523
 							}
 						}
 					}
@@ -6899,16 +6921,14 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 242
+								"byte_value": 243
 							}
 						}
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0038F0J"
@@ -31053,6 +31073,10 @@
 							}
 						}
 					}
+				},
+				{
+					"type": "BEEMU_COMMAND_SPECIAL",
+					"special": "BEEMU"
 				}
 			],
 			"name": "0x0000E9"
