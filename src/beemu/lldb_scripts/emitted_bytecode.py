@@ -30,6 +30,9 @@ value_map = {
     'false': 'byte_value'
 }
 
+def parse_special(special_raw: str) -> str:
+    return special_raw.replace('BEEMU_SPECIAL_COMMAND_', 'DO ')
+
 def parse_expected_node() -> Generator[str, None, None]:
     with open('tests/resources/command_tests.json') as f:
         all_instrs: list = load(f)['commands']
@@ -43,7 +46,7 @@ def parse_expected_node() -> Generator[str, None, None]:
         elif command['type'] == 'BEEMU_COMMAND_HALT':
             yield 'HALT'
         elif command['type'] == 'BEEMU_COMMAND_SPECIAL':
-            yield command['special']
+            yield parse_special(command['special'])
         else:
             yield 'UNSUPPORTED'
 
@@ -69,7 +72,7 @@ def parse_node(instr: lldb.SBValue) -> str:
     elif type_ == 'BEEMU_COMMAND_HALT':
         return 'HALT'
     elif type_ == 'BEEMU_COMMAND_SPECIAL':
-        return instr.GetChildMemberWithName('special').GetValue()
+        return parse_special(instr.GetChildMemberWithName('special').GetValue())
     else:
         return 'UNSUPPORTED'
 
