@@ -161,14 +161,13 @@ def emit_jump_part_of_call(addr: int, current_addr = 0x03) -> Generator:
     Emit the jump portion off CALL/RST,
     the M values are based on CALL semantics.
     """
+    # First push to the stack
     # M4
-    yield WriteTo.pc(0xBBFF - 1)
-    yield WriteTo.ir(0xFF - 1)
+    yield WriteTo.register('SP', 0xBBFF - 1)
     yield Halt.cycle()
     # M5
     yield WriteTo.memory(0xBBFF - 1, 0x00)
-    yield WriteTo.pc(0xBBFF - 2)
-    yield WriteTo.ir(0xFF - 2)
+    yield WriteTo.register('SP', 0xBBFF - 2)
     yield Halt.cycle()
     # M6
     # Write the lower byte of the current PC to stack

@@ -91,12 +91,12 @@ void emit_stack_push(
 {
 	const uint16_t current_stack_pointer = processor->registers->stack_pointer;
 	// We are decrementing so write in order, when read this will be little endian.
-	beemu_cq_write_memory(queue, current_stack_pointer, address >> 8);
 	beemu_cq_write_reg_16(queue, BEEMU_REGISTER_SP, current_stack_pointer - 1);
 	beemu_cq_halt_cycle(queue);
-	beemu_cq_write_memory(queue, current_stack_pointer, address & 0xFF);
+	beemu_cq_write_memory(queue, current_stack_pointer - 1, address >> 8);
 	beemu_cq_write_reg_16(queue, BEEMU_REGISTER_SP, current_stack_pointer - 2);
 	beemu_cq_halt_cycle(queue);
+	beemu_cq_write_memory(queue, current_stack_pointer - 2, address & 0xFF);
 }
 
 
@@ -144,7 +144,7 @@ void parse_jump(
 	case BEEMU_JUMP_TYPE_CALL:
 	case BEEMU_JUMP_TYPE_RST: {
 		// For call and rst we must also emit the stack push commands.
-		emit_stack_push(queue, processor, params.param.value.value);
+		emit_stack_push(queue, processor, current_pc_location);
 	}
 	case BEEMU_JUMP_TYPE_JUMP: {
 		if (instruction->params.jump_params.is_relative) {
