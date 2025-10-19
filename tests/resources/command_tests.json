@@ -2709,7 +2709,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0018F0"
@@ -3702,7 +3702,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0020F0J"
@@ -4741,7 +4741,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0028F0J"
@@ -5859,7 +5859,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0030F0J"
@@ -6928,7 +6928,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0038F0J"
@@ -31076,7 +31076,7 @@
 				},
 				{
 					"type": "BEEMU_COMMAND_SPECIAL",
-					"special": "BEEMU"
+					"special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
 				}
 			],
 			"name": "0x0000E9"

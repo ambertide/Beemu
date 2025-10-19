@@ -42,6 +42,8 @@ def parse_expected_node() -> Generator[str, None, None]:
             yield f'WRITE {command_target} {command_values}'
         elif command['type'] == 'BEEMU_COMMAND_HALT':
             yield 'HALT'
+        elif command['type'] == 'BEEMU_COMMAND_SPECIAL':
+            yield command['special']
         else:
             yield 'UNSUPPORTED'
 
@@ -66,6 +68,8 @@ def parse_node(instr: lldb.SBValue) -> str:
         return f'WRITE {write_target} {write_value}'
     elif type_ == 'BEEMU_COMMAND_HALT':
         return 'HALT'
+    elif type_ == 'BEEMU_COMMAND_SPECIAL':
+        return instr.GetChildMemberWithName('special').GetValue()
     else:
         return 'UNSUPPORTED'
 

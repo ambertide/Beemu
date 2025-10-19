@@ -123,6 +123,20 @@ void emit_jump_relative(
 	beemu_cq_special_skip_next_m1_cycle(queue);
 }
 
+/**
+ * Emit fairly special
+ */
+void emit_jump_to_hl(
+	BeemuCommandQueue *queue,
+	const BeemuProcessor *processor,
+	const BeemuJumpParams *params)
+{
+	const uint16_t jump_addr = beemu_resolve_instruction_parameter_unsigned(&params->param, processor, true);
+	beemu_cq_write_pc(queue, jump_addr + 1);
+	beemu_cq_write_ir(queue, beemu_memory_read(processor->memory, jump_addr + 1));
+	beemu_cq_special_skip_next_m1_cycle(queue);
+}
+
 void parse_jump(
 	BeemuCommandQueue *queue,
 	const BeemuProcessor *processor,
@@ -149,6 +163,7 @@ void parse_jump(
 		return;
 	}
 
+	// This completes the fetch cycle, onto the jump cycle.
 
 	if (instruction->params.jump_params.is_relative) {
 		// For JR, jump location is relative.
@@ -160,7 +175,16 @@ void parse_jump(
 		return;
 	}
 
-	// This completes the fetch cycle, onto the jump cycle.
+	if (params.param.type == BEEMU_PARAM_TYPE_REGISTER_16 && params.param.value.register_16 == BEEMU_REGISTER_HL) {
+		// Rare jump to location at HL. 0xE9
+		emit_jump_to_hl(
+			queue,
+			processor,
+			&params
+		);
+		return;
+	}
+
 	uint16_t jump_location = 0;
 
 	switch (instruction->params.jump_params.type) {
@@ -170,13 +194,7 @@ void parse_jump(
 		emit_stack_push(queue, processor, current_pc_location);
 	}
 	case BEEMU_JUMP_TYPE_JUMP: {
-		if (params.param.type == BEEMU_PARAM_TYPE_REGISTER_16) {
-			// Rare jump to location at HL. 0xE9
-			jump_location = beemu_resolve_instruction_parameter_unsigned(&params.param, processor, true);
-		} else {
-			// For both CALL and JUMP the value is written in param.
-			jump_location = params.param.value.value;
-		}
+		jump_location = params.param.value.value;
 		break;
 	}
 	case BEEMU_JUMP_TYPE_RET:

@@ -243,7 +243,7 @@ class Special:
     def skip_next_m1_cycle(cls) -> dict:
         return {
             "type": "BEEMU_COMMAND_SPECIAL",
-            "special": "BEEMU"
+            "special": "BEEMU_SPECIAL_COMMAND_SKIP_NEXT_M1_CYCLE"
         }
 
 def emit_m1_cycle(token: dict, override_opcode: int = 0) -> list[dict]:
