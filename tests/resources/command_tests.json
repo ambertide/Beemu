@@ -2668,12 +2668,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -2685,7 +2679,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65523
+								"double_value": 65522
 							}
 						}
 					}
@@ -2702,9 +2696,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 243
+								"byte_value": 242
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			],
@@ -3657,12 +3657,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -3674,7 +3668,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65523
+								"double_value": 65522
 							}
 						}
 					}
@@ -3691,9 +3685,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 243
+								"byte_value": 242
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			],
@@ -4692,12 +4692,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -4709,7 +4703,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65523
+								"double_value": 65522
 							}
 						}
 					}
@@ -4726,9 +4720,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 243
+								"byte_value": 242
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			],
@@ -5806,12 +5806,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -5823,7 +5817,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65523
+								"double_value": 65522
 							}
 						}
 					}
@@ -5840,9 +5834,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 243
+								"byte_value": 242
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			],
@@ -6871,12 +6871,6 @@
 					}
 				},
 				{
-					"type": "BEEMU_COMMAND_HALT",
-					"halt": {
-						"is_cycle_terminator": true
-					}
-				},
-				{
 					"type": "BEEMU_COMMAND_WRITE",
 					"write": {
 						"target": {
@@ -6888,7 +6882,7 @@
 						"value": {
 							"is_16": true,
 							"value": {
-								"double_value": 65523
+								"double_value": 65522
 							}
 						}
 					}
@@ -6905,9 +6899,15 @@
 						"value": {
 							"is_16": false,
 							"value": {
-								"byte_value": 243
+								"byte_value": 242
 							}
 						}
+					}
+				},
+				{
+					"type": "BEEMU_COMMAND_HALT",
+					"halt": {
+						"is_cycle_terminator": true
 					}
 				}
 			],

@@ -124,14 +124,14 @@ def emit_jump_relative(token, tests, jp_params, param: Param) -> None:
         Halt.cycle()
     ]
 
-    jump_dest = (0x02 + param.value + 1) % 2**16
+    jump_dest = (0x02 + param.value) % 2**16
     truthy_command_queue = [
         *command_queue,
         # M3 Spent handling ALU logic for PCH, PCL
+        WriteTo.pc(jump_dest),
+        WriteTo.ir(jump_dest & 0xFF),
         Halt.cycle(),
         # M4/M1
-        WriteTo.pc(jump_dest),
-        WriteTo.ir(jump_dest & 0xFF)
     ]
 
    # Emit the truthy test case

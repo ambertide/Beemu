@@ -149,8 +149,6 @@ void parse_jump(
 	case BEEMU_JUMP_TYPE_JUMP: {
 		if (instruction->params.jump_params.is_relative) {
 			// For JR, jump location is relative.
-			// Also spends a cycle there to calculate that :)
-			beemu_cq_halt_cycle(queue);
 			jump_location = current_pc_location + params.param.value.signed_value;
 		} else {
 			// For both CALL and JUMP the value is written in param.
