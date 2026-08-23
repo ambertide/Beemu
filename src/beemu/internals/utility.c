@@ -1,22 +1,22 @@
 #include <beemu/internals/utility.h>
 #include <stdarg.h>
 
-inline bool beemu_util_is_one_of_two(int element, int x, int y)
+bool beemu_util_is_one_of_two(int element, int x, int y)
 {
 	return element == x || element == y;
 }
 
-inline bool beemu_util_is_one_of_three(int element, int x, int y, int z)
+bool beemu_util_is_one_of_three(int element, int x, int y, int z)
 {
 	return element == x || element == y || element == z;
 }
 
-inline uint16_t beemu_util_combine_8_to_16(const uint8_t higher, const uint8_t lower)
+uint16_t beemu_util_combine_8_to_16(const uint8_t higher, const uint8_t lower)
 {
 	return (((uint16_t)higher) << 8) | ((uint16_t)lower);
 }
 
-inline BeemuByteTuple beemu_util_split_16_to_8(uint16_t number)
+BeemuByteTuple beemu_util_split_16_to_8(uint16_t number)
 {
 	const BeemuByteTuple decomposition = {
 		((uint8_t)((number & 0xFF00) >> 8)),
@@ -25,12 +25,12 @@ inline BeemuByteTuple beemu_util_split_16_to_8(uint16_t number)
 	return decomposition;
 }
 
-inline uint8_t beemu_util_combine_4_to_8(uint8_t higher, uint8_t lower)
+uint8_t beemu_util_combine_4_to_8(uint8_t higher, uint8_t lower)
 {
 	return (higher << 4) | lower;
 }
 
-inline BeemuByteTuple beemu_util_split_8_to_4(uint8_t number)
+BeemuByteTuple beemu_util_split_8_to_4(uint8_t number)
 {
 	const BeemuByteTuple ret = {
 		(number & 0xF0) >> 4,
@@ -39,7 +39,7 @@ inline BeemuByteTuple beemu_util_split_8_to_4(uint8_t number)
 	return ret;
 }
 
-inline uint8_t beemu_util_swap_nibbles(uint8_t number)
+uint8_t beemu_util_swap_nibbles(uint8_t number)
 {
 	const BeemuByteTuple tuple = beemu_util_split_8_to_4(number);
 	return beemu_util_combine_4_to_8(tuple.second, tuple.first);
