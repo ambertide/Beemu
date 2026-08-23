@@ -52,13 +52,13 @@ BEEMU_TOKENIZER_LOAD_SUBTYPE load_subtype_if_load(uint8_t opcode)
 		// ADDR16
 		{ 0b11101111, 0b11101010 },
 		// ADDR16, SP
-		{0b11111111, 0b00001000},
+		{ 0b11111111, 0b00001000 },
 		// IMM16
-		{0b11001111, 0b00000001},
+		{ 0b11001111, 0b00000001 },
 		// PUSH/POP r16
 		{ 0b11001011, 0b11000001 },
 		// HP/SL block
-		{0b11111110, 0b11111000}
+		{ 0b11111110, 0b11111000 }
 	};
 
 	return instruction_subtype_if_of_instruction_type(
@@ -191,14 +191,14 @@ void determine_load_addr16_params(BeemuInstruction* instruction, uint8_t opcode)
  * @param instruction Instruction to encode.
  * @param opcode Opcode of the instruction, supposed to be 0x08.
  */
-void determine_load16_addr16_sp_params(BeemuInstruction *instruction, uint8_t opcode)
+void determine_load16_addr16_sp_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	assert(opcode == 0x08);
 	tokenize_register16_param_with_index(
-		&instruction->params.load_params.source,
-		3,
-		false,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.load_params.source,
+	    3,
+	    false,
+	    BEEMU_REGISTER_SP);
 	instruction->params.load_params.dest.type = BEEMU_PARAM_TYPE_UINT16;
 	instruction->params.load_params.dest.value.value = beemu_parse_uint16_operand(instruction->original_machine_code);
 	instruction->params.load_params.dest.pointer = true;
@@ -215,11 +215,10 @@ void determine_load16_imm16_params(BeemuInstruction* instruction, uint8_t opcode
 	// 5th and 6th MSBs are the register index.
 	const uint8_t register_differentiator = (opcode & 0x30) >> 4;
 	tokenize_register16_param_with_index(
-		&instruction->params.load_params.dest,
-		register_differentiator,
-		false,
-		BEEMU_REGISTER_SP
-		);
+	    &instruction->params.load_params.dest,
+	    register_differentiator,
+	    false,
+	    BEEMU_REGISTER_SP);
 	instruction->params.load_params.source.type = BEEMU_PARAM_TYPE_UINT16;
 	instruction->params.load_params.source.pointer = false;
 	instruction->params.load_params.source.value.value = beemu_parse_uint16_operand(instruction->original_machine_code);
@@ -266,9 +265,8 @@ void determine_load16_sp_hl_block_params(BeemuInstruction* instruction, uint8_t 
 		instruction->params.load_params.dest = hl_register;
 		instruction->params.load_params.auxPostLoadParameter.pointer = false;
 		parse_signed8_param_from_instruction(
-			&instruction->params.load_params.auxPostLoadParameter,
-			instruction->original_machine_code
-		);
+		    &instruction->params.load_params.auxPostLoadParameter,
+		    instruction->original_machine_code);
 	}
 }
 
@@ -325,8 +323,7 @@ void determine_load_clock_cycles(BeemuInstruction* instruction)
 		instruction->duration_in_clock_cycles = 4;
 	}
 
-	if ((instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.dest.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.dest.pointer) ||
-		(instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.source.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.source.pointer)) {
+	if ((instruction->params.load_params.dest.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.dest.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.dest.pointer) || (instruction->params.load_params.source.type == BEEMU_PARAM_TYPE_REGISTER_16 && instruction->params.load_params.source.value.register_16 == BEEMU_REGISTER_SP && !instruction->params.load_params.source.pointer)) {
 		// When performing non-pointer SP lookups or writes, this also adds an aditional clock cycle.
 		// unless if the source is a uint16_t
 		if (instruction->params.load_params.source.type != BEEMU_PARAM_TYPE_UINT16) {

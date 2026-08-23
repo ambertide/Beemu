@@ -16,8 +16,8 @@ extern "C" {
 #endif
 #include "beemu/device/processor/registers.h"
 #include <beemu/device/primitives/instruction.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 	typedef struct BeemuHaltCommand {
 		/** true for special commands that terminate cycles, false for normal halt instructions */
@@ -116,7 +116,6 @@ extern "C" {
 		};
 	} BeemuMachineCommand;
 
-
 	struct BeemuCommandQueueNode;
 
 	/**
@@ -131,49 +130,49 @@ extern "C" {
 	 * Holds a ordered stream of commands.
 	 */
 	typedef struct BeemuCommandQueue {
-		BeemuCommandQueueNode *first;
-		BeemuCommandQueueNode *last;
+		BeemuCommandQueueNode* first;
+		BeemuCommandQueueNode* last;
 	} BeemuCommandQueue;
 
 	/**
 	 * Create a new command queue.
 	 * @return The newly generated command queue.
 	 */
-	BeemuCommandQueue *beemu_command_queue_new();
+	BeemuCommandQueue* beemu_command_queue_new();
 
 	/**
 	 * Free an existing command queue.
 	 * @param queue Queue to free.
 	 */
-	void beemu_command_queue_free(BeemuCommandQueue *queue);
+	void beemu_command_queue_free(BeemuCommandQueue* queue);
 
 	/**
 	 * Dequeue the next command from the command queue.
 	 * @param queue Command queue to act on.
 	 * @return The next command on the queue.
 	 */
-	BeemuMachineCommand *beemu_command_queue_dequeue(BeemuCommandQueue *queue);
+	BeemuMachineCommand* beemu_command_queue_dequeue(BeemuCommandQueue* queue);
 
 	/**
 	 * Peek to the next command in the queue.
 	 * @param queue Queue to act on.
 	 * @return Const ptr to the next command in the queue.
 	 */
-	const BeemuMachineCommand *beemu_command_queue_peek(BeemuCommandQueue *queue);
+	const BeemuMachineCommand* beemu_command_queue_peek(BeemuCommandQueue* queue);
 
 	/**
 	 * Enqueue a command to the end of the queue.
 	 * @param queue Queue to act on.
 	 * @param command Command to enqueue.
 	 */
-	void beemu_command_queue_enqueue(BeemuCommandQueue *queue, const BeemuMachineCommand *command);
+	void beemu_command_queue_enqueue(BeemuCommandQueue* queue, const BeemuMachineCommand* command);
 
 	/**
 	 * Check whether the queue is empty.
 	 * @param queue Queue to check.
 	 * @return true if the queue is empty, false otherwise.
 	 */
-	bool beemu_command_queue_is_empty(BeemuCommandQueue *queue);
+	bool beemu_command_queue_is_empty(BeemuCommandQueue* queue);
 
 #ifdef __cplusplus
 }

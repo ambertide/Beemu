@@ -1,9 +1,9 @@
 #include "tokenize_arithmatic.h"
 #include "tokenize_cbxx.h"
 #include "tokenize_common.h"
+#include "tokenize_jump.h"
 #include "tokenize_load.h"
 #include "tokenize_system.h"
-#include "tokenize_jump.h"
 
 #include <beemu/device/memory.h>
 #include <beemu/device/processor/processor.h>
@@ -20,7 +20,7 @@ BeemuInstruction* beemu_tokenizer_tokenize(uint32_t instruction)
 		return inst;
 	}
 
-	if ((inst->byte_length == 2 && opcode == 0xCB) || ((opcode & 0xE7) == 0x07) ) {
+	if ((inst->byte_length == 2 && opcode == 0xCB) || ((opcode & 0xE7) == 0x07)) {
 		// Parse cb prefix seperately
 		// as well as the RLA, RRA, RLCA and RRCA special instructions.
 		tokenize_cbxx(inst);

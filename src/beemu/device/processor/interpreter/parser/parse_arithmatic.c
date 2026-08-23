@@ -70,13 +70,12 @@ uint8_t resolve_half_carry_for_arithmatic(
  * and the executed operation.
  */
 void beemu_cq_write_flags(
-	BeemuCommandQueue *queue,
-	const int32_t would_be_result,
-	const uint32_t actual_result,
-	const BeemuOperation operation,
-	const uint8_t half_carry_flag_value,
-	const bool skip_c
-	)
+    BeemuCommandQueue* queue,
+    const int32_t would_be_result,
+    const uint32_t actual_result,
+    const BeemuOperation operation,
+    const uint8_t half_carry_flag_value,
+    const bool skip_c)
 {
 	beemu_cq_write_flag(queue, BEEMU_FLAG_Z, actual_result == 0);
 	beemu_cq_write_flag(queue, BEEMU_FLAG_N, operation == BEEMU_OP_SUB || operation == BEEMU_OP_CP || operation == BEEMU_OP_SBC || operation == BEEMU_OP_DEC);
@@ -84,19 +83,19 @@ void beemu_cq_write_flags(
 		// XOR and OR specifically set H and C to 0
 		beemu_cq_write_flag(queue, BEEMU_FLAG_H, 0);
 		if (!skip_c) {
-			beemu_cq_write_flag(queue, BEEMU_FLAG_C,  0);
+			beemu_cq_write_flag(queue, BEEMU_FLAG_C, 0);
 		}
 	} else if (operation == BEEMU_OP_AND) {
 		// AND is a bit different and set half-carry to 1 but carry to 0
 		beemu_cq_write_flag(queue, BEEMU_FLAG_H, 1);
 		if (!skip_c) {
-			beemu_cq_write_flag(queue, BEEMU_FLAG_C,  0);
+			beemu_cq_write_flag(queue, BEEMU_FLAG_C, 0);
 		}
 	} else {
 		// For normal arithmatic operations, we just check if the actual flow overflowed 0x0F for half-carry
 		// and 0xFF for carry, or alternativelly for SBC, we check if it underflowed.
 		// TODO: Unsure about the behaviour of H Flag for SUB and SBC operations.
-		beemu_cq_write_flag(queue, BEEMU_FLAG_H,  half_carry_flag_value);
+		beemu_cq_write_flag(queue, BEEMU_FLAG_H, half_carry_flag_value);
 		if (!skip_c) {
 			beemu_cq_write_flag(queue, BEEMU_FLAG_C, would_be_result != actual_result);
 		}
@@ -106,7 +105,7 @@ void beemu_cq_write_flags(
 /**
  * Check if the given parameter is a HL pointer.
  */
-bool is_param_hl_ptr(const BeemuParam *param)
+bool is_param_hl_ptr(const BeemuParam* param)
 {
 	return param->pointer && param->type == BEEMU_PARAM_TYPE_REGISTER_16 && param->value.register_16 == BEEMU_REGISTER_HL;
 }
@@ -122,7 +121,7 @@ bool is_param_hl_ptr(const BeemuParam *param)
  * @return True if the location indicated by the BeemuParam can hold a
  * 8 bit value.
  */
-static bool do_param_hold_byte_length_values(const BeemuParam *param)
+static bool do_param_hold_byte_length_values(const BeemuParam* param)
 {
 	if (param->pointer) {
 		// Pointers point to memory addresses
@@ -148,10 +147,10 @@ static bool do_param_hold_byte_length_values(const BeemuParam *param)
  * @param processor BeemuProcessor to resolve the actual values.
  */
 void beemu_cq_write_results_u8(
-	BeemuCommandQueue *queue,
-	const BeemuParam *dst,
-	const uint8_t result,
-	const BeemuProcessor *processor)
+    BeemuCommandQueue* queue,
+    const BeemuParam* dst,
+    const uint8_t result,
+    const BeemuProcessor* processor)
 {
 	if (dst->pointer) {
 		// We will write to memory.
@@ -174,12 +173,12 @@ void beemu_cq_write_results_u8(
  * @param is_idu_op If set to true, it means this instruction is executed on the INCREMENT DECREMENT UNIT.
  */
 void beemu_cq_write_results_u16(
-	BeemuCommandQueue *queue,
-	const BeemuParam *dst,
-	const BeemuParam *src,
-	const uint16_t result,
-	const BeemuProcessor *processor,
-	const bool is_idu_op)
+    BeemuCommandQueue* queue,
+    const BeemuParam* dst,
+    const BeemuParam* src,
+    const uint16_t result,
+    const BeemuProcessor* processor,
+    const bool is_idu_op)
 {
 	if (is_idu_op) {
 		beemu_cq_write_reg_16(queue, dst->value.register_16, result);
@@ -225,7 +224,7 @@ void beemu_cq_write_results_u16(
 	}
 }
 
-bool halts_after_flags(const BeemuInstruction *instruction)
+bool halts_after_flags(const BeemuInstruction* instruction)
 {
 	switch (instruction->original_machine_code) {
 	case 0x35:
@@ -240,12 +239,12 @@ bool halts_after_flags(const BeemuInstruction *instruction)
  * Check if the arithmatic op a increment or decrement operation,
  * given its params.
  */
-bool is_op_inc_dec(const BeemuArithmaticParams *params)
+bool is_op_inc_dec(const BeemuArithmaticParams* params)
 {
 	return params->operation == BEEMU_OP_INC || params->operation == BEEMU_OP_DEC;
 }
 
-void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction)
+void parse_arithmatic(BeemuCommandQueue* queue, const BeemuProcessor* processor, const BeemuInstruction* instruction)
 {
 	BeemuArithmaticParams params = instruction->params.arithmatic_params;
 
@@ -265,17 +264,16 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 
 	// Actually calculate the results
 	const int32_t operation_result = resolve_result_wo_overflow(
-		first_value,
-		second_value,
-		params.operation,
-		beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C));
+	    first_value,
+	    second_value,
+	    params.operation,
+	    beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C));
 	// Half carry is better calculated from the raw params.
 	const uint8_t half_carry_result = resolve_half_carry_for_arithmatic(
-		first_value,
-		second_value,
-		beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C),
-		params.operation
-	);
+	    first_value,
+	    second_value,
+	    beemu_registers_flags_get_flag(processor->registers, BEEMU_FLAG_C),
+	    params.operation);
 
 	// This parameter is used to later handle the over/underflows.
 	uint32_t actual_result = 0;
@@ -289,22 +287,22 @@ void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor,
 		if (params.operation != BEEMU_OP_CP) {
 			// Compare operation does not actually modify the contents of the destination.
 			beemu_cq_write_results_u8(
-				queue,
-				&params.dest_or_first,
-				actual_result_size_corrected,
-				processor);
+			    queue,
+			    &params.dest_or_first,
+			    actual_result_size_corrected,
+			    processor);
 		}
 		actual_result = actual_result_size_corrected;
 	} else {
 		// For 16 bit holding values.
 		const uint16_t actual_result_size_corrected = operation_result;
 		beemu_cq_write_results_u16(
-			queue,
-			&params.dest_or_first,
-			&params.source_or_second,
-			actual_result_size_corrected,
-			processor,
-			is_idu_op);
+		    queue,
+		    &params.dest_or_first,
+		    &params.source_or_second,
+		    actual_result_size_corrected,
+		    processor,
+		    is_idu_op);
 		actual_result = actual_result_size_corrected;
 	}
 	// Finally generate write orders for the flag values.

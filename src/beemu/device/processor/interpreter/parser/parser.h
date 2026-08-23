@@ -12,26 +12,25 @@
 #ifndef BEEMU_PARSER_H
 #define BEEMU_PARSER_H
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 #include "../command.h"
 #include "beemu/device/processor/processor.h"
 
-/**
- * @brief Parse an instruction to a series of commands.
- *
- * Parse a given BeemuInstruction given the current state of the processor,
- * return a list of commands that if invoked by the BeemuInvoker, modifies
- * the processor state to the one intended by the Instruction.
- * @param processor BeemuProcessor to act on.
- * @param instruction Instruction to parse.
- * @return A series of commands that can be invoked to modify the processor state
- * to the intended result.
- */
-BeemuCommandQueue *beemu_parser_parse(const BeemuProcessor *processor, const BeemuInstruction *instruction);
+	/**
+	 * @brief Parse an instruction to a series of commands.
+	 *
+	 * Parse a given BeemuInstruction given the current state of the processor,
+	 * return a list of commands that if invoked by the BeemuInvoker, modifies
+	 * the processor state to the one intended by the Instruction.
+	 * @param processor BeemuProcessor to act on.
+	 * @param instruction Instruction to parse.
+	 * @return A series of commands that can be invoked to modify the processor state
+	 * to the intended result.
+	 */
+	BeemuCommandQueue* beemu_parser_parse(const BeemuProcessor* processor, const BeemuInstruction* instruction);
 
 #endif // BEEMU_PARSER_H
 #ifdef __cplusplus
-	}
+}
 #endif

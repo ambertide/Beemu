@@ -16,11 +16,11 @@ arithmatic_subtype_if_arithmatic(uint8_t opcode)
 		{ 0xC7, 0xC6 },
 		{ 0xC7, 0x07 },
 		// ADD16 block.
-		{0xCF, 0x09},
+		{ 0xCF, 0x09 },
 		// INC/DEC16 block.
-		{0xC7, 0x03},
+		{ 0xC7, 0x03 },
 		// ADD SP, s8
-		{0xFF, 0xE8}
+		{ 0xFF, 0xE8 }
 	};
 
 	return instruction_subtype_if_of_instruction_type(
@@ -141,32 +141,31 @@ void determine_arithmatic_weird_params(
 }
 
 void determine_arithmatic16_add16_params(
-	BeemuInstruction *instruction,
-	uint8_t opcode)
+    BeemuInstruction* instruction,
+    uint8_t opcode)
 {
 	const uint8_t register_selector = (opcode & 0x30) >> 4;
 	// the 5th and 6th MSBs determine source registers since, 0x0n, 0x1n, 0x2n and 0x3n's
 	// 0, 1, 2, 3 can be used to index a register array.
 	tokenize_register16_param_with_index(
-		&instruction->params.arithmatic_params.source_or_second,
-		register_selector,
-		false,
-		BEEMU_REGISTER_SP
-		);
+	    &instruction->params.arithmatic_params.source_or_second,
+	    register_selector,
+	    false,
+	    BEEMU_REGISTER_SP);
 	// But all the registers write to the HL register.
 	tokenize_register16_param_with_index(
-		&instruction->params.arithmatic_params.dest_or_first,
-		2,
-		false,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.arithmatic_params.dest_or_first,
+	    2,
+	    false,
+	    BEEMU_REGISTER_SP);
 	// And all of them do add.
 	// TODO: Check if ADC is possibly a better fit here.
 	instruction->params.arithmatic_params.operation = BEEMU_OP_ADD;
 }
 
 void determine_arithmatic16_inc_dec_params(
-	BeemuInstruction *instruction,
-	uint8_t opcode)
+    BeemuInstruction* instruction,
+    uint8_t opcode)
 {
 	static const BeemuOperation operations[] = {
 		BEEMU_OP_INC,
@@ -180,11 +179,10 @@ void determine_arithmatic16_inc_dec_params(
 	// Meanwhile the 5th and 6th MSBs determine registers since, 0x0n, 0x1n, 0x2n and 0x3n's
 	// 0, 1, 2, 3 can be used to index a register array.
 	tokenize_register16_param_with_index(
-		&instruction->params.arithmatic_params.dest_or_first,
-		register_selector,
-		false,
-		BEEMU_REGISTER_SP
-		);
+	    &instruction->params.arithmatic_params.dest_or_first,
+	    register_selector,
+	    false,
+	    BEEMU_REGISTER_SP);
 	// Finally whether decrement or increment we use uint8_t value 1 as the second operand.
 	instruction->params.arithmatic_params.source_or_second.value.value = 1;
 	instruction->params.arithmatic_params.source_or_second.type = BEEMU_PARAM_TYPE_UINT_8;
@@ -195,20 +193,20 @@ void determine_arithmatic16_inc_dec_params(
  * Used to parse arithmatic instruction that adds a signed integer to the stack pointer.
  */
 void determine_arithmatic16_sp_signed_sum_params(
-	BeemuInstruction *instruction,
-	uint8_t opcode)
+    BeemuInstruction* instruction,
+    uint8_t opcode)
 {
 	assert(opcode == 0xE8);
 	// This is a very specific instruction.
 	instruction->params.arithmatic_params.operation = BEEMU_OP_ADD;
 	tokenize_register16_param_with_index(
-		&instruction->params.arithmatic_params.dest_or_first,
-		3,
-		false,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.arithmatic_params.dest_or_first,
+	    3,
+	    false,
+	    BEEMU_REGISTER_SP);
 	parse_signed8_param_from_instruction(
-		&instruction->params.arithmatic_params.source_or_second,
-		instruction->original_machine_code);
+	    &instruction->params.arithmatic_params.source_or_second,
+	    instruction->original_machine_code);
 }
 
 // Array used to dispatch to the determine_load_SUBTYPE_params function
@@ -221,9 +219,9 @@ static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
 	      &determine_arithmatic_inc_dec_params,
 	      &determine_arithmatic_direct_params,
 	      &determine_arithmatic_weird_params,
-		  &determine_arithmatic16_add16_params,
-		  &determine_arithmatic16_inc_dec_params,
-		  &determine_arithmatic16_sp_signed_sum_params
+	      &determine_arithmatic16_add16_params,
+	      &determine_arithmatic16_inc_dec_params,
+	      &determine_arithmatic16_sp_signed_sum_params
       };
 
 void determine_arithmatic_params(BeemuInstruction* instruction, uint8_t opcode, BEEMU_TOKENIZER_ARITHMATIC_SUBTYPE arithmatic_params)

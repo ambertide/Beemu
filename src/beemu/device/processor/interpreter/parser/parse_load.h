@@ -20,9 +20,7 @@
  * @param processor Processor context
  * @param instruction Instruction to parse.
  */
-void parse_load(
-	BeemuCommandQueue *queue,
-	const BeemuProcessor *processor,
-	const BeemuInstruction *instruction);
+void parse_load(BeemuCommandQueue* queue, const BeemuProcessor* processor,
+    const BeemuInstruction* instruction);
 
 #endif // BEEMU_PARSE_LOAD_H

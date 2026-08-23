@@ -21,10 +21,8 @@
  * @param instruction Instruction to parse.
  */
 void parse_jump(
-	BeemuCommandQueue *queue,
-	const BeemuProcessor *processor,
-	const BeemuInstruction *instruction);
-
-
+    BeemuCommandQueue* queue,
+    const BeemuProcessor* processor,
+    const BeemuInstruction* instruction);
 
 #endif // BEEMU_PARSE_JUMP_H

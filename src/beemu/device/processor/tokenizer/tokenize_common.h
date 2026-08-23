@@ -108,8 +108,8 @@ extern "C" {
 	 * @param original_machine_code Original machine code for the instruction.
 	 */
 	void parse_signed8_param_from_instruction(
-		BeemuParam *param,
-		uint32_t original_machine_code);
+	    BeemuParam* param,
+	    uint32_t original_machine_code);
 
 	/**
 	 * Given the full machine code, extract the 16 bit operand,

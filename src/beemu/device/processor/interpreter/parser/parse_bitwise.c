@@ -34,9 +34,9 @@ uint8_t resolve_bitwise_op(const uint8_t value, const uint8_t targeted_bit, cons
 	return 0;
 }
 
-void parse_bitwise(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction)
+void parse_bitwise(BeemuCommandQueue* queue, const BeemuProcessor* processor, const BeemuInstruction* instruction)
 {
-	const BeemuBitwiseParams *params = &instruction->params.bitwise_params;
+	const BeemuBitwiseParams* params = &instruction->params.bitwise_params;
 	const bool has_hl_deref = params->target.pointer && params->target.type == BEEMU_PARAM_TYPE_REGISTER_16 && params->target.value.register_16 == BEEMU_REGISTER_HL;
 	uint8_t target_value = 0;
 	if (has_hl_deref) {

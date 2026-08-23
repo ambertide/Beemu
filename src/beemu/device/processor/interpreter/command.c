@@ -4,35 +4,34 @@
 
 #include "command.h"
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-BeemuCommandQueue *beemu_command_queue_new()
+BeemuCommandQueue* beemu_command_queue_new()
 {
-	BeemuCommandQueue *queue = malloc(sizeof(BeemuCommandQueue));
+	BeemuCommandQueue* queue = malloc(sizeof(BeemuCommandQueue));
 	queue->first = 0;
 	queue->last = 0;
 	return queue;
 };
 
-void beemu_command_queue_free(BeemuCommandQueue *queue)
+void beemu_command_queue_free(BeemuCommandQueue* queue)
 {
 	queue->first = 0;
 	queue->last = 0;
 	free(queue);
 };
 
-bool beemu_command_queue_is_empty(BeemuCommandQueue *queue)
+bool beemu_command_queue_is_empty(BeemuCommandQueue* queue)
 {
 	return queue->first == 0;
 }
 
-
-void beemu_command_queue_enqueue(BeemuCommandQueue *queue, const BeemuMachineCommand *command)
+void beemu_command_queue_enqueue(BeemuCommandQueue* queue, const BeemuMachineCommand* command)
 {
 	// Command is copied to a new memory address.
-	BeemuMachineCommand *command_cpy = malloc(sizeof(BeemuMachineCommand));
-	BeemuCommandQueueNode *node = malloc(sizeof(BeemuCommandQueueNode));
+	BeemuMachineCommand* command_cpy = malloc(sizeof(BeemuMachineCommand));
+	BeemuCommandQueueNode* node = malloc(sizeof(BeemuCommandQueueNode));
 	// Set to nullptr so we can keep track of the end.
 	node->next = 0;
 	node->current = command_cpy;
@@ -49,13 +48,13 @@ void beemu_command_queue_enqueue(BeemuCommandQueue *queue, const BeemuMachineCom
 	}
 };
 
-BeemuMachineCommand *beemu_command_queue_dequeue(BeemuCommandQueue *queue)
+BeemuMachineCommand* beemu_command_queue_dequeue(BeemuCommandQueue* queue)
 {
 	if (queue->first == 0) {
 		return 0;
 	}
-	BeemuCommandQueueNode *first_node = queue->first;
-	BeemuMachineCommand *first_command = first_node->current;
+	BeemuCommandQueueNode* first_node = queue->first;
+	BeemuMachineCommand* first_command = first_node->current;
 	// Increment the ptr.
 	queue->first = queue->first->next;
 	// Free the first node so we won't leak memory.
@@ -66,13 +65,11 @@ BeemuMachineCommand *beemu_command_queue_dequeue(BeemuCommandQueue *queue)
 	return first_command;
 };
 
-const BeemuMachineCommand *beemu_command_queue_peek(BeemuCommandQueue *queue)
+const BeemuMachineCommand* beemu_command_queue_peek(BeemuCommandQueue* queue)
 {
 	if (queue->first == 0) {
 		return 0;
 	}
-	BeemuMachineCommand *first_command = queue->first->current;
+	BeemuMachineCommand* first_command = queue->first->current;
 	return first_command;
 };
-
-

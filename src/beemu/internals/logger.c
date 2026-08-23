@@ -10,8 +10,7 @@
  */
 void print_prelude(BeemuLogLevel level)
 {
-	switch (level)
-	{
+	switch (level) {
 	case BEEMU_LOG_INFO:
 		printf("INFO: ");
 		break;
@@ -24,7 +23,7 @@ void print_prelude(BeemuLogLevel level)
 	}
 }
 
-void beemu_log(BeemuLogLevel level, const char *fmt, ...)
+void beemu_log(BeemuLogLevel level, const char* fmt, ...)
 {
 #ifndef DDEBUG
 	print_prelude(level);

@@ -20,7 +20,8 @@ inline BeemuByteTuple beemu_util_split_16_to_8(uint16_t number)
 {
 	const BeemuByteTuple decomposition = {
 		((uint8_t)((number & 0xFF00) >> 8)),
-		((uint8_t)((number & 0x00FF)))};
+		((uint8_t)((number & 0x00FF)))
+	};
 	return decomposition;
 }
 
@@ -33,7 +34,8 @@ inline BeemuByteTuple beemu_util_split_8_to_4(uint8_t number)
 {
 	const BeemuByteTuple ret = {
 		(number & 0xF0) >> 4,
-		number & 0x0F};
+		number & 0x0F
+	};
 	return ret;
 }
 
@@ -47,32 +49,24 @@ BeemuByteTuple beemu_util_rotate_or_shift(uint8_t value, uint8_t extra_bit, bool
 {
 	uint8_t new_value = (value << 1);
 	uint8_t new_extra_bit = value & 0x01;
-	if (through_extra_bit && rotate)
-	{
+	if (through_extra_bit && rotate) {
 		new_value |= extra_bit;
-	}
-	else if (rotate)
-	{
+	} else if (rotate) {
 		// On rotate left
 		new_value |= (value >> 7);
 	}
-	if (direction == BEEMU_ROTATION_DIRECTION_RIGHT)
-	{
+	if (direction == BEEMU_ROTATION_DIRECTION_RIGHT) {
 		new_value >>= 2;
 		new_extra_bit = (0x80 & value) >> 7;
-		if (through_extra_bit && rotate)
-		{
+		if (through_extra_bit && rotate) {
 			new_value |= (extra_bit << 7);
-		}
-		else if (rotate)
-		{
+		} else if (rotate) {
 			new_value |= (value << 7);
 		}
 	}
-	if (keep_msb)
-	{
+	if (keep_msb) {
 		new_value = new_value | (value & 0x80);
 	}
-	BeemuByteTuple tuple = {new_value, new_extra_bit};
+	BeemuByteTuple tuple = { new_value, new_extra_bit };
 	return tuple;
 }

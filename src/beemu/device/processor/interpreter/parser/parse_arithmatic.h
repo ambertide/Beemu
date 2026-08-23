@@ -23,6 +23,6 @@
  * @param processor Current processor state.
  * @param instruction Instruction to parse.
  */
-void parse_arithmatic(BeemuCommandQueue *queue, const BeemuProcessor *processor, const BeemuInstruction *instruction);
+void parse_arithmatic(BeemuCommandQueue* queue, const BeemuProcessor* processor, const BeemuInstruction* instruction);
 
 #endif // BEEMU_PARSE_ARITHMATIC_H

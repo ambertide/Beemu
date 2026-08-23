@@ -13,32 +13,32 @@ jump_subtype_if_jump(uint8_t opcode)
 		// _INVALID
 		{ 0xFF, 0xFF },
 		// Unconditional JR
-		{0xFF, 0x18},
+		{ 0xFF, 0x18 },
 		// Conditional JRs
-		{0xE7, 0x20},
+		{ 0xE7, 0x20 },
 		// Unconditional JP
-		{0xFF, 0xC3},
+		{ 0xFF, 0xC3 },
 		// Conditional JP
-		{0xE7, 0xC2},
+		{ 0xE7, 0xC2 },
 		// Unconditional RET
-		{0xEF, 0xC9},
+		{ 0xEF, 0xC9 },
 		// Conditional RET
-		{0xE7, 0xC0},
+		{ 0xE7, 0xC0 },
 		// RST Instructions
-		{0xC7, 0xC7},
+		{ 0xC7, 0xC7 },
 		// Unconditional CALL
-		{0xFF, 0xCD},
+		{ 0xFF, 0xCD },
 		// Conditional CALL
-		{0xE7, 0xC4},
+		{ 0xE7, 0xC4 },
 		// JP HL
-		{0xFF, 0xE9}
+		{ 0xFF, 0xE9 }
 	};
 
 	return instruction_subtype_if_of_instruction_type(
-		opcode,
-		tests,
-		BEEMU_TOKENIZER_JUMP_INVALID_JUMP,
-		BEEMU_TOKENIZER_JUMP_HL);
+	    opcode,
+	    tests,
+	    BEEMU_TOKENIZER_JUMP_INVALID_JUMP,
+	    BEEMU_TOKENIZER_JUMP_HL);
 }
 
 /**
@@ -51,15 +51,14 @@ jump_subtype_if_jump(uint8_t opcode)
  * @param mem_addr_override If set (not -1), override the memory address calculation with it.
  */
 void parse_jump_params(
-	BeemuInstruction *instruction,
-	const uint8_t opcode,
-	const BeemuJumpType subtype,
-	const bool is_conditional,
-	const bool is_relative,
-	const int32_t mem_addr_override
-	)
+    BeemuInstruction* instruction,
+    const uint8_t opcode,
+    const BeemuJumpType subtype,
+    const bool is_conditional,
+    const bool is_relative,
+    const int32_t mem_addr_override)
 {
-	BeemuJumpParams *params = &instruction->params.jump_params;
+	BeemuJumpParams* params = &instruction->params.jump_params;
 	params->type = subtype;
 	const BeemuJumpCondition conditions[] = {
 		BEEMU_JUMP_IF_NOT_ZERO,
@@ -83,8 +82,8 @@ void parse_jump_params(
 		params->param.value.value = mem_addr_override;
 	} else if (params->is_relative) {
 		parse_signed8_param_from_instruction(
-			&params->param,
-			instruction->original_machine_code);
+		    &params->param,
+		    instruction->original_machine_code);
 	} else {
 		// Parse as absolute mem addr.
 		const uint16_t jump_address = beemu_parse_uint16_operand(instruction->original_machine_code);
@@ -94,60 +93,60 @@ void parse_jump_params(
 	}
 }
 
-void determine_jump_relative_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_relative_unconditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0x18);
 	instruction->duration_in_clock_cycles = 3;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_JUMP,
-		false,
-		true,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_JUMP,
+	    false,
+	    true,
+	    -1);
 }
 
-void determine_jump_relative_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_relative_conditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0x20 || opcode == 0x28 || opcode == 0x30 || opcode == 0x38);
 	instruction->duration_in_clock_cycles = 3;
 	// 5th and 4th MSB can be used to ascertein the conditions.
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_JUMP,
-		true,
-		true,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_JUMP,
+	    true,
+	    true,
+	    -1);
 }
 
 /**
  *  Used to parse direct jump instructions
  */
-void determine_jump_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_unconditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xC3);
 	instruction->duration_in_clock_cycles = 4;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_JUMP,
-		false,
-		false,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_JUMP,
+	    false,
+	    false,
+	    -1);
 }
 
-void determine_jump_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_conditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xC2 || opcode == 0xD2 || opcode == 0xCA || opcode == 0xDA);
 	instruction->duration_in_clock_cycles = 4;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_JUMP,
-		true,
-		false,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_JUMP,
+	    true,
+	    false,
+	    -1);
 }
 
 /**
@@ -155,22 +154,22 @@ void determine_jump_conditional_params(BeemuInstruction *instruction, const uint
  * @param instruction partially constructed instruction
  * @param opcode Opcode of the instruction
  */
-void determine_jump_ret_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_ret_unconditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xC9 || opcode == 0xD9);
 	instruction->duration_in_clock_cycles = 4;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_RET,
-		false,
-		false,
-		0);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_RET,
+	    false,
+	    false,
+	    0);
 	tokenize_register16_param_with_index(
-		&instruction->params.jump_params.param,
-		3,
-		true,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.jump_params.param,
+	    3,
+	    true,
+	    BEEMU_REGISTER_SP);
 	// RETI enables interrupts.
 	instruction->params.jump_params.enable_interrupts = opcode == 0xD9;
 }
@@ -180,28 +179,28 @@ void determine_jump_ret_unconditional_params(BeemuInstruction *instruction, cons
  * @param instruction Partially constructed instruction.
  * @param opcode Opcode of the instruction.
  */
-void determine_jump_ret_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_ret_conditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
-	assert(opcode == 0xC0 || opcode == 0xD0 || opcode == 0xC8 ||opcode == 0xD8);
+	assert(opcode == 0xC0 || opcode == 0xD0 || opcode == 0xC8 || opcode == 0xD8);
 	instruction->duration_in_clock_cycles = 5;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_RET,
-		true,
-		false,
-		0);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_RET,
+	    true,
+	    false,
+	    0);
 	tokenize_register16_param_with_index(
-		&instruction->params.jump_params.param,
-		3,
-		true,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.jump_params.param,
+	    3,
+	    true,
+	    BEEMU_REGISTER_SP);
 }
 
 /**
  * Used to determine the parameters of the RST calls.
  */
-void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
+void determine_jump_rst_params(BeemuInstruction* instruction, uint8_t opcode)
 {
 	instruction->duration_in_clock_cycles = 4;
 	// The 4th, 5th and 6th variable bits of the opcode
@@ -211,44 +210,44 @@ void determine_jump_rst_params(BeemuInstruction *instruction, uint8_t opcode)
 	const uint16_t jump_address = jump_addresses_selector * 0x08;
 	// Finally set all the parameters.
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_RST,
-		false,
-		false,
-		jump_address);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_RST,
+	    false,
+	    false,
+	    jump_address);
 }
 
 /**
  * Parse 0xCD CALL a16
  */
-void determine_jump_call_unconditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_call_unconditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xCD);
 	instruction->duration_in_clock_cycles = 6;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_CALL,
-		false,
-		false,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_CALL,
+	    false,
+	    false,
+	    -1);
 }
 
 /**
  * Parse conditional variants of CALL.
  */
-void determine_jump_call_conditional_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_call_conditional_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xC4 || opcode == 0xCC || opcode == 0xD4 || opcode == 0xDC);
 	instruction->duration_in_clock_cycles = 6;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_CALL,
-		true,
-		false,
-		-1);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_CALL,
+	    true,
+	    false,
+	    -1);
 }
 
 /**
@@ -256,43 +255,42 @@ void determine_jump_call_conditional_params(BeemuInstruction *instruction, const
  * @param instruction Partially constructed instruction.
  * @param opcode Opcode of the instruction, should be 0xE9.
  */
-void determine_jump_hl_params(BeemuInstruction *instruction, const uint8_t opcode)
+void determine_jump_hl_params(BeemuInstruction* instruction, const uint8_t opcode)
 {
 	assert(opcode == 0xE9);
 	instruction->duration_in_clock_cycles = 1;
 	parse_jump_params(
-		instruction,
-		opcode,
-		BEEMU_JUMP_TYPE_JUMP,
-		false,
-		false,
-		0);
+	    instruction,
+	    opcode,
+	    BEEMU_JUMP_TYPE_JUMP,
+	    false,
+	    false,
+	    0);
 	// Now we will toss away the mem addr.
 	tokenize_register16_param_with_index(
-		&instruction->params.jump_params.param,
-		2,
-		false,
-		BEEMU_REGISTER_SP);
+	    &instruction->params.jump_params.param,
+	    2,
+	    false,
+	    BEEMU_REGISTER_SP);
 }
 
 // Array used to dispatch to the determine_load_SUBTYPE_params function
 // for a specific BEEMU_TOKENIZER_LOAD_SUBTYPE, parallel array to the enum
 // values
 static const determine_param_function_ptr DETERMINE_PARAM_DISPATCH[]
-	= {
-	0,
-	&determine_jump_relative_unconditional_params,
-	&determine_jump_relative_conditional_params,
-	&determine_jump_unconditional_params,
-	&determine_jump_conditional_params,
-	&determine_jump_ret_unconditional_params,
-	&determine_jump_ret_conditional_params,
-	&determine_jump_rst_params,
-	&determine_jump_call_unconditional_params,
-	&determine_jump_call_conditional_params,
-	&determine_jump_hl_params
-};
-
+    = {
+	      0,
+	      &determine_jump_relative_unconditional_params,
+	      &determine_jump_relative_conditional_params,
+	      &determine_jump_unconditional_params,
+	      &determine_jump_conditional_params,
+	      &determine_jump_ret_unconditional_params,
+	      &determine_jump_ret_conditional_params,
+	      &determine_jump_rst_params,
+	      &determine_jump_call_unconditional_params,
+	      &determine_jump_call_conditional_params,
+	      &determine_jump_hl_params
+      };
 
 void tokenize_jump(BeemuInstruction* instruction, uint8_t opcode)
 {
@@ -304,4 +302,3 @@ void tokenize_jump(BeemuInstruction* instruction, uint8_t opcode)
 	determine_param_function_ptr param_func = DETERMINE_PARAM_DISPATCH[subtype];
 	param_func(instruction, opcode);
 }
-

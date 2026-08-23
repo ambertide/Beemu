@@ -113,8 +113,8 @@ INSTRUCTION_SUBTYPE instruction_subtype_if_of_instruction_type(
 }
 
 void parse_signed8_param_from_instruction(
-	BeemuParam *param,
-	const uint32_t original_machine_code)
+    BeemuParam* param,
+    const uint32_t original_machine_code)
 {
 	// For the payload we need to extract the signed component.
 	// Yes I am aware there is a memcpy trick in POSIX to do this
@@ -122,14 +122,14 @@ void parse_signed8_param_from_instruction(
 	param->type = BEEMU_PARAM_TYPE_INT_8;
 	param->pointer = false;
 	uint8_t payload = original_machine_code & 0xFF;
-	const uint8_t sign_bit =  payload >> 8;
+	const uint8_t sign_bit = payload >> 8;
 	if (sign_bit) {
 		payload--;
 		payload = ~payload;
-		param->value.signed_value = (((int8_t) 0) - payload);
+		param->value.signed_value = (((int8_t)0) - payload);
 	} else {
 		// Otherwise the two's complement is itself so we can just.
-		param->value.signed_value = (int8_t) 0 + payload;
+		param->value.signed_value = (int8_t)0 + payload;
 	}
 }
 

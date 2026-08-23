@@ -15,7 +15,7 @@
 #include <beemu/device/processor/registers.h>
 #include <stddef.h>
 
-void beemu_cq_halt_cycle(BeemuCommandQueue *queue)
+void beemu_cq_halt_cycle(BeemuCommandQueue* queue)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_HALT;
@@ -23,7 +23,7 @@ void beemu_cq_halt_cycle(BeemuCommandQueue *queue)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_reg_8(BeemuCommandQueue *queue, const BeemuRegister_8 reg, const uint8_t value)
+void beemu_cq_write_reg_8(BeemuCommandQueue* queue, const BeemuRegister_8 reg, const uint8_t value)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -34,7 +34,7 @@ void beemu_cq_write_reg_8(BeemuCommandQueue *queue, const BeemuRegister_8 reg, c
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_reg_16(BeemuCommandQueue *queue, const BeemuRegister_16 reg, const uint16_t value)
+void beemu_cq_write_reg_16(BeemuCommandQueue* queue, const BeemuRegister_16 reg, const uint16_t value)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -45,7 +45,7 @@ void beemu_cq_write_reg_16(BeemuCommandQueue *queue, const BeemuRegister_16 reg,
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_flag(BeemuCommandQueue *queue, const BeemuFlag flag, const uint8_t value)
+void beemu_cq_write_flag(BeemuCommandQueue* queue, const BeemuFlag flag, const uint8_t value)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -56,7 +56,7 @@ void beemu_cq_write_flag(BeemuCommandQueue *queue, const BeemuFlag flag, const u
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcode)
+void beemu_cq_write_ir(BeemuCommandQueue* queue, const uint8_t instruction_opcode)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -67,7 +67,7 @@ void beemu_cq_write_ir(BeemuCommandQueue *queue, const uint8_t instruction_opcod
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_ime(BeemuCommandQueue *queue, const uint8_t ime_value)
+void beemu_cq_write_ime(BeemuCommandQueue* queue, const uint8_t ime_value)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -78,7 +78,7 @@ void beemu_cq_write_ime(BeemuCommandQueue *queue, const uint8_t ime_value)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
+void beemu_cq_write_pc(BeemuCommandQueue* queue, uint16_t program_counter_value)
 {
 
 	BeemuMachineCommand command;
@@ -90,7 +90,7 @@ void beemu_cq_write_pc(BeemuCommandQueue *queue, uint16_t program_counter_value)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_write_memory(BeemuCommandQueue *queue, const uint16_t memory_address, const uint8_t memory_value)
+void beemu_cq_write_memory(BeemuCommandQueue* queue, const uint16_t memory_address, const uint8_t memory_value)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_WRITE;
@@ -101,8 +101,7 @@ void beemu_cq_write_memory(BeemuCommandQueue *queue, const uint16_t memory_addre
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-
-void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue *queue)
+void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue* queue)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_SPECIAL;
@@ -110,8 +109,7 @@ void beemu_cq_special_skip_next_m1_cycle(BeemuCommandQueue *queue)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-
-void beemu_cq_special_set_ime(BeemuCommandQueue *queue)
+void beemu_cq_special_set_ime(BeemuCommandQueue* queue)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_SPECIAL;
@@ -119,7 +117,7 @@ void beemu_cq_special_set_ime(BeemuCommandQueue *queue)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-void beemu_cq_special_reset_ime(BeemuCommandQueue *queue)
+void beemu_cq_special_reset_ime(BeemuCommandQueue* queue)
 {
 	BeemuMachineCommand command;
 	command.type = BEEMU_COMMAND_SPECIAL;
@@ -127,7 +125,7 @@ void beemu_cq_special_reset_ime(BeemuCommandQueue *queue)
 	beemu_command_queue_enqueue(queue, &command);
 }
 
-uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *parameter, const BeemuProcessor *processor, bool skip_deref)
+uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam* parameter, const BeemuProcessor* processor, bool skip_deref)
 {
 	switch (parameter->type) {
 	case BEEMU_PARAM_TYPE_REGISTER_8: {
@@ -180,19 +178,19 @@ uint16_t beemu_resolve_instruction_parameter_unsigned(const BeemuParam *paramete
 			return mem_addr;
 		}
 		return beemu_memory_read(processor->memory, mem_addr);
-		default:
+	default:
 		return 0;
 	}
 	}
 }
 
-BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuProcessor *processor)
+BeemuParamTuple beemu_explode_beemu_param(const BeemuParam* param, const BeemuProcessor* processor)
 {
 	BeemuParamTuple tuple;
 	BeemuRegister_8 register_map[3][2] = {
-		{BEEMU_REGISTER_B, BEEMU_REGISTER_C},
-		{BEEMU_REGISTER_D, BEEMU_REGISTER_E},
-		{BEEMU_REGISTER_H, BEEMU_REGISTER_L}
+		{ BEEMU_REGISTER_B, BEEMU_REGISTER_C },
+		{ BEEMU_REGISTER_D, BEEMU_REGISTER_E },
+		{ BEEMU_REGISTER_H, BEEMU_REGISTER_L }
 	};
 	tuple.higher.pointer = param->pointer;
 	tuple.lower.pointer = param->pointer;
@@ -234,7 +232,7 @@ BeemuParamTuple beemu_explode_beemu_param(const BeemuParam *param, const BeemuPr
 	return tuple;
 }
 
-uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor *processor)
+uint8_t dereference_hl_with_halt(BeemuCommandQueue* queue, const BeemuProcessor* processor)
 {
 	// We can directly fetch the HL as the HL writes always occur after this point,
 	// no need to seek within the queue.
@@ -248,7 +246,7 @@ uint8_t dereference_hl_with_halt(BeemuCommandQueue *queue, const BeemuProcessor 
 	return mem_value;
 }
 
-bool beemu_param_holds_double(const BeemuParam *param)
+bool beemu_param_holds_double(const BeemuParam* param)
 {
 	if (param->pointer) {
 		return false;
